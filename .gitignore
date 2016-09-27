@@ -1,0 +1,8 @@
+*.db
+*.opendb
+Debug/
+x64/
+Release/
+Win32/
+.vs/
+*.user
