@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExtensionSystem", "Extensio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExtensionSystemTest", "ExtensionSystemTest\ExtensionSystemTest.vcxproj", "{81FC4A86-050A-4A7A-8E66-4291A943F6F1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plugin1", "Plugin1\Plugin1.vcxproj", "{5C44C0A9-D8A2-4714-97A0-71BA834897D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -37,6 +39,10 @@ Global
 		{81FC4A86-050A-4A7A-8E66-4291A943F6F1}.Debug|x86.Build.0 = Debug|Win32
 		{81FC4A86-050A-4A7A-8E66-4291A943F6F1}.Release|x86.ActiveCfg = Release|Win32
 		{81FC4A86-050A-4A7A-8E66-4291A943F6F1}.Release|x86.Build.0 = Release|Win32
+		{5C44C0A9-D8A2-4714-97A0-71BA834897D0}.Debug|x86.ActiveCfg = Debug|Win32
+		{5C44C0A9-D8A2-4714-97A0-71BA834897D0}.Debug|x86.Build.0 = Debug|Win32
+		{5C44C0A9-D8A2-4714-97A0-71BA834897D0}.Release|x86.ActiveCfg = Release|Win32
+		{5C44C0A9-D8A2-4714-97A0-71BA834897D0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

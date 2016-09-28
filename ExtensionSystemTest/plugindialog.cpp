@@ -29,6 +29,15 @@
 #include <extensionsystem/pluginerrorview.h>
 #include <extensionsystem/pluginspec.h>
 
+#include <utils/algorithm.h>
+#include <utils/pathchooser.h>
+#include <utils/macroexpander.h>
+#include <utils/savefile.h>
+#include <utils/stringutils.h>
+#include <utils/theme/theme.h>
+#include <utils/theme/theme_p.h>
+
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDialog>
@@ -128,8 +137,12 @@ int main(int argc, char *argv[])
     ExtensionSystem::PluginManager manager;
     QApplication app(argc, argv);
     PluginDialog dialog(&manager);
-    manager.setPluginPaths(QStringList() << "plugins");
+    ExtensionSystem::PluginManager::setPluginIID(QLatin1String("org.qt-project.Qt.CamyuPlugin"));
+    Utils::Theme *theme = new Utils::Theme("", qApp);
+    Utils::setCreatorTheme(theme);
+    manager.setPluginPaths(QStringList() << "G:\\Project\\GitHub\\SensorTools\\Win32\\Debug\\plugins");
     manager.loadPlugins();
+    QObject::connect(&app, SIGNAL(aboutToQuit()), &manager, SLOT(shutdown()));
     dialog.show();
     app.exec();
 }
