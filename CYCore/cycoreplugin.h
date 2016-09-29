@@ -1,31 +1,23 @@
 #ifndef CYCOREPLUGIN_H
 #define CYCOREPLUGIN_H
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+//#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include "../ExtensionSystem/iplugin.h"
 
-class CYCorePlugin : public QObject, public QDesignerCustomWidgetInterface
+class CYCorePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetInterface" FILE "cycoreplugin.json")
-    Q_INTERFACES(QDesignerCustomWidgetInterface)
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.CamyuPlugin" FILE "cycoreplugin.json")
+    //Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-    CYCorePlugin(QObject *parent = 0);
-
-    bool isContainer() const;
-    bool isInitialized() const;
-    QIcon icon() const;
-    QString domXml() const;
-    QString group() const;
-    QString includeFile() const;
-    QString name() const;
-    QString toolTip() const;
-    QString whatsThis() const;
-    QWidget *createWidget(QWidget *parent);
-    void initialize(QDesignerFormEditorInterface *core);
+    CYCorePlugin();
+    ~CYCorePlugin();
+    bool initialize(const QStringList &arguments, QString *errorString);
+    void extensionsInitialized();
 
 private:
-    bool initialized;
+    bool initializeCalled;
 };
 
 #endif // CYCOREPLUGIN_H
