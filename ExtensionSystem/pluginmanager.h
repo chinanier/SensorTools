@@ -27,7 +27,7 @@
 #define EXTENSIONSYSTEM_PLUGINMANAGER_H
 
 #include "extensionsystem_global.h"
-#include <aggregation/aggregate.h>
+#include "../aggregation/aggregate.h"
 
 #include <QObject>
 #include <QStringList>

@@ -143,6 +143,6 @@ int main(int argc, char *argv[])
     manager.setPluginPaths(QStringList() << "G:\\Project\\GitHub\\SensorTools\\Win32\\Debug\\plugins");
     manager.loadPlugins();
     QObject::connect(&app, SIGNAL(aboutToQuit()), &manager, SLOT(shutdown()));
-    dialog.show();
+    //dialog.show();
     app.exec();
 }
