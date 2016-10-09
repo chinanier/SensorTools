@@ -34,6 +34,7 @@ void CYCorePlugin::extensionsInitialized()
     addAutoReleasedObject(obj);
     if (m_mainWindow)
     {
+        m_mainWindow->resize(1008, 700); // size without window decoration
         m_mainWindow->show();
     }
 }
