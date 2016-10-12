@@ -4,14 +4,28 @@
 #include "actionmanager_p.h"
 #include "command.h"
 #include "QMenu"
+#include "QStatusBar"
+#include "QVBoxLayout"
+#include "QHBoxLayout"
+#include "QApplication"
+#include "../Utils/stylehelper.h"
+#include "../utils/checkablemessagebox.h"
+#include "../Utils/theme/theme.h"
 using namespace CYCore;
 using namespace CYCore::Internal;
 MainWindow::MainWindow():
     AppMainWindow(),
     m_coreImpl(new ICore(this))
 {
+    QApplication::setPalette(Utils::creatorTheme()->palette());
     registerDefaultContainers();
     registerDefaultActions();
+    //QVBoxLayout * vlayout = new QVBoxLayout;
+    //setLayout(vlayout);
+    //vlayout->addWidget(new QStatusBar);
+    Utils::StyleHelper::setBaseColor(Utils::StyleHelper::DEFAULT_BASE_COLOR);
+    QStatusBar * p = statusBar();
+    p = p;
 }
 
 MainWindow::~MainWindow()

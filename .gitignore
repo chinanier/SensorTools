@@ -4,5 +4,6 @@ Debug/
 x64/
 Release/
 Win32/
+GeneratedFiles/
 .vs/
 *.user

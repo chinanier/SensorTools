@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plugin1", "Plugin1\Plugin1.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CYCore", "CYCore\CYCore.vcxproj", "{F4217970-1799-4EDE-B0C2-0741C34C6603}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "coreplugin", "coreplugin\coreplugin.vcxproj", "{3F31B75B-E037-44F7-855D-1AC8C55B4211}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -49,6 +51,10 @@ Global
 		{F4217970-1799-4EDE-B0C2-0741C34C6603}.Debug|x86.Build.0 = Debug|Win32
 		{F4217970-1799-4EDE-B0C2-0741C34C6603}.Release|x86.ActiveCfg = Release|Win32
 		{F4217970-1799-4EDE-B0C2-0741C34C6603}.Release|x86.Build.0 = Release|Win32
+		{3F31B75B-E037-44F7-855D-1AC8C55B4211}.Debug|x86.ActiveCfg = Debug|Win32
+		{3F31B75B-E037-44F7-855D-1AC8C55B4211}.Debug|x86.Build.0 = Debug|Win32
+		{3F31B75B-E037-44F7-855D-1AC8C55B4211}.Release|x86.ActiveCfg = Release|Win32
+		{3F31B75B-E037-44F7-855D-1AC8C55B4211}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,7 +24,7 @@
 ****************************************************************************/
 
 #include "plugindialog.h"
-
+#include <app/app_version.h>
 #include <extensionsystem/plugindetailsview.h>
 #include <extensionsystem/pluginerrorview.h>
 #include <extensionsystem/pluginspec.h>
@@ -36,7 +36,8 @@
 #include <utils/stringutils.h>
 #include <utils/theme/theme.h>
 #include <utils/theme/theme_p.h>
-
+#include <utils/fileutils.h>
+#include <utils/hostosinfo.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -44,6 +45,8 @@
 #include <QDialogButtonBox>
 #include <QApplication>
 #include <QDebug>
+#include <QSettings>
+#include <QTemporaryDir>
 
 PluginDialog::PluginDialog(ExtensionSystem::PluginManager *manager)
     : m_view(new ExtensionSystem::PluginView(/*manager,*/ this))
@@ -131,18 +134,133 @@ void PluginDialog::openErrorDetails()
     dialog.resize(500, 300);
     dialog.exec();
 }
+static const char *SHARE_PATH =Utils::HostOsInfo::isMacHost() ? "/../Resources" : "/../share/qtcreator";
+static QSettings *createUserSettings()
+{
+    return new QSettings(QSettings::IniFormat, QSettings::UserScope,
+        QLatin1String(CYCore::Constants::IDE_SETTINGSVARIANT_STR),
+        QLatin1String("QtCreator"));
+}
+// taken from utils/fileutils.cpp. We can not use utils here since that depends app_version.h.
+static bool copyRecursively(const QString &srcFilePath,
+    const QString &tgtFilePath)
+{
+    QFileInfo srcFileInfo(srcFilePath);
+    if (srcFileInfo.isDir()) {
+        QDir targetDir(tgtFilePath);
+        targetDir.cdUp();
+        if (!targetDir.mkdir(Utils::FileName::fromString(tgtFilePath).fileName()))
+            return false;
+        QDir sourceDir(srcFilePath);
+        QStringList fileNames = sourceDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+        foreach(const QString &fileName, fileNames) {
+            const QString newSrcFilePath
+                = srcFilePath + QLatin1Char('/') + fileName;
+            const QString newTgtFilePath
+                = tgtFilePath + QLatin1Char('/') + fileName;
+            if (!copyRecursively(newSrcFilePath, newTgtFilePath))
+                return false;
+        }
+    }
+    else {
+        if (!QFile::copy(srcFilePath, tgtFilePath))
+            return false;
+    }
+    return true;
+}
+static inline QSettings *userSettings()
+{
+    QSettings *settings = createUserSettings();
+    const QString fromVariant = QLatin1String(CYCore::Constants::IDE_COPY_SETTINGS_FROM_VARIANT_STR);
+    if (fromVariant.isEmpty())
+        return settings;
 
+    // Copy old settings to new ones:
+    QFileInfo pathFi = QFileInfo(settings->fileName());
+    if (pathFi.exists()) // already copied.
+        return settings;
+
+    QDir destDir = pathFi.absolutePath();
+    if (!destDir.exists())
+        destDir.mkpath(pathFi.absolutePath());
+
+    QDir srcDir = destDir;
+    srcDir.cdUp();
+    if (!srcDir.cd(fromVariant))
+        return settings;
+
+    if (srcDir == destDir) // Nothing to copy and no settings yet
+        return settings;
+
+    QStringList entries = srcDir.entryList();
+    foreach(const QString &file, entries) {
+        const QString lowerFile = file.toLower();
+        if (lowerFile.startsWith(QLatin1String("profiles.xml"))
+            || lowerFile.startsWith(QLatin1String("toolchains.xml"))
+            || lowerFile.startsWith(QLatin1String("qtversion.xml"))
+            || lowerFile.startsWith(QLatin1String("devices.xml"))
+            || lowerFile.startsWith(QLatin1String("debuggers.xml"))
+            || lowerFile.startsWith(QLatin1String("qtcreator.")))
+            QFile::copy(srcDir.absoluteFilePath(file), destDir.absoluteFilePath(file));
+        if (file == QLatin1String("qtcreator"))
+            copyRecursively(srcDir.absoluteFilePath(file), destDir.absoluteFilePath(file));
+    }
+
+    // Make sure to use the copied settings:
+    delete settings;
+    return createUserSettings();
+}
 int main(int argc, char *argv[])
 {
-    ExtensionSystem::PluginManager manager;
+    //ExtensionSystem::PluginManager manager;
     QApplication app(argc, argv);
-    PluginDialog dialog(&manager);
+
+
+
+    // Manually determine -settingspath command line option
+    // We can't use the regular way of the plugin manager, because that needs to parse plugin meta data
+    // but the settings path can influence which plugins are enabled
+    QString settingsPath;
+    QStringList customPluginPaths;
+    QStringList arguments = app.arguments(); // adapted arguments list is passed to plugin manager later
+    QMutableStringListIterator it(arguments);
+    bool testOptionProvided = false;
+    QScopedPointer<QTemporaryDir> temporaryCleanSettingsDir;
+    if (settingsPath.isEmpty() && testOptionProvided) {
+        const QString settingsPathTemplate = QDir::cleanPath(QDir::tempPath()
+            + QString::fromLatin1("/qtc-test-settings-XXXXXX"));
+        temporaryCleanSettingsDir.reset(new QTemporaryDir(settingsPathTemplate));
+        if (!temporaryCleanSettingsDir->isValid())
+            return 1;
+        settingsPath = temporaryCleanSettingsDir->path();
+    }
+    if (!settingsPath.isEmpty())
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsPath);
+
+    // Must be done before any QSettings class is created
+    QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope,
+        QCoreApplication::applicationDirPath() + QLatin1String(SHARE_PATH));
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    // plugin manager takes control of this settings object
+    QSettings *settings = userSettings();
+
+    QSettings *globalSettings = new QSettings(QSettings::IniFormat, QSettings::SystemScope,
+        QLatin1String(CYCore::Constants::IDE_SETTINGSVARIANT_STR),
+        QLatin1String("QtCreator"));
+    ExtensionSystem::PluginManager manager;
+    ExtensionSystem::PluginManager::setPluginIID(QLatin1String("org.qt-project.Qt.QtCreatorPlugin"));
+    ExtensionSystem::PluginManager::setGlobalSettings(globalSettings);
+    ExtensionSystem::PluginManager::setSettings(settings);
+
+
     ExtensionSystem::PluginManager::setPluginIID(QLatin1String("org.qt-project.Qt.CamyuPlugin"));
     Utils::Theme *theme = new Utils::Theme("", qApp);
     Utils::setCreatorTheme(theme);
     manager.setPluginPaths(QStringList() << "G:\\Project\\GitHub\\SensorTools\\Win32\\Debug\\plugins");
     manager.loadPlugins();
-    QObject::connect(&app, SIGNAL(aboutToQuit()), &manager, SLOT(shutdown()));
+    // shutdown plugin manager on the exit
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, &manager, &ExtensionSystem::PluginManager::shutdown);
     //dialog.show();
+    //PluginDialog dialog(&manager);
     app.exec();
 }

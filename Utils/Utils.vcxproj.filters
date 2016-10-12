@@ -506,9 +506,6 @@
     <ClCompile Include="stylehelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="synchronousprocess.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_synchronousprocess.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -637,6 +634,18 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_mapreduce.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="environmentdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_environmentdialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_environmentdialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="synchronousprocess.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -853,6 +862,9 @@
     <ClInclude Include="utils_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="settingsutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="filewizardpage.ui">
@@ -1055,6 +1067,21 @@
     </CustomBuild>
     <CustomBuild Include="mapreduce.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\environmentdialog.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\environmentdialog.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="environmentdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\synchronousprocess.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\synchronousprocess.moc">
+      <Filter>Generated Files\Release</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
