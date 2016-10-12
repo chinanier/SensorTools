@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QMap>
-#include "id.h"
+#include "coreplugin/id.h"
 namespace CYCore{
 class CYCamera;
 namespace Internal{
@@ -14,7 +14,7 @@ class CYCameraManagerPrivate : public QObject
 public:
     CYCameraManagerPrivate(QObject *parent);
     ~CYCameraManagerPrivate();
-    QMap<Id*, QList<CYCamera*>> m_idOfCameras;
+    QMap<Core::Id*, QList<CYCamera*>> m_idOfCameras;
 private:
     
 };

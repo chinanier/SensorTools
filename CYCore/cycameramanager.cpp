@@ -1,6 +1,7 @@
 #include "cycameramanager.h"
 #include "cycamera.h"
 #include "cycameramanager_p.h"
+using namespace Core;
 using namespace CYCore;
 using namespace Internal;
 
