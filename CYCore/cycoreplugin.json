@@ -15,6 +15,7 @@
     "Category" : "Camyu Plugin",
     "Description" : "Core Camyu Plugin.",
     "Url" : "http://www.camyu.cn",
-    "Dependencies" : [
-    ]
+  "Dependencies": [
+    { "Name" : "Core", "Version" : "4.1.0" }
+  ]
 }

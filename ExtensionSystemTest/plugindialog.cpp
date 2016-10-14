@@ -257,10 +257,14 @@ int main(int argc, char *argv[])
     Utils::Theme *theme = new Utils::Theme("", qApp);
     Utils::setCreatorTheme(theme);
     manager.setPluginPaths(QStringList() << "G:\\Project\\GitHub\\SensorTools\\Win32\\Debug\\plugins");
+#if 1
     manager.loadPlugins();
+#else
+    PluginDialog dialog(&manager);
+    dialog.show();
+#endif
     // shutdown plugin manager on the exit
     QObject::connect(&app, &QCoreApplication::aboutToQuit, &manager, &ExtensionSystem::PluginManager::shutdown);
     //dialog.show();
-    //PluginDialog dialog(&manager);
     app.exec();
 }
