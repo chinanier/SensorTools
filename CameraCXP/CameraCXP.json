@@ -1,0 +1,15 @@
+{
+    "Name" : "CameraCXP",
+    "Version" : "1.0.0",
+    "CompatVersion" : "1.0.0",
+    "Experimental" : true,
+    "Vendor" : "The Camyu Company Ltd",
+    "Copyright" : "(C) 2016 The Camyu Company Ltd",
+    "License" : [ "GPL"
+    ],
+    "Description" : "CameraCXP sample plugin.",
+    "Url" : "http://www.camyu.net",
+    "Dependencies" : [
+        { "Name" : "Core", "Version" : "4.1.0" }
+    ]
+}

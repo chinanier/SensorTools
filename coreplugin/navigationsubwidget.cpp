@@ -39,6 +39,7 @@
 #include <QMenu>
 #include <QResizeEvent>
 #include <QToolButton>
+#include <QLabel>
 
 Q_DECLARE_METATYPE(Core::INavigationWidgetFactory *)
 
@@ -67,7 +68,8 @@ NavigationSubWidget::NavigationSubWidget(NavigationWidget *parentWidget, int pos
     toolBarLayout->setMargin(0);
     toolBarLayout->setSpacing(0);
     m_toolBar->setLayout(toolBarLayout);
-    toolBarLayout->addWidget(m_navigationComboBox);
+    //toolBarLayout->addWidget(m_navigationComboBox);
+    toolBarLayout->addWidget(new QLabel(tr("Protocol CameraList")));
 
     QToolButton *splitAction = new QToolButton();
     splitAction->setIcon(Icons::SPLIT_HORIZONTAL_TOOLBAR.icon());
@@ -82,7 +84,7 @@ NavigationSubWidget::NavigationSubWidget(NavigationWidget *parentWidget, int pos
     m_closeButton->setIcon(Icons::CLOSE_SPLIT_BOTTOM.icon());
     m_closeButton->setToolTip(tr("Close"));
 
-    toolBarLayout->addWidget(splitAction);
+    //toolBarLayout->addWidget(splitAction);
     toolBarLayout->addWidget(m_closeButton);
 
     QVBoxLayout *lay = new QVBoxLayout();
@@ -128,6 +130,7 @@ void NavigationSubWidget::comboBoxIndexChanged(int factoryIndex)
     NavigationView n = m_navigationWidgetFactory->createWidget();
     m_navigationWidget = n.widget;
     layout()->addWidget(m_navigationWidget);
+    //layout()->addWidget(/*m_navigationWidget*/new QLabel(tr("aabbcc")));
 
     // Add Toolbutton
     m_additionalToolBarWidgets = n.dockToolBarWidgets;

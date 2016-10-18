@@ -145,7 +145,7 @@ MainWindow::MainWindow() :
 
     HistoryCompleter::setSettings(PluginManager::settings());
 
-    setWindowTitle(tr("Qt Creator"));
+    setWindowTitle(tr(/*"Qt Creator"*/"Camyu SensorTools"));
     if (HostOsInfo::isLinuxHost())
         QApplication::setWindowIcon(Icons::QTCREATORLOGO_BIG.icon());
     QCoreApplication::setApplicationName(QLatin1String("QtCreator"));

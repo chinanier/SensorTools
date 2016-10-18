@@ -90,20 +90,20 @@ struct EditorToolBarPrivate
 };
 
 EditorToolBarPrivate::EditorToolBarPrivate(QWidget *parent, EditorToolBar *q) :
-    m_editorList(new QComboBox(q)),
-    m_closeEditorButton(new QToolButton(q)),
+    m_editorList(new QComboBox(/*q*/0)),
+    m_closeEditorButton(new QToolButton(/*q*/0)),
     m_lockButton(new QToolButton(q)),
     m_dragHandle(new QToolButton(q)),
     m_dragHandleMenu(0),
     m_goBackAction(new QAction(Utils::Icons::PREV_TOOLBAR.icon(), EditorManager::tr("Go Back"), parent)),
     m_goForwardAction(new QAction(Utils::Icons::NEXT_TOOLBAR.icon(), EditorManager::tr("Go Forward"), parent)),
-    m_backButton(new QToolButton(q)),
-    m_forwardButton(new QToolButton(q)),
-    m_splitButton(new QToolButton(q)),
+    m_backButton(new QToolButton(/*q*/0)),
+    m_forwardButton(new QToolButton(/*q*/0)),
+    m_splitButton(new QToolButton(/*q*/0)),
     m_horizontalSplitAction(new QAction(Icons::SPLIT_HORIZONTAL.icon(), EditorManager::tr("Split"), parent)),
     m_verticalSplitAction(new QAction(Icons::SPLIT_VERTICAL.icon(), EditorManager::tr("Split Side by Side"), parent)),
     m_splitNewWindowAction(new QAction(EditorManager::tr("Open in New Window"), parent)),
-    m_closeSplitButton(new QToolButton(q)),
+    m_closeSplitButton(new QToolButton(/*q*/0)),
     m_activeToolBar(0),
     m_toolBarPlaceholder(new QWidget(q)),
     m_defaultToolBar(new QWidget(q)),
@@ -180,11 +180,12 @@ EditorToolBar::EditorToolBar(QWidget *parent) :
     QHBoxLayout *toplayout = new QHBoxLayout(this);
     toplayout->setSpacing(0);
     toplayout->setMargin(0);
-    toplayout->addWidget(d->m_backButton);
-    toplayout->addWidget(d->m_forwardButton);
-    toplayout->addWidget(d->m_lockButton);
-    toplayout->addWidget(d->m_dragHandle);
-    toplayout->addWidget(d->m_editorList);
+    //toplayout->addWidget(d->m_backButton);
+    //toplayout->addWidget(d->m_forwardButton);
+    //toplayout->addWidget(d->m_lockButton);
+    //toplayout->addWidget(d->m_dragHandle);
+    //toplayout->addWidget(d->m_editorList);
+    toplayout->addWidget(new QLabel(tr("Camera AD0")));
     toplayout->addWidget(d->m_closeEditorButton);
     toplayout->addWidget(d->m_toolBarPlaceholder, 1); // Custom toolbar stretches
     toplayout->addWidget(d->m_splitButton);

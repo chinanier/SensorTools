@@ -63,7 +63,8 @@ private:
     void sourceRowsAboutToBeInserted(const QModelIndex &parent, int start, int end);
 };
 
-class OpenEditorsWidget : public OpenDocumentsTreeView
+/*class OpenEditorsWidget : public OpenDocumentsTreeView*/
+class OpenEditorsWidget : public QTreeView
 {
     Q_OBJECT
 

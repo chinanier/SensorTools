@@ -169,6 +169,9 @@ private:
     HelpManager *m_helpManager;
     FancyTabWidget *m_modeStack;
     NavigationWidget *m_navigationWidget;
+    /// add by kk : add camera protocol list
+    
+
     RightPaneWidget *m_rightPaneWidget;
     StatusBarWidget *m_outputView;
     VersionDialog *m_versionDialog;

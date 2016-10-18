@@ -38,7 +38,7 @@ class EditorManager;
 
 namespace Internal {
 
-class EditMode : public IMode
+class CORE_EXPORT EditMode : public IMode
 {
     Q_OBJECT
 

@@ -56,7 +56,7 @@
       <OutputFile>$(OutDir)\plugins\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Aggregationd.lib;ExtensionSystemd.lib;Utilsd.lib;qtmaind.lib;Qt5Designerd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Qmld.lib;Qt5Sqld.lib;Qt5Testd.lib;Qt5Helpd.lib;Qt5PrintSupportd.lib;Qt5Concurrentd.lib;Qt5UiToolsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CYCored.lib;Aggregationd.lib;ExtensionSystemd.lib;Utilsd.lib;qtmaind.lib;Qt5Designerd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Qmld.lib;Qt5Sqld.lib;Qt5Testd.lib;Qt5Helpd.lib;Qt5PrintSupportd.lib;Qt5Concurrentd.lib;Qt5UiToolsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

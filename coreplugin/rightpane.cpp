@@ -33,6 +33,7 @@
 #include <QVBoxLayout>
 #include <QSplitter>
 #include <QResizeEvent>
+#include <QLabel>
 
 
 using namespace Core;
@@ -189,6 +190,8 @@ void RightPaneWidget::readSettings(QSettings *settings)
     // Apply
     if (RightPanePlaceHolder::m_current)
         RightPanePlaceHolder::m_current->applyStoredSize(m_width);
+    setWidget(new QLabel(tr("test right panle")));
+    setShown(true);
 }
 
 void RightPaneWidget::setShown(bool b)

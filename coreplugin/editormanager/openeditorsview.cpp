@@ -34,6 +34,7 @@
 
 #include <QApplication>
 #include <QMenu>
+#include <QStandardItemModel>
 
 using namespace Core;
 using namespace Core::Internal;
@@ -48,14 +49,31 @@ OpenEditorsWidget::OpenEditorsWidget()
     setWindowIcon(Icons::DIR.icon());
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragOnly);
-
+    //setEditable();
+    QStandardItemModel * modle = new QStandardItemModel();
     m_model = new ProxyModel(this);
     m_model->setSourceModel(DocumentModel::model());
-    setModel(m_model);
+    // 添加表头
+    modle->setHorizontalHeaderLabels(QStringList() << QStringLiteral("相机列表")/* << QStringLiteral("链接状态")*/);
+    // 添加行和列以及节点
+    QStandardItem * itemProject = new QStandardItem(tr("AD0"));
+    modle->appendRow(itemProject);
+    QStandardItem * itemChild = new QStandardItem("AD0-1");
+    itemProject->appendRow(itemChild);
+    itemProject->setEditable(false);
+    itemChild->setEditable(false);
+    // 添加另一行和列及节点
+    itemProject = new QStandardItem(tr("AB3"));
+    modle->appendRow(itemProject);
+    itemChild = new QStandardItem("AB3-1");
+    itemProject->appendRow(itemChild);
+    itemProject->setEditable(false);
+    itemChild->setEditable(false);
+    setModel(/*m_model*/modle);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(EditorManager::instance(), &EditorManager::currentEditorChanged,
+    /*connect(EditorManager::instance(), &EditorManager::currentEditorChanged,
             this, &OpenEditorsWidget::updateCurrentItem);
     connect(this, &OpenDocumentsTreeView::activated,
             this, &OpenEditorsWidget::handleActivated);
@@ -63,7 +81,7 @@ OpenEditorsWidget::OpenEditorsWidget()
             this, &OpenEditorsWidget::closeDocument);
 
     connect(this, &OpenDocumentsTreeView::customContextMenuRequested,
-            this, &OpenEditorsWidget::contextMenuRequested);
+            this, &OpenEditorsWidget::contextMenuRequested);*/
 }
 
 OpenEditorsWidget::~OpenEditorsWidget()

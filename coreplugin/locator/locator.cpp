@@ -97,7 +97,7 @@ void Locator::initialize(CorePlugin *corePlugin, const QStringList &, QString *)
     view->setWidget(m_locatorWidget);
     view->setContext(Context("LocatorWidget"));
     view->setPosition(StatusBarWidget::First);
-    m_corePlugin->addAutoReleasedObject(view);
+    //m_corePlugin->addAutoReleasedObject(view);
 
     QAction *action = new QAction(m_locatorWidget->windowIcon(), m_locatorWidget->windowTitle(), this);
     Command *cmd = ActionManager::registerAction(action, Constants::LOCATE);
@@ -197,9 +197,9 @@ void Locator::updateEditorManagerPlaceholderText()
 {
     Command *openCommand = ActionManager::command(Constants::OPEN);
     Command *locateCommand = ActionManager::command(Constants::LOCATE);
-    const QString placeholderText = tr("<html><body style=\"color:#909090; font-size:14px\">"
+    /*const QString placeholderText = tr("<html><body style=\"color:#909090; font-size:14px\">"
           "<div align='center'>"
-          "<div style=\"font-size:20px\">Open a document</div>"
+          "<div style=\"font-size:20px\">Please Open a connection</div>"
           "<table><tr><td>"
           "<hr/>"
           "<div style=\"margin-top: 5px\">&bull; File > Open File or Project (%1)</div>"
@@ -216,7 +216,16 @@ void Locator::updateEditorManagerPlaceholderText()
           "</body></html>")
          .arg(openCommand->keySequence().toString(QKeySequence::NativeText))
          .arg(locateCommand->keySequence().toString(QKeySequence::NativeText))
-         .arg(m_fileSystemFilter->shortcutString());
+         .arg(m_fileSystemFilter->shortcutString());*/
+
+    const QString placeholderText = tr("<html><body style=\"color:#909090; font-size:14px\">"
+        "<div align='center'>"
+        "<div style=\"font-size:20px\">Please Open a connection......</div>"
+        "</div>"
+        "</body></html>")
+        .arg(openCommand->keySequence().toString(QKeySequence::NativeText))
+        .arg(locateCommand->keySequence().toString(QKeySequence::NativeText))
+        .arg(m_fileSystemFilter->shortcutString());
 
     QString classes;
     // not nice, but anyhow

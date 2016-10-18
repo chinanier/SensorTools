@@ -48,7 +48,7 @@ EditMode::EditMode() :
     m_rightSplitWidgetLayout(new QVBoxLayout)
 {
     setObjectName(QLatin1String("EditMode"));
-    setDisplayName(tr("Edit"));
+    setDisplayName(tr(/*"Edit"*/"CameraLink"));
     setIcon(Utils::Icon::modeIcon(Icons::MODE_EDIT_CLASSIC,
                                   Icons::MODE_EDIT_FLAT, Icons::MODE_EDIT_FLAT_ACTIVE));
     setPriority(Constants::P_MODE_EDIT);
