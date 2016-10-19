@@ -125,18 +125,21 @@ using namespace Utils;
 
 //===================EditorManager=====================
 
-EditorManagerPlaceHolder::EditorManagerPlaceHolder(QWidget *parent)
-    : QWidget(parent)
+EditorManagerPlaceHolder::EditorManagerPlaceHolder(QWidget *parent,Core::Id mode)
+    : QWidget(parent),m_mode(mode)
 {
     setLayout(new QVBoxLayout);
     layout()->setMargin(0);
-    setFocusProxy(EditorManagerPrivate::mainEditorArea());
+    // add by kk 20161019
+    m_wind = EditorManagerPrivate::createEditorArea(m_mode);;
+    setFocusProxy(m_wind);
 }
 
 EditorManagerPlaceHolder::~EditorManagerPlaceHolder()
 {
     // EditorManager will be deleted in ~MainWindow()
-    QWidget *em = EditorManagerPrivate::mainEditorArea();
+    //QWidget *em = EditorManagerPrivate::mainEditorArea();
+    QWidget *em = EditorManagerPrivate::createEditorArea(m_mode);
     if (em && em->parent() == this) {
         em->hide();
         em->setParent(0);
@@ -146,7 +149,7 @@ EditorManagerPlaceHolder::~EditorManagerPlaceHolder()
 void EditorManagerPlaceHolder::showEvent(QShowEvent *)
 {
     QWidget *previousFocus = 0;
-    QWidget *em = EditorManagerPrivate::mainEditorArea();
+    QWidget *em = /*EditorManagerPrivate::mainEditorArea()*/EditorManagerPrivate::createEditorArea(m_mode);
     if (em->focusWidget() && em->focusWidget()->hasFocus())
         previousFocus = em->focusWidget();
     layout()->addWidget(em);
@@ -502,7 +505,17 @@ EditorArea *EditorManagerPrivate::mainEditorArea()
 {
     return d->m_editorAreas.at(0);
 }
-
+EditorArea *EditorManagerPrivate::createEditorArea(Core::Id mode)
+{
+    if (d->m_idOfeditorAreas.contains(mode))
+    {
+        return d->m_idOfeditorAreas[mode];
+    }
+    EditorArea * view = new EditorArea(mode);
+    d->m_idOfeditorAreas.insert(mode, view);
+    //d->m_editorAreas.append(vi)
+    return view;
+}
 bool EditorManagerPrivate::skipOpeningBigTextFile(const QString &filePath)
 {
     if (!d->m_warnBeforeOpeningBigFilesEnabled)

@@ -60,6 +60,7 @@ NavigationWidgetPlaceHolder::NavigationWidgetPlaceHolder(Id mode, QWidget *paren
 {
     setLayout(new QVBoxLayout);
     layout()->setMargin(0);
+
     connect(ModeManager::instance(), &ModeManager::currentModeAboutToChange,
             this, &NavigationWidgetPlaceHolder::currentModeAboutToChange);
 }
@@ -118,7 +119,11 @@ void NavigationWidgetPlaceHolder::currentModeAboutToChange(Id mode)
         m_current = this;
 
         int width = navigationWidget->storedWidth();
-
+        // add by kk
+        //add by kk 这里建立mode与NavigationSubWidget的绑定
+        //NavigationWidget *nw = NavigationWidget::instance();
+        navigationWidget->createSubItem(mode);
+        navigationWidget->activeSubItem(mode);
         layout()->addWidget(navigationWidget);
         navigationWidget->show();
 
@@ -134,6 +139,7 @@ struct NavigationWidgetPrivate
     ~NavigationWidgetPrivate() { delete m_factoryModel; }
 
     QList<Internal::NavigationSubWidget *> m_subWidgets;
+    QHash<Id, Internal::NavigationSubWidget *> m_idOfsubWidgets;
     QHash<QAction *, Id> m_actionMap;
     QHash<Id, Command *> m_commandMap;
     QStandardItemModel *m_factoryModel;
@@ -235,8 +241,40 @@ void NavigationWidget::resizeEvent(QResizeEvent *re)
         d->m_width = re->size().width();
     MiniSplitter::resizeEvent(re);
 }
-
-Internal::NavigationSubWidget *NavigationWidget::insertSubItem(int position,int index)
+Internal::NavigationSubWidget *NavigationWidget::createSubItem(Id mode)
+{
+    if (d->m_idOfsubWidgets.contains(mode))
+    {
+        return d->m_idOfsubWidgets[mode];
+    }
+    Internal::NavigationSubWidget *nsw = new Internal::NavigationSubWidget(this, 0, 0);//这里后期改成id
+    d->m_idOfsubWidgets.insert(mode, nsw);
+    d->m_subWidgets.insert(0, nsw);
+    return nsw;
+}
+bool NavigationWidget::activeSubItem(Id mode)
+{
+    if (!d->m_idOfsubWidgets.contains(mode))
+    {
+        return false;
+    }
+    Internal::NavigationSubWidget *nsw = d->m_idOfsubWidgets[mode];
+    if (!nsw)
+    {
+        return false;
+    }
+    if (qobject_cast<Internal::NavigationSubWidget *>(widget(0)) == nsw)
+    {
+        return true;
+    }
+    foreach(QWidget * w, d->m_subWidgets)
+    {
+        w->hide();
+    }
+    insertWidget(0, nsw);nsw->show();
+    return true;
+}
+Internal::NavigationSubWidget *NavigationWidget::insertSubItem(int position,int index/*,Id id*/)
 {
     for (int pos = position + 1; pos < d->m_subWidgets.size(); ++pos) {
         d->m_subWidgets.at(pos)->setPosition(pos + 1);
@@ -249,8 +287,9 @@ Internal::NavigationSubWidget *NavigationWidget::insertSubItem(int position,int 
     connect(nsw, &Internal::NavigationSubWidget::splitMe,
             this, &NavigationWidget::splitSubWidget);
     connect(nsw, &Internal::NavigationSubWidget::closeMe, this, &NavigationWidget::closeSubWidget);
-    insertWidget(position, nsw);
+    insertWidget(/*position*/0, nsw);
     d->m_subWidgets.insert(position, nsw);
+    //d->m_idOfsubWidgets.insert(id, nsw);
     d->m_subWidgets.at(0)->setCloseIcon(d->m_subWidgets.size() == 1
                                         ? Icons::CLOSE_SPLIT_LEFT.icon()
                                         : Icons::CLOSE_SPLIT_TOP.icon());
@@ -289,7 +328,7 @@ void NavigationWidget::closeSubWidget()
 {
     if (d->m_subWidgets.count() != 1) {
         Internal::NavigationSubWidget *subWidget = qobject_cast<Internal::NavigationSubWidget *>(sender());
-        subWidget->saveSettings();
+        //subWidget->saveSettings();
         d->m_subWidgets.removeOne(subWidget);
         subWidget->hide();
         subWidget->deleteLater();
@@ -318,6 +357,7 @@ void NavigationWidget::saveSettings(QSettings *settings)
 
 void NavigationWidget::restoreSettings(QSettings *settings)
 {
+    return;
     if (!d->m_factoryModel->rowCount()) {
         // We have no widgets to show!
         setShown(false);
@@ -377,7 +417,7 @@ void NavigationWidget::restoreSettings(QSettings *settings)
 void NavigationWidget::closeSubWidgets()
 {
     foreach (Internal::NavigationSubWidget *subWidget, d->m_subWidgets) {
-        subWidget->saveSettings();
+        //subWidget->saveSettings();
         delete subWidget;
     }
     d->m_subWidgets.clear();

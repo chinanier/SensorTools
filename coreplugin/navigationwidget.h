@@ -99,6 +99,10 @@ public:
     QHash<Id, Command *> commandMap() const;
     QAbstractItemModel *factoryModel() const;
 
+    // add by kk 20161019
+    Internal::NavigationSubWidget *createSubItem(Id mode);
+    bool activeSubItem(Id mode);
+
 protected:
     void resizeEvent(QResizeEvent *);
 
@@ -106,7 +110,7 @@ private:
     void splitSubWidget(int factoryIndex);
     void closeSubWidget();
     void updateToggleText();
-    Internal::NavigationSubWidget *insertSubItem(int position, int index);
+    Internal::NavigationSubWidget *insertSubItem(int position, int index/*,Id = Id()*/);
     int factoryIndex(Id id);
 
     NavigationWidgetPrivate *d;

@@ -154,11 +154,12 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
     parseArguments(arguments);
     const bool success = m_mainWindow->init(errorMessage);
     if (success) {
-        m_editMode = new EditMode;
+        /*m_editMode = new EditMode;
         addObject(m_editMode);
         ModeManager::activateMode(m_editMode->id());
         m_designMode = new DesignMode;
-        InfoBar::initializeGloballySuppressed();
+        InfoBar::initializeGloballySuppressed();*/
+        m_designMode = new DesignMode;
     }
 
     IWizardFactory::initialize();
@@ -218,6 +219,11 @@ void CorePlugin::extensionsInitialized()
     Find::extensionsInitialized();
     m_locator->extensionsInitialized();
     m_mainWindow->extensionsInitialized();
+    // add by kk,mode new must mainwindow
+    m_editMode = new EditMode;
+    addObject(m_editMode);
+    ModeManager::activateMode(m_editMode->id());
+    InfoBar::initializeGloballySuppressed();
     if (ExtensionSystem::PluginManager::hasError()) {
         auto errorOverview = new ExtensionSystem::PluginErrorOverview(m_mainWindow);
         errorOverview->setAttribute(Qt::WA_DeleteOnClose);

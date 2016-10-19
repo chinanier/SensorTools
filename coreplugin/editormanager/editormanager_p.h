@@ -72,6 +72,7 @@ public:
     static void extensionsInitialized(); // only use from MainWindow
 
     static EditorArea *mainEditorArea();
+    static EditorArea *createEditorArea(Core::Id mode);// add by kk
     static EditorView *currentEditorView();
     static void setCurrentEditor(IEditor *editor, bool ignoreNavigationHistory = false);
     static IEditor *openEditor(EditorView *view,
@@ -206,6 +207,7 @@ private:
 
     QList<EditLocation> m_globalHistory;
     QList<EditorArea *> m_editorAreas;
+    QHash<Core::Id, EditorArea *> m_idOfeditorAreas;
     QPointer<IEditor> m_currentEditor;
     QPointer<IEditor> m_scheduledCurrentEditor;
     QPointer<EditorView> m_currentView;

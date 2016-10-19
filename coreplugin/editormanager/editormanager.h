@@ -72,11 +72,14 @@ class CORE_EXPORT EditorManagerPlaceHolder : public QWidget
 {
     Q_OBJECT
 public:
-    explicit EditorManagerPlaceHolder(QWidget *parent = 0);
+    explicit EditorManagerPlaceHolder(QWidget *parent = 0, Core::Id mode= Core::Id());
     ~EditorManagerPlaceHolder();
 
 protected:
     void showEvent(QShowEvent *event) override;
+private:
+    Core::Id m_mode;
+    QWidget * m_wind = nullptr;
 };
 
 class CORE_EXPORT EditorManager : public QObject

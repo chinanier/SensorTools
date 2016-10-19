@@ -175,6 +175,7 @@ void RightPaneWidget::saveSettings(QSettings *settings)
 
 void RightPaneWidget::readSettings(QSettings *settings)
 {
+#if 0
     if (settings->contains(QLatin1String("RightPane/Visible")))
         setShown(settings->value(QLatin1String("RightPane/Visible")).toBool());
     else
@@ -188,6 +189,10 @@ void RightPaneWidget::readSettings(QSettings *settings)
         m_width = 500; //pixel
     }
     // Apply
+    if (RightPanePlaceHolder::m_current)
+        RightPanePlaceHolder::m_current->applyStoredSize(m_width);
+#endif
+    m_width = 100;
     if (RightPanePlaceHolder::m_current)
         RightPanePlaceHolder::m_current->applyStoredSize(m_width);
     setWidget(new QLabel(tr("test right panle")));

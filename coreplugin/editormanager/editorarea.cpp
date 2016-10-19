@@ -34,13 +34,16 @@
 #include <coreplugin/icore.h>
 #include <utils/qtcassert.h>
 
+
 #include <QApplication>
+#include <QStackedLayout>
 
 namespace Core {
 namespace Internal {
 
-EditorArea::EditorArea()
-    : m_currentView(0),
+EditorArea::EditorArea(Id mode)
+    : SplitterOrView(mode),
+      m_currentView(0),
       m_currentDocument(0)
 {
     m_context = new IContext;
@@ -66,7 +69,15 @@ EditorArea::~EditorArea()
     ICore::removeContextObject(m_context);
     delete m_context;
 }
-
+QWidget * EditorArea::CreateChild(Id cameraPluginID)
+{
+    QStackedLayout * pLayout = qobject_cast<QStackedLayout*>(layout());
+    if (pLayout)
+    {
+        QWidget * pWid = new SplitterOrView(cameraPluginID);
+        pLayout->addWidget(pWid);
+    }
+}
 IDocument *EditorArea::currentDocument() const
 {
     return m_currentDocument;

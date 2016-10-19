@@ -31,10 +31,12 @@
 #include <coreplugin/coreicons.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
+#include <coreplugin/modemanager.h>
 
 #include <QApplication>
 #include <QMenu>
 #include <QStandardItemModel>
+#include <QMessageBox>
 
 using namespace Core;
 using namespace Core::Internal;
@@ -56,19 +58,31 @@ OpenEditorsWidget::OpenEditorsWidget()
     // 添加表头
     modle->setHorizontalHeaderLabels(QStringList() << QStringLiteral("相机列表")/* << QStringLiteral("链接状态")*/);
     // 添加行和列以及节点
-    QStandardItem * itemProject = new QStandardItem(tr("AD0"));
-    modle->appendRow(itemProject);
-    QStandardItem * itemChild = new QStandardItem("AD0-1");
-    itemProject->appendRow(itemChild);
-    itemProject->setEditable(false);
-    itemChild->setEditable(false);
-    // 添加另一行和列及节点
-    itemProject = new QStandardItem(tr("AB3"));
-    modle->appendRow(itemProject);
-    itemChild = new QStandardItem("AB3-1");
-    itemProject->appendRow(itemChild);
-    itemProject->setEditable(false);
-    itemChild->setEditable(false);
+    QStandardItem * itemProject = 0;
+    if (ModeManager::currentMode() == Core::Id("Edit"))
+    {
+        itemProject = new QStandardItem(tr("AD0"));
+        modle->appendRow(itemProject);
+        itemProject->setEditable(false);
+        itemProject->setData(0,Qt::UserRole+1);
+        // 添加另一行和列及节点
+        itemProject = new QStandardItem(tr("AB3"));
+        modle->appendRow(itemProject);
+        itemProject->setEditable(false);
+        itemProject->setData(0, Qt::UserRole + 1);
+    }
+    else
+    {
+        itemProject = new QStandardItem(tr("vendor1"));
+        modle->appendRow(itemProject);
+        itemProject->setEditable(false);
+        itemProject->setData(0, Qt::UserRole + 1);
+        // 添加另一行和列及节点
+        itemProject = new QStandardItem(tr("vendor12"));
+        modle->appendRow(itemProject);
+        itemProject->setEditable(false);
+        itemProject->setData(0, Qt::UserRole + 1);
+    }
     setModel(/*m_model*/modle);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -79,9 +93,9 @@ OpenEditorsWidget::OpenEditorsWidget()
             this, &OpenEditorsWidget::handleActivated);
     connect(this, &OpenDocumentsTreeView::closeActivated,
             this, &OpenEditorsWidget::closeDocument);
-
-    connect(this, &OpenDocumentsTreeView::customContextMenuRequested,
-            this, &OpenEditorsWidget::contextMenuRequested);*/
+    */
+    connect(this, &QTreeView::customContextMenuRequested,
+            this, &OpenEditorsWidget::contextMenuRequested);
 }
 
 OpenEditorsWidget::~OpenEditorsWidget()
@@ -131,17 +145,56 @@ void OpenEditorsWidget::closeDocument(const QModelIndex &index)
     // work around selection changes
     updateCurrentItem(EditorManager::currentEditor());
 }
-
+// 右键菜单
 void OpenEditorsWidget::contextMenuRequested(QPoint pos)
 {
     QMenu contextMenu;
     QModelIndex editorIndex = indexAt(pos);
-    DocumentModel::Entry *entry = DocumentModel::entryAtRow(
-                m_model->mapToSource(editorIndex).row());
-    EditorManager::addSaveAndCloseEditorActions(&contextMenu, entry);
-    contextMenu.addSeparator();
-    EditorManager::addNativeDirAndOpenWithActions(&contextMenu, entry);
-    contextMenu.exec(mapToGlobal(pos));
+    //DocumentModel::Entry *entry = DocumentModel::entryAtRow(
+    //            m_model->mapToSource(editorIndex).row());
+    //EditorManager::addSaveAndCloseEditorActions(&contextMenu, entry);
+    //contextMenu.addSeparator();
+    //EditorManager::addNativeDirAndOpenWithActions(&contextMenu, entry);
+    if (!editorIndex.isValid())
+    {
+        return;
+    }
+    if (editorIndex.data(Qt::UserRole+1) == 0)
+    {
+        contextMenu.addAction("Serach", this, [this, editorIndex]() {
+            QMessageBox::information(
+                0, tr("Serach!"), tr("Serach a more Camera Success!"));
+            QVariant vale = editorIndex.data();
+            //if (vale == QString(tr("AD0")))
+            {
+                QStandardItem * itemChild = 0;
+                QStandardItem * itemParent = 0;
+                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
+                itemParent = modle->itemFromIndex(editorIndex);
+                if (itemParent)
+                {
+                    itemChild = new QStandardItem(vale.toString()+"-0");
+                    itemChild->setEditable(false);
+                    itemChild->setData(1, Qt::UserRole + 1);
+                    itemParent->appendRow(itemChild);
+
+                    itemChild = new QStandardItem(vale.toString() + "-1");
+                    itemChild->setEditable(false);
+                    itemChild->setData(1, Qt::UserRole + 1);
+                    itemParent->appendRow(itemChild);
+                }
+                /*editorIndex.model()*/
+            }
+        });
+    }
+    else
+    {
+        contextMenu.addAction("Connect", this, [this]() {
+            QMessageBox::information(
+                0, tr("Connect!"), tr("Connect Camera!"));
+        });
+    }
+    contextMenu.exec(/*mapToGlobal(pos)*/QCursor::pos());
 }
 
 ///

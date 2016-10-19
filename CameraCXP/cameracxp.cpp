@@ -29,7 +29,7 @@ namespace Internal {
 QWidget *createModeWindow(const Core::Id &mode)
 {
     auto documentAndRightPane = new MiniSplitter;
-    documentAndRightPane->addWidget(new EditorManagerPlaceHolder(documentAndRightPane));
+    documentAndRightPane->addWidget(new EditorManagerPlaceHolder(documentAndRightPane,mode));
     documentAndRightPane->addWidget(new RightPanePlaceHolder(mode));
     documentAndRightPane->setStretchFactor(0, 1);
     documentAndRightPane->setStretchFactor(1, 0);
@@ -69,7 +69,7 @@ public:
     HelloMode()
     {
         /*setWidget(new QPushButton(tr("CameraCXP PushButton!")));*/
-        setWidget(createModeWindow("CameraCXP.CameraCXPMode"));
+        setWidget(m_wid = createModeWindow("CameraCXP.CameraCXPMode"));
         setContext(Core::Context("CameraCXP.MainView"));
         setDisplayName(tr("CoaxPress"));
         //setIcon(QIcon());
@@ -78,6 +78,15 @@ public:
         setContextHelpId(QString());
         //setDisplayName(tr("CameraCXP"));
     }
+    ~HelloMode()
+    {
+        if (m_wid)
+        {
+            delete m_wid;
+        }
+    }
+private:
+    QWidget * m_wid = nullptr;
 };
 
 
@@ -140,7 +149,6 @@ bool CameraCXPPlugin::initialize(const QStringList &arguments, QString *errorMes
     // it will unregister itself from the plugin manager when it is deleted.
     Core::IMode *helloMode = new HelloMode;
     addAutoReleasedObject(helloMode);
-
     return true;
 }
 

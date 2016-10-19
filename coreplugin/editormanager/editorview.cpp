@@ -39,6 +39,7 @@
 #include <coreplugin/minisplitter.h>
 #include <coreplugin/editormanager/ieditor.h>
 #include <coreplugin/findplaceholder.h>
+#include <coreplugin/modemanager.h>
 #include <utils/qtcassert.h>
 #include <utils/theme/theme.h>
 
@@ -61,7 +62,7 @@ using namespace Utils;
 
 // ================EditorView====================
 
-EditorView::EditorView(SplitterOrView *parentSplitterOrView, QWidget *parent) :
+EditorView::EditorView(SplitterOrView *parentSplitterOrView, QWidget *parent, Id mode) :
     QWidget(parent),
     m_parentSplitterOrView(parentSplitterOrView),
     m_toolBar(new EditorToolBar(this)),
@@ -128,10 +129,10 @@ EditorView::EditorView(SplitterOrView *parentSplitterOrView, QWidget *parent) :
     empty->hide();
     auto emptyLayout = new QGridLayout(empty);
     empty->setLayout(emptyLayout);
-    m_emptyViewLabel = new QLabel;
-    connect(EditorManagerPrivate::instance(), &EditorManagerPrivate::placeholderTextChanged,
-            m_emptyViewLabel, &QLabel::setText);
-    m_emptyViewLabel->setText(EditorManagerPrivate::placeholderText());
+    m_emptyViewLabel = new QLabel(mode.toString());
+    /*connect(EditorManagerPrivate::instance(), &EditorManagerPrivate::placeholderTextChanged,
+            m_emptyViewLabel, &QLabel::setText);*/
+    //m_emptyViewLabel->setText(EditorManagerPrivate::placeholderText());
     emptyLayout->addWidget(m_emptyViewLabel);
     m_container->addWidget(empty);
     m_widgetEditorMap.insert(empty, 0);
@@ -613,7 +614,14 @@ void EditorView::goForwardInNavigationHistory()
     updateNavigatorActions();
 }
 
-
+SplitterOrView::SplitterOrView(Id mode)
+{
+    m_layout = new QStackedLayout(this);
+    m_layout->setSizeConstraint(QLayout::SetNoConstraint);
+    m_view = new EditorView(this,0,mode);
+    m_splitter = 0;
+    m_layout->addWidget(m_view);
+}
 SplitterOrView::SplitterOrView(IEditor *editor)
 {
     m_layout = new QStackedLayout(this);

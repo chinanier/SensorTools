@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include <coreplugin/id.h>
 #include "editorview.h"
 
 #include <QPointer>
@@ -40,13 +41,16 @@ class EditorArea : public SplitterOrView
     Q_OBJECT
 
 public:
-    EditorArea();
+    EditorArea(Id mode = Id());
     ~EditorArea();
 
     IDocument *currentDocument() const;
 
 signals:
     void windowTitleNeedsUpdate();
+
+public:
+    QWidget * CreateChild(Id cameraPluginID);
 
 private:
     void focusChanged(QWidget *old, QWidget *now);

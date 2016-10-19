@@ -74,7 +74,7 @@ class EditorView : public QWidget
     Q_OBJECT
 
 public:
-    explicit EditorView(SplitterOrView *parentSplitterOrView, QWidget *parent = 0);
+    explicit EditorView(SplitterOrView *parentSplitterOrView, QWidget *parent = 0,Id mode = Id());
     virtual ~EditorView();
 
     SplitterOrView *parentSplitterOrView() const;
@@ -169,6 +169,7 @@ class SplitterOrView  : public QWidget
 {
     Q_OBJECT
 public:
+    explicit SplitterOrView(Id mode);
     explicit SplitterOrView(IEditor *editor = 0);
     explicit SplitterOrView(EditorView *view);
     ~SplitterOrView();
