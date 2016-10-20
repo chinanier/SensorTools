@@ -55,6 +55,7 @@
 #include <QToolButton>
 #include <QSplitter>
 #include <QStackedLayout>
+#include <QMdiArea>
 
 using namespace Core;
 using namespace Core::Internal;
@@ -620,7 +621,10 @@ SplitterOrView::SplitterOrView(Id mode)
     m_layout->setSizeConstraint(QLayout::SetNoConstraint);
     m_view = new EditorView(this,0,mode);
     m_splitter = 0;
-    m_layout->addWidget(m_view);
+    QMdiArea * mdiArea = new QMdiArea;
+    mdiArea->addSubWindow(m_view);
+    m_layout->addWidget(mdiArea);
+    //m_layout->addWidget(m_view);
 }
 SplitterOrView::SplitterOrView(IEditor *editor)
 {

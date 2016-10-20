@@ -2482,7 +2482,26 @@ IDocument::ReloadSetting EditorManager::reloadSetting()
 {
     return d->m_reloadSetting;
 }
-
+QWidget * EditorManager::createSubEditorView(Id cameraId)
+{
+    Id mode = ModeManager::currentMode();
+    EditorArea * editArea = EditorManagerPrivate::createEditorArea(mode);
+    if (editArea)
+    {
+        return editArea->CreateChild(cameraId);
+    }
+    return 0;
+}
+QWidget * EditorManager::activeSubEditorView(Id cameraId)
+{
+    Id mode = ModeManager::currentMode();
+    EditorArea * editArea = EditorManagerPrivate::createEditorArea(mode);
+    if (editArea)
+    {
+        return editArea->ActiveChild(cameraId);
+    }
+    return 0;
+}
 void EditorManager::setReloadSetting(IDocument::ReloadSetting behavior)
 {
      d->m_reloadSetting = behavior;

@@ -51,6 +51,7 @@ signals:
 
 public:
     QWidget * CreateChild(Id cameraPluginID);
+    QWidget * ActiveChild(Id cameraPluginID);
 
 private:
     void focusChanged(QWidget *old, QWidget *now);
@@ -61,6 +62,9 @@ private:
     IContext *m_context;
     QPointer<EditorView> m_currentView;
     QPointer<IDocument> m_currentDocument;
+
+    //add by kk
+    QHash<Id, QWidget*> m_idOfWidget;
 };
 
 } // Internal

@@ -71,12 +71,32 @@ EditorArea::~EditorArea()
 }
 QWidget * EditorArea::CreateChild(Id cameraPluginID)
 {
+    if (m_idOfWidget.contains(cameraPluginID))
+    {
+        return m_idOfWidget[cameraPluginID];
+    }
     QStackedLayout * pLayout = qobject_cast<QStackedLayout*>(layout());
     if (pLayout)
     {
         QWidget * pWid = new SplitterOrView(cameraPluginID);
         pLayout->addWidget(pWid);
+        m_idOfWidget.insert(cameraPluginID, pWid);
     }
+}
+QWidget * EditorArea::ActiveChild(Id cameraPluginID)
+{
+    if (m_idOfWidget.contains(cameraPluginID))
+    {
+        QWidget * wid = m_idOfWidget[cameraPluginID];
+        QStackedLayout * pLayout = qobject_cast<QStackedLayout*>(layout());
+        int idx = pLayout->indexOf(wid);
+        if (idx>=0)
+        {
+            pLayout->setCurrentWidget(wid);
+        }
+        return wid;
+    }
+    return 0;
 }
 IDocument *EditorArea::currentDocument() const
 {

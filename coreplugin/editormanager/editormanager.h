@@ -177,6 +177,9 @@ public:
 public: // for tests
     static IDocument::ReloadSetting reloadSetting();
     static void setReloadSetting(IDocument::ReloadSetting behavior);
+    // add by kk
+    static QWidget * createSubEditorView(Id cameraId);
+    static QWidget * activeSubEditorView(Id cameraId);
 
 signals:
     void currentEditorChanged(Core::IEditor *editor);

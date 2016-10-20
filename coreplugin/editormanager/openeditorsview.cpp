@@ -96,6 +96,21 @@ OpenEditorsWidget::OpenEditorsWidget()
     */
     connect(this, &QTreeView::customContextMenuRequested,
             this, &OpenEditorsWidget::contextMenuRequested);
+    connect(this, &QTreeView::activated, this, [this](QModelIndex index) {
+        if (index.isValid())
+        {
+            QVariant i_mode = index.data(Qt::UserRole + 1);
+            if (i_mode == 0)
+            {
+                // 选择本列的第一个显示
+            }
+            else if(i_mode==1)
+            {
+                QVariant ls_name = index.data();
+                EditorManager::activeSubEditorView(ls_name.toString().toStdString().c_str());
+            }
+        }
+    });
 }
 
 OpenEditorsWidget::~OpenEditorsWidget()
@@ -173,15 +188,21 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                 itemParent = modle->itemFromIndex(editorIndex);
                 if (itemParent)
                 {
-                    itemChild = new QStandardItem(vale.toString()+"-0");
+                    QString listName = vale.toString() + "-0";
+                    itemChild = new QStandardItem(listName);
                     itemChild->setEditable(false);
                     itemChild->setData(1, Qt::UserRole + 1);
+                    itemChild->setData(0, Qt::UserRole + 2);
                     itemParent->appendRow(itemChild);
+                    EditorManager::createSubEditorView(listName.toStdString().c_str());
 
-                    itemChild = new QStandardItem(vale.toString() + "-1");
+                    listName = vale.toString() + "-1";
+                    itemChild = new QStandardItem(listName);
                     itemChild->setEditable(false);
                     itemChild->setData(1, Qt::UserRole + 1);
+                    itemChild->setData(0, Qt::UserRole + 2);
                     itemParent->appendRow(itemChild);
+                    EditorManager::createSubEditorView(listName.toStdString().c_str());
                 }
                 /*editorIndex.model()*/
             }
@@ -189,10 +210,31 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
     }
     else
     {
-        contextMenu.addAction("Connect", this, [this]() {
-            QMessageBox::information(
-                0, tr("Connect!"), tr("Connect Camera!"));
-        });
+        if (editorIndex.data(Qt::UserRole + 2) == 0)
+        {
+            contextMenu.addAction("Connect", this, [this, editorIndex]() {
+                QMessageBox::information(
+                    0, tr("Connect!"), tr("Connect Camera Success!"));
+                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
+                QStandardItem * item = modle->itemFromIndex(editorIndex);
+                item->setData(1, Qt::UserRole + 2);
+                // 通知editManager创建窗口
+            });
+        }
+        else
+        {
+            contextMenu.addAction("disConnect", this, [this, editorIndex]() {
+                QMessageBox::information(
+                    0, tr("Connect!"), tr("disConnect Camera Success!"));
+                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
+                QStandardItem * item = modle->itemFromIndex(editorIndex);
+                item->setData(0, Qt::UserRole + 2);
+                // 通知editManager销毁窗口
+            });
+            contextMenu.addAction("Channel Balance", this, [this]() {
+                
+            });
+        }
     }
     contextMenu.exec(/*mapToGlobal(pos)*/QCursor::pos());
 }
