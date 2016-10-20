@@ -98,6 +98,10 @@ QWidget * EditorArea::ActiveChild(Id cameraPluginID)
     }
     return 0;
 }
+SplitterOrView * EditorArea::getChildOfCameraID(Id cameraPluginID)
+{
+    return qobject_cast<SplitterOrView*> (m_idOfWidget[cameraPluginID]);
+}
 IDocument *EditorArea::currentDocument() const
 {
     return m_currentDocument;

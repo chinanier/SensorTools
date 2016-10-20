@@ -52,6 +52,7 @@ signals:
 public:
     QWidget * CreateChild(Id cameraPluginID);
     QWidget * ActiveChild(Id cameraPluginID);
+    SplitterOrView * getChildOfCameraID(Id cameraPluginID);
 
 private:
     void focusChanged(QWidget *old, QWidget *now);

@@ -624,6 +624,7 @@ SplitterOrView::SplitterOrView(Id mode)
     QMdiArea * mdiArea = new QMdiArea;
     mdiArea->addSubWindow(m_view);
     m_layout->addWidget(mdiArea);
+    m_mdiArea = mdiArea;
     //m_layout->addWidget(m_view);
 }
 SplitterOrView::SplitterOrView(IEditor *editor)

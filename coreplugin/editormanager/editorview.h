@@ -48,6 +48,7 @@ class QSplitter;
 class QStackedLayout;
 class QStackedWidget;
 class QToolButton;
+class QMdiArea;
 QT_END_NAMESPACE
 
 namespace Core {
@@ -209,6 +210,7 @@ private:
     QStackedLayout *m_layout;
     EditorView *m_view;
     QSplitter *m_splitter;
+    QMdiArea  *m_mdiArea;
 };
 
 }
