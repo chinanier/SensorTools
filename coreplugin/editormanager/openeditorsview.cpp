@@ -231,8 +231,9 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                 item->setData(0, Qt::UserRole + 2);
                 // 通知editManager销毁窗口
             });
-            contextMenu.addAction("Channel Balance", this, [this]() {
-                
+            contextMenu.addAction("Channel Balance", this, [this, editorIndex]() {
+                QVariant cams = editorIndex.data();
+                EditorManager::createProcessEditorView(cams.toString().toStdString().c_str(),"Channel Balance");
             });
         }
     }

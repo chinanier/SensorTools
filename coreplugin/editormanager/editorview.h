@@ -202,6 +202,9 @@ public:
 
     void unsplitAll();
 
+public:
+    EditorView * createSubEditorView(Id idOfProcess);
+
 signals:
     void splitStateChanged();
 

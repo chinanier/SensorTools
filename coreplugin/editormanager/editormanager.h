@@ -180,6 +180,7 @@ public: // for tests
     // add by kk
     static QWidget * createSubEditorView(Id cameraId);
     static QWidget * activeSubEditorView(Id cameraId);
+    static QWidget * createProcessEditorView(Id cameraId,Id processID);
 
 signals:
     void currentEditorChanged(Core::IEditor *editor);

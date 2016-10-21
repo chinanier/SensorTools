@@ -55,6 +55,7 @@ public:
     QWidget * CreateChild(Id cameraPluginID);
     QWidget * ActiveChild(Id cameraPluginID);
     SplitterOrView * getChildOfCameraID(Id cameraPluginID);
+    EditorView * createProcessView(Id cameraPluginID,Id procId);
 
 private:
     void focusChanged(QWidget *old, QWidget *now);

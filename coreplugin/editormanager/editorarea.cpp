@@ -102,6 +102,15 @@ SplitterOrView * EditorArea::getChildOfCameraID(Id cameraPluginID)
 {
     return qobject_cast<SplitterOrView*> (m_idOfWidget[cameraPluginID]);
 }
+EditorView * EditorArea::createProcessView(Id cameraPluginID, Id procId)
+{
+    SplitterOrView * pv = getChildOfCameraID(cameraPluginID);
+    if (pv)
+    {
+        return pv->createSubEditorView(procId);
+    }
+    return 0;
+}
 IDocument *EditorArea::currentDocument() const
 {
     return m_currentDocument;

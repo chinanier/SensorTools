@@ -623,6 +623,7 @@ SplitterOrView::SplitterOrView(Id mode)
     m_splitter = 0;
     QMdiArea * mdiArea = new QMdiArea;
     mdiArea->addSubWindow(m_view);
+    mdiArea->addSubWindow(new EditorView(this, 0, "123"));
     m_layout->addWidget(mdiArea);
     m_mdiArea = mdiArea;
     //m_layout->addWidget(m_view);
@@ -660,7 +661,13 @@ SplitterOrView::~SplitterOrView()
     delete m_splitter;
     m_splitter = 0;
 }
-
+// 这里的id可以重复,因为对同一个图像处理在一个链路上可能存在多个
+EditorView * SplitterOrView::createSubEditorView(Id idOfProcess)
+{
+    EditorView * pWid = new EditorView(this, 0, idOfProcess);
+    m_mdiArea->addSubWindow(pWid);
+    return pWid;
+}
 EditorView *SplitterOrView::findFirstView()
 {
     if (m_splitter) {
