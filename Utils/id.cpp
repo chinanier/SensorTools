@@ -36,7 +36,7 @@
 
 #include <string.h>
 
-namespace Core {
+namespace Utils {
 
 /*!
     \class Core::Id
@@ -314,7 +314,7 @@ bool Id::operator==(const char *name) const
 }
 
 // For debugging purposes
-CORE_EXPORT const char *nameForId(quintptr id)
+QTCREATOR_UTILS_EXPORT const char *nameForId(quintptr id)
 {
     return stringFromId.value(id).str;
 }
@@ -344,20 +344,20 @@ QString Id::suffixAfter(Id baseId) const
 
 QT_BEGIN_NAMESPACE
 
-QDataStream &operator<<(QDataStream &ds, Core::Id id)
+QDataStream &operator<<(QDataStream &ds, Utils::Id id)
 {
     return ds << id.name();
 }
 
-QDataStream &operator>>(QDataStream &ds, Core::Id &id)
+QDataStream &operator>>(QDataStream &ds, Utils::Id &id)
 {
     QByteArray ba;
     ds >> ba;
-    id = Core::Id::fromName(ba);
+    id = Utils::Id::fromName(ba);
     return ds;
 }
 
-QDebug operator<<(QDebug dbg, const Core::Id &id)
+QDebug operator<<(QDebug dbg, const Utils::Id &id)
 {
     return dbg << id.name();
 }

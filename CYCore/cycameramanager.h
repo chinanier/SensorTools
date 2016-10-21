@@ -2,7 +2,7 @@
 #define CYCAMERAMANAGER_H
 
 #include <QObject>
-#include "coreplugin/id.h"
+#include "Utils/id.h"
 #include "cycore_global.h"
 namespace CYCore{
 class CYCamera;
@@ -20,10 +20,10 @@ public:
 
     static CYCameraManager *instance();
 
-    static bool SerachCamera(Core::Id id = Core::Id());
+    static bool SerachCamera(Utils::Id id = Utils::Id());
 
-    static bool connectCamera(Core::Id id = Core::Id(), int chl = 0);
-    static bool disconnectCamera(Core::Id id = Core::Id(), int chl = 0);
+    static bool connectCamera(Utils::Id id = Utils::Id(), int chl = 0);
+    static bool disconnectCamera(Utils::Id id = Utils::Id(), int chl = 0);
 
     static bool startCapture();
     static bool stopCapture();
@@ -31,7 +31,7 @@ public:
     static bool sendCommand();
     static bool readCommand();
 
-    static CYCamera * createCamera(Core::Id id = Core::Id());
+    static CYCamera * createCamera(Utils::Id id = Utils::Id());
     static CYCamera * currentCamera();
     static void activateCamera(CYCamera *pCamera);
 private:

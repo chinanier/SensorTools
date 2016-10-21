@@ -28,10 +28,11 @@
 #include <coreplugin/core_global.h>
 
 #include <QObject>
-
+namespace Utils {
+    class Id;
+}
+using namespace Utils;
 namespace Core {
-
-class Id;
 
 class CORE_EXPORT IExternalEditor : public QObject
 {

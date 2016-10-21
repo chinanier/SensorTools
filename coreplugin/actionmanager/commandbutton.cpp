@@ -26,10 +26,11 @@
 #include "commandbutton.h"
 #include "actionmanager.h"
 #include "command.h"
-#include "../id.h"
+#include "Utils/id.h"
 
 #include <utils/proxyaction.h>
 
+using namespace Utils;
 using namespace Core;
 
 /*!

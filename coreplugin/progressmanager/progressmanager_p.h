@@ -60,7 +60,7 @@ public:
     ProgressView *progressView();
 
 public slots:
-    void doCancelTasks(Core::Id type);
+    void doCancelTasks(Id type);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

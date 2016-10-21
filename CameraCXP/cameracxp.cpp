@@ -26,7 +26,7 @@ namespace CameraCXP {
 namespace Internal {
 
 /*!  A mode with a push button based on BaseMode.  */
-QWidget *createModeWindow(const Core::Id &mode)
+QWidget *createModeWindow(const Id &mode)
 {
     auto documentAndRightPane = new MiniSplitter;
     documentAndRightPane->addWidget(new EditorManagerPlaceHolder(documentAndRightPane,mode));

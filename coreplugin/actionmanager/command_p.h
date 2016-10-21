@@ -27,7 +27,7 @@
 
 #include "command.h"
 
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 #include <coreplugin/icontext.h>
 
 #include <utils/proxyaction.h>
@@ -38,6 +38,7 @@
 #include <QMap>
 #include <QKeySequence>
 
+using namespace Utils;
 namespace Core {
 namespace Internal {
 

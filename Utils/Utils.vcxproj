@@ -452,6 +452,7 @@
     <ClCompile Include="hostosinfo.cpp" />
     <ClCompile Include="htmldocextractor.cpp" />
     <ClCompile Include="icon.cpp" />
+    <ClCompile Include="id.cpp" />
     <ClCompile Include="itemviews.cpp" />
     <ClCompile Include="json.cpp" />
     <ClCompile Include="linecolumnlabel.cpp" />
@@ -544,6 +545,7 @@
     <ClInclude Include="hostosinfo.h" />
     <ClInclude Include="htmldocextractor.h" />
     <ClInclude Include="icon.h" />
+    <ClInclude Include="id.h" />
     <ClInclude Include="json.h" />
     <ClInclude Include="listutils.h" />
     <ClInclude Include="macroexpander.h" />

@@ -25,7 +25,8 @@
 
 #pragma once
 
-#include "id.h"
+#include "coreplugin/core_global.h"
+#include "Utils/id.h"
 
 #include <QObject>
 #include <QList>
@@ -36,6 +37,7 @@ class QToolButton;
 class QWidget;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 struct NavigationView

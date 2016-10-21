@@ -25,8 +25,8 @@
 
 #pragma once
 
-#include "../core_global.h"
-#include "../id.h"
+#include "coreplugin/core_global.h"
+#include "Utils/id.h"
 
 #include <utils/fileutils.h>
 
@@ -34,7 +34,7 @@ QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QIcon;
 QT_END_NAMESPACE
-
+using namespace Utils;
 namespace Core {
 
 class IEditor;

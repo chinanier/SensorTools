@@ -25,7 +25,8 @@
 
 #pragma once
 
-#include <coreplugin/id.h>
+#include "coreplugin/core_global.h"
+#include <Utils/id.h>
 
 #include <QObject>
 #include <QPair>
@@ -37,8 +38,12 @@ class QMainWindow;
 class QMenu;
 QT_END_NAMESPACE
 
-namespace Utils { class FileName; }
 
+namespace Utils { 
+    class FileName; 
+    class Id; 
+}
+using namespace Utils;
 namespace Core {
 
 class IContext;
@@ -74,7 +79,7 @@ public:
     static void unexpectFileChange(const QString &fileName);
 
     // recent files
-    static void addToRecentFiles(const QString &fileName, Id editorId = Id());
+    static void addToRecentFiles(const QString &fileName, Utils::Id editorId = Utils::Id());
     Q_SLOT void clearRecentFiles();
     static QList<RecentFile> recentFiles();
 

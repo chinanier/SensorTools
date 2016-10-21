@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include "core_global.h"
+#include "utils_global.h"
 
 #include <QMetaType>
 #include <QString>
@@ -35,9 +35,9 @@ class QDataStream;
 class QVariant;
 QT_END_NAMESPACE
 
-namespace Core {
+namespace Utils {
 
-class CORE_EXPORT Id
+class QTCREATOR_UTILS_EXPORT Id
 {
 public:
     Id() : m_id(0) {}
@@ -83,11 +83,11 @@ inline uint qHash(Id id) { return static_cast<uint>(id.uniqueIdentifier()); }
 
 } // namespace Core
 
-Q_DECLARE_METATYPE(Core::Id)
-Q_DECLARE_METATYPE(QList<Core::Id>)
+Q_DECLARE_METATYPE(Utils::Id)
+Q_DECLARE_METATYPE(QList<Utils::Id>)
 
 QT_BEGIN_NAMESPACE
-QDataStream &operator<<(QDataStream &ds, Core::Id id);
-QDataStream &operator>>(QDataStream &ds, Core::Id &id);
-CORE_EXPORT QDebug operator<<(QDebug dbg, const Core::Id &id);
+QTCREATOR_UTILS_EXPORT QDataStream &operator<<(QDataStream &ds, Utils::Id id);
+QTCREATOR_UTILS_EXPORT QDataStream &operator>>(QDataStream &ds, Utils::Id &id);
+QTCREATOR_UTILS_EXPORT QDebug operator<<(QDebug dbg, const Utils::Id &id);
 QT_END_NAMESPACE

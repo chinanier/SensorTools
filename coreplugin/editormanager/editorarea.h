@@ -25,11 +25,13 @@
 
 #pragma once
 
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 #include "editorview.h"
 
 #include <QPointer>
 
+
+using namespace Utils;
 namespace Core {
 
 class IContext;

@@ -27,7 +27,7 @@
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/documentmanager.h>
 #include <coreplugin/icore.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
 #include <coreplugin/actionmanager/command_p.h>
@@ -50,6 +50,7 @@
 
 Q_DECLARE_METATYPE(Core::Internal::ShortcutItem*)
 
+using namespace Utils;
 static int translateModifiers(Qt::KeyboardModifiers state,
                                          const QString &text)
 {

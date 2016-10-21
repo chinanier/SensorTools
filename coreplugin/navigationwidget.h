@@ -26,7 +26,7 @@
 #pragma once
 
 #include <coreplugin/minisplitter.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QHash>
 
@@ -36,6 +36,7 @@ class QAbstractItemModel;
 class QStandardItemModel;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 class INavigationWidgetFactory;
 class Command;

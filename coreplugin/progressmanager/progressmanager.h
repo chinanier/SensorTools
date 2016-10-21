@@ -26,7 +26,7 @@
 #pragma once
 
 #include <coreplugin/core_global.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QFuture>
 #include <QFutureInterfaceBase>
@@ -34,6 +34,7 @@
 
 QT_FORWARD_DECLARE_CLASS(QTimer)
 
+using namespace Utils;
 namespace Core {
 class FutureProgress;
 
@@ -61,8 +62,8 @@ public slots:
     static void cancelTasks(Id type);
 
 signals:
-    void taskStarted(Core::Id type);
-    void allTasksFinished(Core::Id type);
+    void taskStarted(Id type);
+    void allTasksFinished(Id type);
 
 private:
     ProgressManager();

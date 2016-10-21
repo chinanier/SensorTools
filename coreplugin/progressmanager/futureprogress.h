@@ -30,9 +30,12 @@
 #include <QString>
 #include <QFuture>
 #include <QWidget>
-
+namespace Utils
+{
+    class Id;
+}
+using namespace Utils;
 namespace Core {
-class Id;
 class FutureProgressPrivate;
 
 class CORE_EXPORT FutureProgress : public QWidget

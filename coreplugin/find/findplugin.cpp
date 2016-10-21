@@ -38,7 +38,7 @@
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 #include <coreplugin/coreplugin.h>
 
 #include <extensionsystem/pluginmanager.h>
@@ -68,6 +68,7 @@ namespace {
     const int MAX_COMPLETIONS = 50;
 }
 
+using namespace Utils;
 namespace Core {
 
 class FindPrivate : public QObject

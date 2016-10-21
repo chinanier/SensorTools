@@ -125,7 +125,7 @@ using namespace Utils;
 
 //===================EditorManager=====================
 
-EditorManagerPlaceHolder::EditorManagerPlaceHolder(QWidget *parent,Core::Id mode)
+EditorManagerPlaceHolder::EditorManagerPlaceHolder(QWidget *parent,Id mode)
     : QWidget(parent),m_mode(mode)
 {
     setLayout(new QVBoxLayout);
@@ -505,7 +505,7 @@ EditorArea *EditorManagerPrivate::mainEditorArea()
 {
     return d->m_editorAreas.at(0);
 }
-EditorArea *EditorManagerPrivate::createEditorArea(Core::Id mode)
+EditorArea *EditorManagerPrivate::createEditorArea(Id mode)
 {
     if (d->m_idOfeditorAreas.contains(mode))
     {
@@ -718,7 +718,7 @@ IEditor *EditorManagerPrivate::openEditorAt(EditorView *view, const QString &fil
     return editor;
 }
 
-IEditor *EditorManagerPrivate::openEditorWith(const QString &fileName, Core::Id editorId)
+IEditor *EditorManagerPrivate::openEditorWith(const QString &fileName, Id editorId)
 {
     // close any open editors that have this file open
     // remember the views to open new editors in there
@@ -2452,7 +2452,7 @@ void EditorManager::populateOpenWithMenu(QMenu *menu, const QString &fileName)
         if (anyMatches) {
             // Add all suitable editors
             foreach (IEditorFactory *editorFactory, factories) {
-                Core::Id editorId = editorFactory->id();
+                Id editorId = editorFactory->id();
                 // Add action to open with this very editor factory
                 QString const actionTitle = editorFactory->displayName();
                 QAction *action = menu->addAction(actionTitle);
@@ -2468,7 +2468,7 @@ void EditorManager::populateOpenWithMenu(QMenu *menu, const QString &fileName)
             // Add all suitable external editors
             foreach (IExternalEditor *externalEditor, extEditors) {
                 QAction *action = menu->addAction(externalEditor->displayName());
-                Core::Id editorId = externalEditor->id();
+                Id editorId = externalEditor->id();
                 connect(action, &QAction::triggered, [fileName, editorId]() {
                     EditorManager::openExternalEditor(fileName, editorId);
                 });

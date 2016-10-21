@@ -35,7 +35,7 @@
 #include <QUrl>
 
 using namespace Core;
-using namespace Internal;
+using namespace Core::Internal;
 
 static Utils::Internal::MimeMagicRule::Type typeValue(int i)
 {

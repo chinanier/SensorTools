@@ -38,6 +38,7 @@
 #include <coreplugin/editormanager/ieditorfactory.h>
 #include <coreplugin/editormanager/iexternaleditor.h>
 
+#include <Utils/id.h>
 #include <utils/fileutils.h>
 #include <utils/hostosinfo.h>
 #include <utils/mimetypes/mimedatabase.h>
@@ -1159,7 +1160,7 @@ void DocumentManager::checkForReload()
     \a editorId defaults to the empty id, which lets \QC figure out
     the best editor itself.
 */
-void DocumentManager::addToRecentFiles(const QString &fileName, Id editorId)
+void DocumentManager::addToRecentFiles(const QString &fileName, Utils::Id editorId)
 {
     if (fileName.isEmpty())
         return;
@@ -1230,7 +1231,7 @@ void readSettings()
             editorId = ids.next();
         if (QFileInfo(fileName).isFile())
             d->m_recentFiles.append(DocumentManager::RecentFile(QDir::fromNativeSeparators(fileName), // from native to guard against old settings
-                                               Id::fromString(editorId)));
+                Id::fromString(editorId)));
     }
 
     s->beginGroup(QLatin1String(directoryGroupC));

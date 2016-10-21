@@ -30,11 +30,13 @@
 #include <QPointer>
 #include <QString>
 #include <QToolButton>
-
+namespace Utils {
+    class Id;
+}
+using namespace Utils;
 namespace Core {
 
 class Command;
-class Id;
 
 class CORE_EXPORT CommandButton : public QToolButton
 {

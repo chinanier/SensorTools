@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QMap>
 #include <QToolButton>
@@ -40,6 +40,7 @@ class QTimeLine;
 class QLabel;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 class IOutputPane;

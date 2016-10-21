@@ -28,7 +28,7 @@
 #include "ui_findwidget.h"
 #include "currentdocumentfind.h"
 
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 #include <utils/styledbar.h>
 
 #include <QTimer>
@@ -37,6 +37,7 @@ QT_BEGIN_NAMESPACE
 class QCheckBox;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 class FindToolBarPlaceHolder;

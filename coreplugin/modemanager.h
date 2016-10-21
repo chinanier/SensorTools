@@ -25,13 +25,15 @@
 
 #pragma once
 
-#include <coreplugin/id.h>
+#include <coreplugin/core_global.h>
+#include <Utils/id.h>
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
 class QAction;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 namespace Internal {
@@ -59,10 +61,10 @@ public slots:
     static void setModeSelectorVisible(bool visible);
 
 signals:
-    void currentModeAboutToChange(Core::Id mode);
+    void currentModeAboutToChange(Id mode);
 
     // the default argument '=0' is important for connects without the oldMode argument.
-    void currentModeChanged(Core::Id mode, Core::Id oldMode = Core::Id());
+    void currentModeChanged(Id mode, Id oldMode = Id());
 
 private:
     explicit ModeManager(Internal::MainWindow *mainWindow, Internal::FancyTabWidget *modeStack);

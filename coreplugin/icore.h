@@ -26,7 +26,7 @@
 #pragma once
 
 #include "core_global.h"
-#include "id.h"
+#include "Utils/id.h"
 
 #include <QObject>
 #include <QSettings>
@@ -40,6 +40,7 @@ class QWidget;
 template <class T> class QList;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 class IWizardFactory;
 class Context;

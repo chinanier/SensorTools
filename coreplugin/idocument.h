@@ -29,10 +29,12 @@
 
 #include <QObject>
 
-namespace Utils { class FileName; }
-
+namespace Utils { 
+    class FileName; 
+    class Id;
+}
+using namespace Utils;
 namespace Core {
-class Id;
 class InfoBar;
 
 namespace Internal {

@@ -25,13 +25,15 @@
 
 #pragma once
 
-#include "id.h"
+#include <coreplugin/core_global.h>
+#include "Utils/id.h"
 
 #include <QObject>
 #include <QStringList>
 
 #include <functional>
 
+using namespace Utils;
 namespace Core {
 
 class IDocument;

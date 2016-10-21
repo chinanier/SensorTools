@@ -29,7 +29,7 @@
 #include "coreicons.h"
 #include "inavigationwidgetfactory.h"
 #include "actionmanager/command.h"
-#include "id.h"
+#include "Utils/id.h"
 
 #include <utils/styledbar.h>
 
@@ -43,6 +43,7 @@
 
 Q_DECLARE_METATYPE(Core::INavigationWidgetFactory *)
 
+using namespace Utils;
 namespace Core {
 namespace Internal {
 

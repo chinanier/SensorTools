@@ -25,7 +25,8 @@
 
 #pragma once
 
-#include "id.h"
+#include <coreplugin/core_global.h>
+#include "Utils/id.h"
 
 #include <QWidget>
 
@@ -33,6 +34,7 @@ QT_BEGIN_NAMESPACE
 class QSplitter;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 class OutputPanePlaceHolderPrivate;

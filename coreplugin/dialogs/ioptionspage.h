@@ -24,8 +24,8 @@
 ****************************************************************************/
 
 #pragma once
-
-#include <coreplugin/id.h>
+#include "coreplugin/core_global.h"
+#include <Utils/id.h>
 
 #include <QObject>
 #include <QStringList>
@@ -35,6 +35,7 @@ class QIcon;
 class QWidget;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 class CORE_EXPORT IOptionsPage : public QObject

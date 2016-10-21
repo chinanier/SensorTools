@@ -72,7 +72,7 @@ public:
     static void extensionsInitialized(); // only use from MainWindow
 
     static EditorArea *mainEditorArea();
-    static EditorArea *createEditorArea(Core::Id mode);// add by kk
+    static EditorArea *createEditorArea(Id mode);// add by kk
     static EditorView *currentEditorView();
     static void setCurrentEditor(IEditor *editor, bool ignoreNavigationHistory = false);
     static IEditor *openEditor(EditorView *view,
@@ -87,7 +87,7 @@ public:
                                  Id editorId = Id(),
                                  EditorManager::OpenEditorFlags flags = EditorManager::NoFlags,
                                  bool *newEditor = 0);
-    static IEditor *openEditorWith(const QString &fileName, Core::Id editorId);
+    static IEditor *openEditorWith(const QString &fileName, Id editorId);
     static IEditor *duplicateEditor(IEditor *editor);
     static IEditor *activateEditor(EditorView *view, IEditor *editor,
                                    EditorManager::OpenEditorFlags flags = EditorManager::NoFlags);
@@ -207,7 +207,7 @@ private:
 
     QList<EditLocation> m_globalHistory;
     QList<EditorArea *> m_editorAreas;
-    QHash<Core::Id, EditorArea *> m_idOfeditorAreas;
+    QHash<Id, EditorArea *> m_idOfeditorAreas;
     QPointer<IEditor> m_currentEditor;
     QPointer<IEditor> m_scheduledCurrentEditor;
     QPointer<EditorView> m_currentView;

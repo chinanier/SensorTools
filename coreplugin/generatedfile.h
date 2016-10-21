@@ -25,11 +25,13 @@
 
 #pragma once
 
-#include "coreplugin/id.h"
+#include <coreplugin/core_global.h>
+#include "Utils/id.h"
 
 #include <QSharedDataPointer>
 #include <QList>
 
+using namespace Utils;
 namespace Core {
 class GeneratedFilePrivate;
 

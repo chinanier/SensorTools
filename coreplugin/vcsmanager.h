@@ -29,10 +29,13 @@
 
 #include <QString>
 #include <QObject>
-
+namespace Utils
+{
+    class Id;
+}
+using namespace Utils;
 namespace Core {
 
-class Id;
 class IVersionControl;
 
 namespace Internal { class MainWindow; }

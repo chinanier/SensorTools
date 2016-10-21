@@ -24,12 +24,13 @@
 ****************************************************************************/
 
 #include "systemeditor.h"
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QStringList>
 #include <QUrl>
 #include <QDesktopServices>
 
+using namespace Utils;
 using namespace Core;
 using namespace Core::Internal;
 

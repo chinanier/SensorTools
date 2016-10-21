@@ -26,7 +26,7 @@
 #pragma once
 
 #include <coreplugin/core_global.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QObject>
 
@@ -36,7 +36,7 @@ class QKeySequence;
 class QToolButton;
 QT_END_NAMESPACE
 
-
+using namespace Utils;
 namespace Core {
 
 class Context;

@@ -256,7 +256,8 @@ int main(int argc, char *argv[])
     ExtensionSystem::PluginManager::setPluginIID(QLatin1String("org.qt-project.Qt.CamyuPlugin"));
     Utils::Theme *theme = new Utils::Theme("", qApp);
     Utils::setCreatorTheme(theme);
-    manager.setPluginPaths(QStringList() << "Y:\\Documents\\myproj\\Github\\SensorTools\\SensorTools\\Win32\\Debug\\plugins");
+    QString strpluginPath = QCoreApplication::applicationDirPath() + "/plugins";
+    manager.setPluginPaths(QStringList() << strpluginPath);
 #if 1
     manager.loadPlugins();
 #else

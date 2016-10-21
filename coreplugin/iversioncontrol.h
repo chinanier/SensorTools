@@ -26,7 +26,7 @@
 #pragma once
 
 #include "core_global.h"
-#include "id.h"
+#include "Utils/id.h"
 
 #include <utils/fileutils.h>
 
@@ -36,6 +36,7 @@
 #include <QObject>
 #include <QString>
 
+using namespace Utils;
 namespace Core {
 
 class ShellCommand;

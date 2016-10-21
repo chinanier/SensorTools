@@ -28,7 +28,7 @@
 
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/icontext.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <utils/hostosinfo.h>
 #include <utils/qtcassert.h>
@@ -40,6 +40,7 @@
 
 Q_DECLARE_METATYPE(Core::Internal::MenuActionContainer*)
 
+using namespace Utils;
 namespace Core {
 namespace Internal {
 

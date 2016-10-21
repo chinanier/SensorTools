@@ -40,7 +40,7 @@ ShellCommand::ShellCommand(const QString &workingDirectory, const QProcessEnviro
 void ShellCommand::addTask(QFuture<void> &future)
 {
     const QString name = displayName();
-    Core::ProgressManager::addTask(future, name, Core::Id::fromString(name + QLatin1String(".action")));
+    Core::ProgressManager::addTask(future, name, Id::fromString(name + QLatin1String(".action")));
 }
 
 void ShellCommand::coreAboutToClose()

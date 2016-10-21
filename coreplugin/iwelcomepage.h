@@ -27,13 +27,14 @@
 
 #include "core_global.h"
 
-#include "id.h"
+#include "Utils/id.h"
 
 #include <QObject>
 #include <QUrl>
 
 QT_FORWARD_DECLARE_CLASS(QQmlEngine)
 
+using namespace Utils;
 namespace Core {
 
 class CORE_EXPORT IWelcomePage : public QObject
@@ -54,7 +55,7 @@ public:
     virtual int priority() const { return 0; }
     virtual void facilitateQml(QQmlEngine *) {}
     virtual bool hasSearchBar() const { return false; }
-    virtual Core::Id id() const = 0;
+    virtual Id id() const = 0;
 };
 
 } // Core

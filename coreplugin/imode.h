@@ -26,11 +26,12 @@
 #pragma once
 
 #include "icontext.h"
-#include "id.h"
+#include "Utils/id.h"
 
 #include <QIcon>
 #include <QMenu>
 
+using namespace Utils;
 namespace Core {
 
 class CORE_EXPORT IMode : public IContext

@@ -27,11 +27,12 @@
 
 #include "core_global.h"
 
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QSet>
 #include <QStringList>
 
+using namespace Utils;
 namespace Core {
 
 class CORE_EXPORT FeatureSet;

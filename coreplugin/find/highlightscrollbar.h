@@ -30,9 +30,10 @@
 #include <QSet>
 
 #include <coreplugin/core_global.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 #include <utils/theme/theme.h>
 
+using namespace Utils;
 namespace Core {
 
 class HighlightScrollBarOverlay;

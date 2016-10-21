@@ -56,7 +56,7 @@
       <OutputFile>$(OutDir)\$(ProjectName)d.dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(OUTDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Designerd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Aggregationd.lib;Utilsd.lib;ExtensionSystemd.lib;coreplugin.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Designerd.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Aggregationd.lib;Utilsd.lib;ExtensionSystemd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>

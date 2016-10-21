@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include "coreplugin/id.h"
+#include "Utils/id.h"
 
 #include <utils/dropsupport.h>
 
@@ -50,7 +50,7 @@ class QStackedWidget;
 class QToolButton;
 class QMdiArea;
 QT_END_NAMESPACE
-
+using namespace Utils;
 namespace Core {
 class IContext;
 class IDocument;

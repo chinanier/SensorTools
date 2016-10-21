@@ -26,11 +26,12 @@
 #pragma once
 
 #include <coreplugin/core_global.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QObject>
 #include <QStringList>
 
+using namespace Utils;
 namespace Core {
 
 class IEditor;

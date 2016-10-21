@@ -24,13 +24,14 @@
 ****************************************************************************/
 
 #pragma once
-
-#include <coreplugin/id.h>
+#include <coreplugin/core_global.h>
+#include <Utils/id.h>
 
 #include <QVariant>
 #include <QFutureInterface>
 #include <QIcon>
 
+using namespace Utils;
 namespace Core {
 
 class ILocatorFilter;

@@ -27,7 +27,7 @@
 
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/icontext.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <utils/hostosinfo.h>
 
@@ -189,7 +189,7 @@
     A scriptable command can be called from a script without the need for the user to
     interact with it.
 */
-
+using namespace Utils;
 namespace Core {
 namespace Internal {
 

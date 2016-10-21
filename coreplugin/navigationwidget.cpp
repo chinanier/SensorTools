@@ -32,7 +32,7 @@
 #include "modemanager.h"
 #include "actionmanager/actionmanager.h"
 #include "actionmanager/command.h"
-#include "id.h"
+#include "Utils/id.h"
 #include "imode.h"
 
 #include <QCoreApplication>
@@ -46,6 +46,7 @@
 
 Q_DECLARE_METATYPE(Core::INavigationWidgetFactory *)
 
+using namespace Utils;
 namespace Core {
 
 NavigationWidgetPlaceHolder *NavigationWidgetPlaceHolder::m_current = 0;

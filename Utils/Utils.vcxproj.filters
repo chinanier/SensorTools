@@ -647,6 +647,9 @@
     <ClCompile Include="synchronousprocess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="id.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_filewizardpage.h">
@@ -863,6 +866,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="settingsutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="id.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -59,7 +59,7 @@ OpenEditorsWidget::OpenEditorsWidget()
     modle->setHorizontalHeaderLabels(QStringList() << QStringLiteral("相机列表")/* << QStringLiteral("链接状态")*/);
     // 添加行和列以及节点
     QStandardItem * itemProject = 0;
-    if (ModeManager::currentMode() == Core::Id("Edit"))
+    if (ModeManager::currentMode() == Id("Edit"))
     {
         itemProject = new QStandardItem(tr("AD0"));
         modle->appendRow(itemProject);

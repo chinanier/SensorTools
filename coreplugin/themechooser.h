@@ -25,12 +25,13 @@
 
 #pragma once
 
-#include "id.h"
+#include "Utils/id.h"
 
 #include <coreplugin/dialogs/ioptionspage.h>
 
 #include <QWidget>
 
+using namespace Utils;
 namespace Core {
 namespace Internal {
 

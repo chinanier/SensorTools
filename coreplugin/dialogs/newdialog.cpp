@@ -73,7 +73,7 @@ class PlatformFilterProxyModel : public QSortFilterProxyModel
 public:
     PlatformFilterProxyModel(QObject *parent = 0): QSortFilterProxyModel(parent) {}
 
-    void setPlatform(Core::Id platform)
+    void setPlatform(Id platform)
     {
         m_platform = platform;
         invalidateFilter();
@@ -92,7 +92,7 @@ public:
         return true;
     }
 private:
-    Core::Id m_platform;
+    Id m_platform;
 };
 
 class TwoLevelProxyModel : public QAbstractProxyModel

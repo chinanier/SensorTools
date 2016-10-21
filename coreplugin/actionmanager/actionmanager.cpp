@@ -29,7 +29,7 @@
 #include "command_p.h"
 
 #include <coreplugin/icore.h>
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 #include <utils/fadingindicator.h>
 #include <utils/qtcassert.h>
 
@@ -47,6 +47,7 @@ namespace {
 
 static const char kKeyboardSettingsKey[] = "KeyboardShortcuts";
 
+using namespace Utils;
 using namespace Core;
 using namespace Core::Internal;
 

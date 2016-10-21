@@ -2,7 +2,7 @@
 #define CYANALYZERFACTORY_H
 
 #include <QObject>
-#include "coreplugin/id.h"
+#include "Utils/id.h"
 namespace CYCore{
 class CYAnalyzer;
 class CYAnalyzerFactory : public QObject
@@ -12,12 +12,12 @@ class CYAnalyzerFactory : public QObject
 public:
     CYAnalyzerFactory(QObject *parent);
     ~CYAnalyzerFactory();
-    Core::Id id() const { return m_id; }
-    void setId(Core::Id id) { m_id = id; }
+    Utils::Id id() const { return m_id; }
+    void setId(Utils::Id id) { m_id = id; }
 
     virtual CYAnalyzer *createAnalyzer() = 0;
 private:
-    Core::Id m_id;
+    Utils::Id m_id;
 };
 }
 #endif // CYANALYZERFACTORY_H

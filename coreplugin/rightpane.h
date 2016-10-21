@@ -25,7 +25,8 @@
 
 #pragma once
 
-#include "id.h"
+#include <coreplugin/core_global.h>
+#include "Utils/id.h"
 
 #include <QWidget>
 #include <QPointer>
@@ -34,6 +35,7 @@ QT_BEGIN_NAMESPACE
 class QSettings;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 class IMode;

@@ -26,7 +26,7 @@
 #pragma once
 
 #include "core_global.h"
-#include <coreplugin/id.h>
+#include <Utils/id.h>
 
 #include <QObject>
 #include <QSet>
@@ -37,6 +37,7 @@ QT_BEGIN_NAMESPACE
 class QBoxLayout;
 QT_END_NAMESPACE
 
+using namespace Utils;
 namespace Core {
 
 class InfoBar;

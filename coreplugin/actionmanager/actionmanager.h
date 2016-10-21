@@ -75,7 +75,7 @@ public:
 
 signals:
     void commandListChanged();
-    void commandAdded(Core::Id id);
+    void commandAdded(Id id);
 
 private:
     ActionManager(QObject *parent = 0);
