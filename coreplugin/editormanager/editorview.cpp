@@ -623,7 +623,7 @@ SplitterOrView::SplitterOrView(Id mode)
     m_splitter = 0;
     QMdiArea * mdiArea = new QMdiArea;
     mdiArea->addSubWindow(m_view);
-    mdiArea->addSubWindow(new EditorView(this, 0, "123"));
+    //mdiArea->addSubWindow(new EditorView(this, 0, "123"));
     m_layout->addWidget(mdiArea);
     m_mdiArea = mdiArea;
     //m_layout->addWidget(m_view);
@@ -666,6 +666,7 @@ EditorView * SplitterOrView::createSubEditorView(Id idOfProcess)
 {
     EditorView * pWid = new EditorView(this, 0, idOfProcess);
     m_mdiArea->addSubWindow(pWid);
+    pWid->show();
     return pWid;
 }
 EditorView *SplitterOrView::findFirstView()
