@@ -42,6 +42,11 @@ class QPrinter;
 class QToolButton;
 QT_END_NAMESPACE
 
+
+namespace CYCore {
+    class CYCameraManager;
+}
+using namespace CYCore;
 namespace Core {
 
 class StatusBarWidget;
@@ -170,7 +175,7 @@ private:
     FancyTabWidget *m_modeStack;
     NavigationWidget *m_navigationWidget;
     /// add by kk : add camera protocol list
-    
+    CYCameraManager * m_cameraManager;
 
     RightPaneWidget *m_rightPaneWidget;
     StatusBarWidget *m_outputView;

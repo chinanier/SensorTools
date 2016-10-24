@@ -32,12 +32,15 @@
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
 #include <coreplugin/modemanager.h>
+#include <coreplugin/cycameramanager.h>
+#include <CYCore/cycamerafactory.h>
 
 #include <QApplication>
 #include <QMenu>
 #include <QStandardItemModel>
 #include <QMessageBox>
 
+using namespace CYCore;
 using namespace Core;
 using namespace Core::Internal;
 
@@ -58,31 +61,43 @@ OpenEditorsWidget::OpenEditorsWidget()
     // 添加表头
     modle->setHorizontalHeaderLabels(QStringList() << QStringLiteral("相机列表")/* << QStringLiteral("链接状态")*/);
     // 添加行和列以及节点
-    QStandardItem * itemProject = 0;
+    QStandardItem * item = 0;
+#if 0
     if (ModeManager::currentMode() == Id("Edit"))
     {
-        itemProject = new QStandardItem(tr("AD0"));
-        modle->appendRow(itemProject);
-        itemProject->setEditable(false);
-        itemProject->setData(0,Qt::UserRole+1);
+        item = new QStandardItem(tr("AD0"));
+        modle->appendRow(item);
+        item->setEditable(false);
+        item->setData(0,Qt::UserRole+1);
         // 添加另一行和列及节点
-        itemProject = new QStandardItem(tr("AB3"));
-        modle->appendRow(itemProject);
-        itemProject->setEditable(false);
-        itemProject->setData(0, Qt::UserRole + 1);
+        item = new QStandardItem(tr("AB3"));
+        modle->appendRow(item);
+        item->setEditable(false);
+        item->setData(0, Qt::UserRole + 1);
     }
     else
     {
-        itemProject = new QStandardItem(tr("vendor1"));
-        modle->appendRow(itemProject);
-        itemProject->setEditable(false);
-        itemProject->setData(0, Qt::UserRole + 1);
+        item = new QStandardItem(tr("vendor1"));
+        modle->appendRow(item);
+        item->setEditable(false);
+        item->setData(0, Qt::UserRole + 1);
         // 添加另一行和列及节点
-        itemProject = new QStandardItem(tr("vendor12"));
-        modle->appendRow(itemProject);
-        itemProject->setEditable(false);
-        itemProject->setData(0, Qt::UserRole + 1);
+        item = new QStandardItem(tr("vendor12"));
+        modle->appendRow(item);
+        item->setEditable(false);
+        item->setData(0, Qt::UserRole + 1);
     }
+#else
+    CYCameraManager::CYCameraFactoryList factorys = CYCameraManager::getCameraFactorys(ModeManager::currentMode());
+    foreach(CYCameraFactory * factory, factorys)
+    {
+        item = new QStandardItem(factory->displayName());
+        item->setEditable(false);
+        item->setData(0, Qt::UserRole + 1);
+        item->setData(factory->id().toString(), Qt::UserRole + 5);
+        modle->appendRow(item);
+    }
+#endif
     setModel(/*m_model*/modle);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -174,13 +189,39 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
     {
         return;
     }
+    // 这是一级设备驱动的右键菜单
     if (editorIndex.data(Qt::UserRole+1) == 0)
     {
         contextMenu.addAction("Serach", this, [this, editorIndex]() {
             QMessageBox::information(
                 0, tr("Serach!"), tr("Serach a more Camera Success!"));
             QVariant vale = editorIndex.data();
-            //if (vale == QString(tr("AD0")))
+            Id factoryId = editorIndex.data(Qt::UserRole + 5).toString().toStdString().c_str();
+            // 省略搜索
+            // 
+            //CYCore::CYCameraManager::SerachCamera(factoryId);
+			// 可以使用QTimer::singleShot();
+            //
+            QList<Id> cameraList;
+            cameraList << "123" << "456" << "789";
+            foreach(Id id,cameraList)
+            {
+                QStandardItem * itemChild = 0;
+                QStandardItem * itemParent = 0;
+                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
+                itemParent = modle->itemFromIndex(editorIndex);
+                if (itemParent)
+                {
+                    QString listName = vale.toString() + "." + id.toString();
+                    itemChild = new QStandardItem(listName);
+                    itemChild->setEditable(false);
+                    itemChild->setData(1, Qt::UserRole + 1);
+                    itemChild->setData(0, Qt::UserRole + 2);
+                    itemParent->appendRow(itemChild);
+                    EditorManager::createSubEditorView(listName.toStdString().c_str());
+                }
+            }
+            if(0)
             {
                 QStandardItem * itemChild = 0;
                 QStandardItem * itemParent = 0;
@@ -210,6 +251,7 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
     }
     else
     {
+        // 这里判断设备的连接状态
         if (editorIndex.data(Qt::UserRole + 2) == 0)
         {
             contextMenu.addAction("Connect", this, [this, editorIndex]() {

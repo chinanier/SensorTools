@@ -12,6 +12,10 @@
 #include <coreplugin/rightpane.h>
 #include <coreplugin/imode.h>
 
+#include <coreplugin/cycameramanager.h>
+#include <CYCore/cycamerafactory.h>
+#include <CYCore/cycamera.h>
+
 #include <QAction>
 #include <QComboBox>
 #include <QDockWidget>
@@ -25,68 +29,24 @@ using namespace Core;
 namespace CameraCXP {
 namespace Internal {
 
-/*!  A mode with a push button based on BaseMode.  */
-QWidget *createModeWindow(const Id &mode)
-{
-    auto documentAndRightPane = new MiniSplitter;
-    documentAndRightPane->addWidget(new EditorManagerPlaceHolder(documentAndRightPane,mode));
-    documentAndRightPane->addWidget(new RightPanePlaceHolder(mode));
-    documentAndRightPane->setStretchFactor(0, 1);
-    documentAndRightPane->setStretchFactor(1, 0);
-
-    auto centralEditorWidget = new QWidget;
-    auto centralLayout = new QHBoxLayout(centralEditorWidget);
-    centralEditorWidget->setLayout(centralLayout);
-    centralLayout->setMargin(0);
-    centralLayout->setSpacing(0);
-    centralLayout->addWidget(documentAndRightPane);
-    centralLayout->setStretch(0, 1);
-    centralLayout->setStretch(1, 0);
-
-    // Right-side window with editor, output etc.
-    auto mainWindowSplitter = new MiniSplitter;
-    mainWindowSplitter->addWidget(centralEditorWidget);
-    mainWindowSplitter->addWidget(new OutputPanePlaceHolder(mode, mainWindowSplitter));
-    mainWindowSplitter->setStretchFactor(0, 10);
-    mainWindowSplitter->setStretchFactor(1, 0);
-    mainWindowSplitter->setOrientation(Qt::Vertical);
-
-    // Navigation and right-side window.
-    auto splitter = new MiniSplitter;
-    //splitter->setFocusProxy(mainWindow->centralWidgetStack());
-    splitter->addWidget(new NavigationWidgetPlaceHolder(mode));
-    splitter->addWidget(mainWindowSplitter);
-    splitter->setStretchFactor(0, 0);
-    splitter->setStretchFactor(1, 1);
-    //splitter->setObjectName(QLatin1String("DebugModeWidget"));
-    //mainWindow->setCentralWidget(centralEditorWidget);
-
-    return splitter;
-}
-class HelloMode : public Core::IMode
+class CoaxPressFactory : public CYCore::CYCameraFactory
 {
 public:
-    HelloMode()
+    CoaxPressFactory()
     {
-        /*setWidget(new QPushButton(tr("CameraCXP PushButton!")));*/
-        setWidget(m_wid = createModeWindow("CameraCXP.CameraCXPMode"));
-        setContext(Core::Context("CameraCXP.MainView"));
-        setDisplayName(tr("CoaxPress"));
+        setDisplayName(tr("AME"));
         //setIcon(QIcon());
+        setCategory("CoaxPress");
         setPriority(0);
-        setId("CameraCXP.CameraCXPMode");
-        setContextHelpId(QString());
-        //setDisplayName(tr("CameraCXP"));
+        setId("CoaxPress.AME");
     }
-    ~HelloMode()
+    ~CoaxPressFactory()
     {
-        if (m_wid)
-        {
-            delete m_wid;
-        }
     }
-private:
-    QWidget * m_wid = nullptr;
+    CYCore::CYCamera *createCamera()
+    {
+        return 0;
+    }
 };
 
 
@@ -147,8 +107,8 @@ bool CameraCXPPlugin::initialize(const QStringList &arguments, QString *errorMes
 
     // Add a mode with a push button based on BaseMode. Like the BaseView,
     // it will unregister itself from the plugin manager when it is deleted.
-    Core::IMode *helloMode = new HelloMode;
-    addAutoReleasedObject(helloMode);
+    CoaxPressFactory *coaxPressFactory = new CoaxPressFactory;
+    addAutoReleasedObject(coaxPressFactory);
     return true;
 }
 

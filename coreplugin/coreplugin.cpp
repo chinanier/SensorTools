@@ -41,6 +41,7 @@
 #include <coreplugin/locator/locator.h>
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/fileutils.h>
+#include <coreplugin/cycameramanager.h>
 
 #include <extensionsystem/pluginerroroverview.h>
 #include <extensionsystem/pluginmanager.h>
@@ -82,7 +83,8 @@ CorePlugin::~CorePlugin()
         removeObject(m_editMode);
         delete m_editMode;
     }
-
+    // 释放摄像管理系统的modle
+    CYCameraManager::destroy();
     if (m_designMode) {
         if (m_designMode->designModeIsRequired())
             removeObject(m_designMode);

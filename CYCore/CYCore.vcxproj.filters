@@ -45,15 +45,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cycoreplugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="cycameramanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_cycameramanager.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_cycameramanager.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="cycamerafactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -108,12 +99,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cyanalyzer.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_cycameramanager_p.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_cycameramanager_p.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_cycamera_p.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -146,9 +131,6 @@
     <CustomBuild Include="cycoreplugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="cycameramanager.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="cycamerafactory.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -165,9 +147,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cyanalyzer.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="cycameramanager_p.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cycamera_p.h">

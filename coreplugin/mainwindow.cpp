@@ -67,6 +67,9 @@
 #include <coreplugin/progressmanager/progressmanager_p.h>
 #include <coreplugin/progressmanager/progressview.h>
 #include <coreplugin/settingsdatabase.h>
+#include <coreplugin/cycameramanager.h>
+
+
 #include <extensionsystem/pluginmanager.h>
 #include <utils/algorithm.h>
 #include <utils/historycompleter.h>
@@ -138,7 +141,8 @@ MainWindow::MainWindow() :
     m_exitAction(0),
     m_optionsAction(0),
     m_toggleSideBarAction(0),
-    m_toggleSideBarButton(new QToolButton)
+    m_toggleSideBarButton(new QToolButton),
+    m_cameraManager(new CYCameraManager)
 {
     (void) new DocumentManager(this);
     OutputPaneManager::create();
@@ -260,6 +264,9 @@ MainWindow::~MainWindow()
     // from mainwindow, so mainwindow still needs to be alive
     delete m_windowSupport;
     m_windowSupport = 0;
+    // add by kk
+    delete m_cameraManager;
+    m_cameraManager = 0;
 
     PluginManager::removeObject(m_shortcutSettings);
     PluginManager::removeObject(m_generalSettings);
@@ -345,6 +352,8 @@ bool MainWindow::init(QString *errorMessage)
     m_outputView->setPosition(StatusBarWidget::Second);
     PluginManager::addObject(m_outputView);
     MessageManager::init();
+    // add by kk
+    CYCameraManager::init();
     return true;
 }
 
