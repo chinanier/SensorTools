@@ -2,8 +2,10 @@
 #define CYFRAMEPARSER_H
 
 #include <QObject>
+#include <CYCore/cycore_global.h>
+
 namespace CYCore {
-class CYFrameParser : public QObject
+class CYCORE_EXPORT CYFrameParser : public QObject
 {
     Q_OBJECT
 

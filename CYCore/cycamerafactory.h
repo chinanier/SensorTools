@@ -28,6 +28,7 @@ public:
     void setPriority(int priority) { m_priority = priority; }
     void setDisplayName(const QString &displayName) { m_displayName = displayName; }
     virtual CYCamera *createCamera() = 0;
+    virtual int SerarchCamera() = 0;
 private:
     QString m_displayName;
     Utils::Id m_id;     ///<生产类id,用于区别在同一类别下不同的生产类的驱动和版本

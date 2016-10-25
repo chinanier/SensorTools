@@ -16,6 +16,11 @@
 #include <CYCore/cycamerafactory.h>
 #include <CYCore/cycamera.h>
 
+#include <CYCore/cyframeparserfactory.h>
+#include <CYCore/cyanalyzer.h>
+#include <CYCore/cyframeparser.h>
+#include <CYCore/cyprocessor.h>
+
 #include <QAction>
 #include <QComboBox>
 #include <QDockWidget>
@@ -26,9 +31,90 @@
 #include <QMessageBox>
 
 using namespace Core;
+using namespace CYCore;
+
 namespace CameraCXP {
 namespace Internal {
 
+class TestFrameParser : public CYCore::CYProcessor
+{
+public:
+    virtual void doProcess()
+    {
+        int i = 0;
+        i = i;
+    }
+};
+
+class TestProcessor : public CYCore::CYFrameParserFactory {
+public:
+    TestProcessor()
+    {
+        setId("TESTPROCESSOR");
+        setDisplayName("TestProcessor");
+        setType(CYFrameParserFactory::CYFRAMEPARSER_PROCESSOR);
+    }
+    ~TestProcessor()
+    {
+
+    }
+    CYFrameParser *createFrameParser() {
+        return new TestFrameParser;
+    }
+};
+
+
+class CoaxPressCamera : public CYCore::CYCamera
+{
+public:
+    bool SerachCamera()
+    {
+        return false;
+    }
+
+    bool connectCamera(int chl = 0)
+    {
+        return isConnect(chl)?false: m_isconnect = true;
+    }
+    bool disconnectCamera(int chl = 0)
+    {
+        return isConnect(chl) ? m_isconnect = false : false;
+    }
+    bool isConnect(int chl = 0)
+    {
+        return m_isconnect;
+    }
+
+    bool startCapture(int chl = 0)
+    {
+        return isCapture(chl) ? false : m_iscapture = true;
+    }
+    bool stopCapture(int chl = 0)
+    {
+        return isCapture(chl) ? m_iscapture = false : false;
+    }
+    bool isCapture(int chl=0)
+    {
+        return m_iscapture;
+    }
+
+    bool sendCommand()
+    {
+        return false;
+    }
+    bool readCommand()
+    {
+        return false;
+    }
+
+    bool currentFrame()
+    {
+        return false;
+    }
+private:
+    bool m_isconnect = false;
+    bool m_iscapture = false;
+};
 class CoaxPressFactory : public CYCore::CYCameraFactory
 {
 public:
@@ -45,7 +131,11 @@ public:
     }
     CYCore::CYCamera *createCamera()
     {
-        return 0;
+        return new CoaxPressCamera;
+    }
+    int SerarchCamera()
+    {
+        return 2;
     }
 };
 
@@ -109,6 +199,9 @@ bool CameraCXPPlugin::initialize(const QStringList &arguments, QString *errorMes
     // it will unregister itself from the plugin manager when it is deleted.
     CoaxPressFactory *coaxPressFactory = new CoaxPressFactory;
     addAutoReleasedObject(coaxPressFactory);
+
+    TestProcessor * testProcessor = new TestProcessor;
+    addAutoReleasedObject(testProcessor);
     return true;
 }
 

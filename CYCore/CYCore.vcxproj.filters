@@ -63,15 +63,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cycamera.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="cyprocessorfactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_cyprocessorfactory.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_cyprocessorfactory.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="cyanalyzerfactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -126,6 +117,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cyframeparser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="cyframeparserfactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_cyframeparserfactory.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cyframeparserfactory.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cycoreplugin.h">
@@ -135,9 +135,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cycamera.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="cyprocessorfactory.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cyanalyzerfactory.h">
@@ -159,6 +156,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cyframeparser.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="cyframeparserfactory.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

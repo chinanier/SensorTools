@@ -68,7 +68,7 @@
 #include <coreplugin/progressmanager/progressview.h>
 #include <coreplugin/settingsdatabase.h>
 #include <coreplugin/cycameramanager.h>
-
+#include <coreplugin/cyframeparsermanager.h>
 
 #include <extensionsystem/pluginmanager.h>
 #include <utils/algorithm.h>
@@ -142,7 +142,8 @@ MainWindow::MainWindow() :
     m_optionsAction(0),
     m_toggleSideBarAction(0),
     m_toggleSideBarButton(new QToolButton),
-    m_cameraManager(new CYCameraManager)
+    m_cameraManager(new CYCameraManager),
+    m_processorManager(new CYFrameParserManager)
 {
     (void) new DocumentManager(this);
     OutputPaneManager::create();
@@ -267,6 +268,8 @@ MainWindow::~MainWindow()
     // add by kk
     delete m_cameraManager;
     m_cameraManager = 0;
+    delete m_processorManager;
+    m_processorManager = 0;
 
     PluginManager::removeObject(m_shortcutSettings);
     PluginManager::removeObject(m_generalSettings);
@@ -354,6 +357,7 @@ bool MainWindow::init(QString *errorMessage)
     MessageManager::init();
     // add by kk
     CYCameraManager::init();
+    CYFrameParserManager::init();
     return true;
 }
 

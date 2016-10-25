@@ -33,7 +33,10 @@
 #include <coreplugin/actionmanager/command.h>
 #include <coreplugin/modemanager.h>
 #include <coreplugin/cycameramanager.h>
+#include <coreplugin/cyframeparsermanager.h>
+
 #include <CYCore/cycamerafactory.h>
+#include <CYCore/cyframeparserfactory.h>
 
 #include <QApplication>
 #include <QMenu>
@@ -44,6 +47,13 @@ using namespace CYCore;
 using namespace Core;
 using namespace Core::Internal;
 
+
+typedef enum CUSTOMROLE
+{
+    ROLE_NODE_LEVEL = Qt::UserRole + 1, // 指示树状结构的等级
+    ROLE_NODE_ID,
+    ROLE_TEST_CONNECT_STATUS
+};
 ////
 // OpenEditorsWidget
 ////
@@ -68,24 +78,24 @@ OpenEditorsWidget::OpenEditorsWidget()
         item = new QStandardItem(tr("AD0"));
         modle->appendRow(item);
         item->setEditable(false);
-        item->setData(0,Qt::UserRole+1);
+        item->setData(0, ROLE_NODE_LEVEL);
         // 添加另一行和列及节点
         item = new QStandardItem(tr("AB3"));
         modle->appendRow(item);
         item->setEditable(false);
-        item->setData(0, Qt::UserRole + 1);
+        item->setData(0, ROLE_NODE_LEVEL);
     }
     else
     {
         item = new QStandardItem(tr("vendor1"));
         modle->appendRow(item);
         item->setEditable(false);
-        item->setData(0, Qt::UserRole + 1);
+        item->setData(0, ROLE_NODE_LEVEL);
         // 添加另一行和列及节点
         item = new QStandardItem(tr("vendor12"));
         modle->appendRow(item);
         item->setEditable(false);
-        item->setData(0, Qt::UserRole + 1);
+        item->setData(0, ROLE_NODE_LEVEL);
     }
 #else
     CYCameraManager::CYCameraFactoryList factorys = CYCameraManager::getCameraFactorys(ModeManager::currentMode());
@@ -93,8 +103,8 @@ OpenEditorsWidget::OpenEditorsWidget()
     {
         item = new QStandardItem(factory->displayName());
         item->setEditable(false);
-        item->setData(0, Qt::UserRole + 1);
-        item->setData(factory->id().toString(), Qt::UserRole + 5);
+        item->setData(0, ROLE_NODE_LEVEL);
+        item->setData(factory->id().toSetting(), ROLE_NODE_ID);
         modle->appendRow(item);
     }
 #endif
@@ -110,16 +120,16 @@ OpenEditorsWidget::OpenEditorsWidget()
             this, &OpenEditorsWidget::closeDocument);
     */
     connect(this, &QTreeView::customContextMenuRequested,
-            this, &OpenEditorsWidget::contextMenuRequested);
+        this, &OpenEditorsWidget::contextMenuRequested);
     connect(this, &QTreeView::activated, this, [this](QModelIndex index) {
         if (index.isValid())
         {
-            QVariant i_mode = index.data(Qt::UserRole + 1);
+            QVariant i_mode = index.data(ROLE_NODE_LEVEL);
             if (i_mode == 0)
             {
                 // 选择本列的第一个显示
             }
-            else if(i_mode==1)
+            else if (i_mode == 1)
             {
                 QVariant ls_name = index.data();
                 EditorManager::activeSubEditorView(ls_name.toString().toStdString().c_str());
@@ -142,7 +152,7 @@ void OpenEditorsWidget::updateCurrentItem(IEditor *editor)
     }
     setCurrentIndex(index);
     selectionModel()->select(currentIndex(),
-                                              QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     scrollTo(currentIndex());
 }
 
@@ -150,7 +160,8 @@ void OpenEditorsWidget::handleActivated(const QModelIndex &index)
 {
     if (index.column() == 0) {
         activateEditor(index);
-    } else if (index.column() == 1) { // the funky close button
+    }
+    else if (index.column() == 1) { // the funky close button
         closeDocument(index);
 
         // work around a bug in itemviews where the delegate wouldn't get the QStyle::State_MouseOver
@@ -165,13 +176,13 @@ void OpenEditorsWidget::activateEditor(const QModelIndex &index)
 {
     selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     EditorManager::activateEditorForEntry(
-                DocumentModel::entryAtRow(m_model->mapToSource(index).row()));
+        DocumentModel::entryAtRow(m_model->mapToSource(index).row()));
 }
 
 void OpenEditorsWidget::closeDocument(const QModelIndex &index)
 {
     EditorManager::closeDocument(
-                DocumentModel::entryAtRow(m_model->mapToSource(index).row()));
+        DocumentModel::entryAtRow(m_model->mapToSource(index).row()));
     // work around selection changes
     updateCurrentItem(EditorManager::currentEditor());
 }
@@ -190,93 +201,118 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
         return;
     }
     // 这是一级设备驱动的右键菜单
-    if (editorIndex.data(Qt::UserRole+1) == 0)
+    if (editorIndex.data(ROLE_NODE_LEVEL) == 0)
     {
         contextMenu.addAction("Serach", this, [this, editorIndex]() {
-            QMessageBox::information(
-                0, tr("Serach!"), tr("Serach a more Camera Success!"));
+
             QVariant vale = editorIndex.data();
-            Id factoryId = editorIndex.data(Qt::UserRole + 5).toString().toStdString().c_str();
-            // 省略搜索
+            Id factoryId = Id::fromSetting(editorIndex.data(ROLE_NODE_ID));
+            // 搜索
             // 
-            //CYCore::CYCameraManager::SerachCamera(factoryId);
-			// 可以使用QTimer::singleShot();
-            //
+            int cameracount = CYCore::CYCameraManager::SerachCamera(factoryId);
+            // 可以使用QTimer::singleShot();
+            QMessageBox::information(0, tr("Serach!"), tr("Serach a more Camera Success!"));
             QList<Id> cameraList;
-            cameraList << "123" << "456" << "789";
-            foreach(Id id,cameraList)
+            for (int i = 0;i < cameracount;i++)
             {
-                QStandardItem * itemChild = 0;
-                QStandardItem * itemParent = 0;
-                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
-                itemParent = modle->itemFromIndex(editorIndex);
+                cameraList << Id::fromSetting(i);
+            }
+            //
+            QStandardItem * itemChild = 0;
+            QStandardItem * itemParent = 0;
+            QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
+            itemParent = modle->itemFromIndex(editorIndex);
+            int rowCount = itemParent->rowCount();
+            itemParent->removeRows(0, rowCount);
+            foreach(Id id, cameraList)
+            {
                 if (itemParent)
                 {
                     QString listName = vale.toString() + "." + id.toString();
+                    Id cameraId = Id::fromSetting(factoryId.toString() + "." + id.toString());
                     itemChild = new QStandardItem(listName);
                     itemChild->setEditable(false);
-                    itemChild->setData(1, Qt::UserRole + 1);
-                    itemChild->setData(0, Qt::UserRole + 2);
+                    itemChild->setData(1, ROLE_NODE_LEVEL);
+                    itemChild->setData(0, ROLE_TEST_CONNECT_STATUS);
+                    itemChild->setData(cameraId.toSetting(), ROLE_NODE_ID);
                     itemParent->appendRow(itemChild);
-                    EditorManager::createSubEditorView(listName.toStdString().c_str());
+                    EditorManager::createSubEditorView(Id::fromSetting(listName));
                 }
-            }
-            if(0)
-            {
-                QStandardItem * itemChild = 0;
-                QStandardItem * itemParent = 0;
-                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
-                itemParent = modle->itemFromIndex(editorIndex);
-                if (itemParent)
-                {
-                    QString listName = vale.toString() + "-0";
-                    itemChild = new QStandardItem(listName);
-                    itemChild->setEditable(false);
-                    itemChild->setData(1, Qt::UserRole + 1);
-                    itemChild->setData(0, Qt::UserRole + 2);
-                    itemParent->appendRow(itemChild);
-                    EditorManager::createSubEditorView(listName.toStdString().c_str());
-
-                    listName = vale.toString() + "-1";
-                    itemChild = new QStandardItem(listName);
-                    itemChild->setEditable(false);
-                    itemChild->setData(1, Qt::UserRole + 1);
-                    itemChild->setData(0, Qt::UserRole + 2);
-                    itemParent->appendRow(itemChild);
-                    EditorManager::createSubEditorView(listName.toStdString().c_str());
-                }
-                /*editorIndex.model()*/
             }
         });
     }
     else
     {
+        Id cameraid = Id::fromSetting(editorIndex.data(ROLE_NODE_ID));
         // 这里判断设备的连接状态
-        if (editorIndex.data(Qt::UserRole + 2) == 0)
+        // 暂时通过
+        //if (editorIndex.data(ROLE_TEST_CONNECT_STATUS) == 0)
+        if (!CYCameraManager::isConnect(cameraid))
         {
-            contextMenu.addAction("Connect", this, [this, editorIndex]() {
+            //CYCameraManager::isConnect(cameraid);
+            contextMenu.addAction("Connect", this, [this, editorIndex,cameraid]() {
+                CYCameraManager::connectCamera(cameraid);
                 QMessageBox::information(
                     0, tr("Connect!"), tr("Connect Camera Success!"));
-                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
-                QStandardItem * item = modle->itemFromIndex(editorIndex);
-                item->setData(1, Qt::UserRole + 2);
                 // 通知editManager创建窗口
             });
         }
         else
         {
-            contextMenu.addAction("disConnect", this, [this, editorIndex]() {
+            contextMenu.addAction("disConnect", this, [this, editorIndex,cameraid]() {
+                CYCameraManager::disconnectCamera(cameraid);
                 QMessageBox::information(
                     0, tr("Connect!"), tr("disConnect Camera Success!"));
-                QStandardItemModel * modle = qobject_cast<QStandardItemModel *>((QAbstractItemModel*)editorIndex.model());
-                QStandardItem * item = modle->itemFromIndex(editorIndex);
-                item->setData(0, Qt::UserRole + 2);
                 // 通知editManager销毁窗口
             });
-            contextMenu.addAction("Channel Balance", this, [this, editorIndex]() {
-                QVariant cams = editorIndex.data();
-                EditorManager::createProcessEditorView(cams.toString().toStdString().c_str(),"Channel Balance");
-            });
+            // 增加图像处理的右键菜单
+            QList<CYFrameParserFactory*> factorys = CYFrameParserManager::getProcessorFactorys();
+            QMenu * contextParserMenu = 0;
+            QMenu * contextAlyzerMenu = 0;
+            if (!factorys.isEmpty())
+            {
+                contextMenu.addSeparator();
+            }
+            foreach(CYFrameParserFactory*factory, factorys)
+            {
+                switch (factory->type())
+                {
+                case CYFrameParserFactory::CYFRAMEPARSER_ANALYZER:
+                {
+                    if (!contextAlyzerMenu)
+                    {
+                        contextAlyzerMenu = contextMenu.addMenu(tr("Camera Alyzer"));
+                    }
+                    contextAlyzerMenu->addAction(factory->displayName(), this, [this, editorIndex, factory]() {
+                        QVariant cams = editorIndex.data();
+                        //EditorManager::createProcessEditorView(cams.toString().toStdString().c_str(), factory->id());
+                        // 向系统添加完用于展示的窗体后，这里要向指定的id的相机添加一个处理器,这样就可以由系统进行调度处理了
+                        // CYCameraManager::app
+                        // 分析类插件需要向OutputPanlManager进行委托处理
+                    });
+                }
+                break;
+                case CYFrameParserFactory::CYFRAMEPARSER_PROCESSOR:
+                {
+                    if (!contextParserMenu)
+                    {
+                        contextParserMenu = contextMenu.addMenu(tr("Camera Parser"));
+                    }
+                    contextParserMenu->addAction(factory->displayName(), this, [this, editorIndex, factory, cameraid]() {
+                        QVariant cams = editorIndex.data();
+                        EditorManager::createProcessEditorView(Id::fromSetting(cams), factory->id());
+                        // 激活本窗体
+
+                        // 向系统添加完用于展示的窗体后，这里要向指定的id的相机添加一个处理器,这样就可以由系统进行调度处理了
+                        CYCameraManager::appendFrameParser(cameraid, factory->createFrameParser());
+                        // CYCameraManager::app
+                    });
+                }
+                break;
+                default:
+                    break;
+                }
+            }
         }
     }
     contextMenu.exec(/*mapToGlobal(pos)*/QCursor::pos());
@@ -326,7 +362,7 @@ QModelIndex ProxyModel::mapToSource(const QModelIndex &proxyIndex) const
 QModelIndex ProxyModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (parent.isValid() || row < 0 || row >= sourceModel()->rowCount(mapToSource(parent)) - 1
-            || column < 0 || column > 1)
+        || column < 0 || column > 1)
         return QModelIndex();
     return createIndex(row, column);
 }
@@ -334,7 +370,7 @@ QModelIndex ProxyModel::index(int row, int column, const QModelIndex &parent) co
 QModelIndex ProxyModel::parent(const QModelIndex &child) const
 {
     Q_UNUSED(child)
-    return QModelIndex();
+        return QModelIndex();
 }
 
 int ProxyModel::rowCount(const QModelIndex &parent) const
@@ -354,28 +390,28 @@ void ProxyModel::setSourceModel(QAbstractItemModel *sm)
     QAbstractItemModel *previousModel = sourceModel();
     if (previousModel) {
         disconnect(previousModel, &QAbstractItemModel::dataChanged,
-                   this, &ProxyModel::sourceDataChanged);
+            this, &ProxyModel::sourceDataChanged);
         disconnect(previousModel, &QAbstractItemModel::rowsInserted,
-                   this, &ProxyModel::sourceRowsInserted);
+            this, &ProxyModel::sourceRowsInserted);
         disconnect(previousModel, &QAbstractItemModel::rowsRemoved,
-                   this, &ProxyModel::sourceRowsRemoved);
+            this, &ProxyModel::sourceRowsRemoved);
         disconnect(previousModel, &QAbstractItemModel::rowsAboutToBeInserted,
-                   this, &ProxyModel::sourceRowsAboutToBeInserted);
+            this, &ProxyModel::sourceRowsAboutToBeInserted);
         disconnect(previousModel, &QAbstractItemModel::rowsAboutToBeRemoved,
-                   this, &ProxyModel::sourceRowsAboutToBeRemoved);
+            this, &ProxyModel::sourceRowsAboutToBeRemoved);
     }
     QAbstractProxyModel::setSourceModel(sm);
     if (sm) {
         connect(sm, &QAbstractItemModel::dataChanged,
-                this, &ProxyModel::sourceDataChanged);
+            this, &ProxyModel::sourceDataChanged);
         connect(sm, &QAbstractItemModel::rowsInserted,
-                this, &ProxyModel::sourceRowsInserted);
+            this, &ProxyModel::sourceRowsInserted);
         connect(sm, &QAbstractItemModel::rowsRemoved,
-                this, &ProxyModel::sourceRowsRemoved);
+            this, &ProxyModel::sourceRowsRemoved);
         connect(sm, &QAbstractItemModel::rowsAboutToBeInserted,
-                this, &ProxyModel::sourceRowsAboutToBeInserted);
+            this, &ProxyModel::sourceRowsAboutToBeInserted);
         connect(sm, &QAbstractItemModel::rowsAboutToBeRemoved,
-                this, &ProxyModel::sourceRowsAboutToBeRemoved);
+            this, &ProxyModel::sourceRowsAboutToBeRemoved);
     }
 }
 
@@ -403,17 +439,17 @@ void ProxyModel::sourceDataChanged(const QModelIndex &topLeft, const QModelIndex
 void ProxyModel::sourceRowsRemoved(const QModelIndex &parent, int start, int end)
 {
     Q_UNUSED(parent)
-    Q_UNUSED(start)
-    Q_UNUSED(end)
-    endRemoveRows();
+        Q_UNUSED(start)
+        Q_UNUSED(end)
+        endRemoveRows();
 }
 
 void ProxyModel::sourceRowsInserted(const QModelIndex &parent, int start, int end)
 {
     Q_UNUSED(parent)
-    Q_UNUSED(start)
-    Q_UNUSED(end)
-    endInsertRows();
+        Q_UNUSED(start)
+        Q_UNUSED(end)
+        endInsertRows();
 }
 
 void ProxyModel::sourceRowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)

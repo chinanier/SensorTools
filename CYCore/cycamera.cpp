@@ -68,3 +68,20 @@ CYCamera::~CYCamera()
     delete d;
     d = 0;
 }
+bool CYCamera::addFrameParser(CYFrameParser * newNode, CYFrameParser * before)
+{
+    if (!newNode)
+    {
+        return false;
+    }
+    if (d->m_frameParser.contains(before))
+    {
+        int index = d->m_frameParser.indexOf(before);
+        d->m_frameParser.insert(index, newNode);
+    }
+    else
+    {
+        d->m_frameParser.append(newNode);
+    }
+    return true;
+}

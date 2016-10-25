@@ -42,6 +42,7 @@
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/fileutils.h>
 #include <coreplugin/cycameramanager.h>
+#include <coreplugin/cyframeparsermanager.h>
 
 #include <extensionsystem/pluginerroroverview.h>
 #include <extensionsystem/pluginmanager.h>
@@ -85,6 +86,8 @@ CorePlugin::~CorePlugin()
     }
     // 释放摄像管理系统的modle
     CYCameraManager::destroy();
+    CYFrameParserManager::destroy();
+
     if (m_designMode) {
         if (m_designMode->designModeIsRequired())
             removeObject(m_designMode);
