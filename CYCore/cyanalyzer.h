@@ -12,14 +12,14 @@ class CYAnalyzer : public CYFrameParser
 public:
     CYAnalyzer(QObject *parent);
     virtual ~CYAnalyzer();
-    virtual void doAnalysis() = 0;
+    virtual void doAnalysis(CYFRAME) = 0;
     virtual void do_exec();
 
-    virtual void AllocFrameBuffer();
-    virtual void pushEmptyFrame();
-    virtual void pushFullFrame();
-    virtual void popupEmptyFrame();
-    virtual void popupFullFrame();
+    virtual bool AllocFrameBuffer();
+    virtual bool pushEmptyFrame();
+    virtual bool pushFullFrame(CYFRAME srcframe, CYFRAME & newframe);
+    virtual bool popupEmptyFrame();
+    virtual bool popupFullFrame();
 private:
     friend class Internal::CYAnalyzerPrivate;
 };

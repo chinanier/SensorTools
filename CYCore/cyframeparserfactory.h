@@ -14,11 +14,11 @@ class CYCORE_EXPORT CYFrameParserFactory : public QObject
     Q_OBJECT
 
 public:
-    typedef enum CYFRAMEPARSERTYPE
+    typedef enum tagCYFRAMEPARSERTYPE
     {
         CYFRAMEPARSER_PROCESSOR,
         CYFRAMEPARSER_ANALYZER
-    };
+    }CYFRAMEPARSERTYPE;
     CYFrameParserFactory(QObject *parent=0);
     ~CYFrameParserFactory();
     Utils::Id id() const { return m_id; }

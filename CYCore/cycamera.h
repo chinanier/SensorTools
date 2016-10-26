@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <CYCore/cycore_global.h>
+#include <CYCore/cycoreconstants.h>
+using namespace CYCore::Constants;
 namespace CYCore {
 class CYFrameParser;
 namespace Internal{ class CYCameraPrivate; }
@@ -35,9 +37,10 @@ private:
     Internal::CYCameraPrivate * d;
     
 signals :
-    void sigHaveNewFrame();
+    void sigHaveNewFrame(CYFRAME);
 public slots:
 
 };
 }
+Q_DECLARE_METATYPE(CYFRAME);
 #endif // CYCAMERA_H

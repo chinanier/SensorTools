@@ -48,12 +48,12 @@ using namespace Core;
 using namespace Core::Internal;
 
 
-typedef enum CUSTOMROLE
+typedef enum tagCUSTOMROLE
 {
     ROLE_NODE_LEVEL = Qt::UserRole + 1, // 指示树状结构的等级
     ROLE_NODE_ID,
     ROLE_TEST_CONNECT_STATUS
-};
+}CUSTOMROLE;
 ////
 // OpenEditorsWidget
 ////
@@ -265,6 +265,25 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                     0, tr("Connect!"), tr("disConnect Camera Success!"));
                 // 通知editManager销毁窗口
             });
+            // 增加开始采集的右键菜单
+            if (!CYCameraManager::isCapture(cameraid))
+            {
+                contextMenu.addAction("StartCapture", this, [this, editorIndex, cameraid]() {
+                    CYCameraManager::startCapture(cameraid);
+                    QMessageBox::information(
+                        0, tr("StartCapture!"), tr("StartCapture Camera Success!"));
+                    // 通知editManager创建窗口
+                });
+            }
+            else
+            {
+                contextMenu.addAction("StopCapture", this, [this, editorIndex, cameraid]() {
+                    CYCameraManager::stopCapture(cameraid);
+                    QMessageBox::information(
+                        0, tr("StopCapture!"), tr("StopCapture Camera Success!"));
+                    // 通知editManager创建窗口
+                });
+            }
             // 增加图像处理的右键菜单
             QList<CYFrameParserFactory*> factorys = CYFrameParserManager::getProcessorFactorys();
             QMenu * contextParserMenu = 0;

@@ -39,7 +39,7 @@ namespace Internal {
 class TestFrameParser : public CYCore::CYProcessor
 {
 public:
-    virtual void doProcess()
+    virtual void doProcess(CYFRAME frame)
     {
         int i = 0;
         i = i;
@@ -87,10 +87,13 @@ public:
 
     bool startCapture(int chl = 0)
     {
+        m_timerCaptureFrame = startTimer(1000);
         return isCapture(chl) ? false : m_iscapture = true;
     }
     bool stopCapture(int chl = 0)
     {
+        killTimer(m_timerCaptureFrame);
+        m_timerCaptureFrame = 0;
         return isCapture(chl) ? m_iscapture = false : false;
     }
     bool isCapture(int chl=0)
@@ -111,9 +114,24 @@ public:
     {
         return false;
     }
+    void timerEvent(QTimerEvent *event)
+    {
+        if (event->timerId() == m_timerCaptureFrame)
+        {
+            CYFRAME frame = { 0 };
+            frame.s_id = m_captureCount++;
+            frame.s_data = &m_captureData[frame.s_id % 100];
+            frame.s_length = sizeof(uint);
+            killTimer(m_timerCaptureFrame);m_timerCaptureFrame = 0;
+            emit sigHaveNewFrame(frame);
+        }
+    }
 private:
     bool m_isconnect = false;
     bool m_iscapture = false;
+    int  m_timerCaptureFrame = 0;
+    uint m_captureCount = 0;
+    uint m_captureData[100] = { 0 };
 };
 class CoaxPressFactory : public CYCore::CYCameraFactory
 {

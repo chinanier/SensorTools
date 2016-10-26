@@ -25,28 +25,31 @@ CYAnalyzer::~CYAnalyzer()
 }
 void CYAnalyzer::do_exec()
 {
-    doAnalysis();
+    //doAnalysis();
 }
 
 
-void CYAnalyzer::AllocFrameBuffer()
+bool CYAnalyzer::AllocFrameBuffer()
 {
-    
+    return true;
 }
-void CYAnalyzer::pushEmptyFrame()
+bool CYAnalyzer::pushEmptyFrame()
 {
     // 分析器可以什么都不做,因为没有自己的内存
-    return;
+    return false;
 }
-void CYAnalyzer::pushFullFrame()
+bool CYAnalyzer::pushFullFrame(CYFRAME srcframe, CYFRAME & newframe)
 {
-    return;
+    // 不是主线程环境,不会阻塞主线程
+    newframe = srcframe;
+    doAnalysis(newframe);
+    return true;
 }
-void CYAnalyzer::popupEmptyFrame()
+bool CYAnalyzer::popupEmptyFrame()
 {
-    return;
+    return true;
 }
-void CYAnalyzer::popupFullFrame()
+bool CYAnalyzer::popupFullFrame()
 {
-    return;
+    return true;
 }

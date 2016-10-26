@@ -126,6 +126,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cyframeparserfactory.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_cyframeparser_p.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cyframeparser_p.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cycoreplugin.h">
@@ -161,6 +167,9 @@
     <CustomBuild Include="cyframeparserfactory.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="cyframeparser_p.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="cycoreplugin.json">
@@ -169,6 +178,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cycore_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cycoreconstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

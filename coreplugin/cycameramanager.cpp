@@ -147,11 +147,13 @@ bool CYCameraManager::isConnect(Utils::Id cameraid, int chl)
 }
 bool CYCameraManager::startCapture(Utils::Id cameraid, int chl)
 {
-    return false;
+    CYCamera * pCamera = d->getCameraForCameraID(cameraid);
+    return pCamera ? pCamera->startCapture(chl) : false;
 }
 bool CYCameraManager::stopCapture(Utils::Id cameraid, int chl)
 {
-    return false;
+    CYCamera * pCamera = d->getCameraForCameraID(cameraid);
+    return pCamera ? pCamera->stopCapture(chl) : false;
 }
 bool CYCameraManager::isCapture(Utils::Id cameraid, int chl)
 {

@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QThread>
+#include <cycoreconstants.h>
+using namespace CYCore::Constants;
 namespace CYCore {
 namespace Internal {
 class CYProcessorPrivate : public QObject
@@ -19,9 +21,11 @@ signals:
     void sigPopupFullFrame();
 public slots:
     
-private:
+public:
     QThread * m_processorThread;
-    void * m_pFrame;
+    QList<CYFRAME> m_emptybuffer;
+    QList<CYFRAME> m_fullbuffer;
+    void * m_pMemory;
 };
 }
 }
