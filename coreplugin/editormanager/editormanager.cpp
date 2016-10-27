@@ -2502,7 +2502,7 @@ QWidget * EditorManager::activeSubEditorView(Id cameraId)
     }
     return 0;
 }
-QWidget * EditorManager::createProcessEditorView(Id cameraId, Id processID)
+EditorView * EditorManager::createProcessEditorView(Id cameraId, Id processID)
 {
     Id mode = ModeManager::currentMode();
     EditorArea * editArea = EditorManagerPrivate::createEditorArea(mode);

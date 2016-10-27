@@ -35,6 +35,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cameracxp_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CameraCXP.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="cameracxp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,16 +54,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cameracxp_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
+    <CustomBuild Include="GeneratedFiles\Debug\cameracxp.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\cameracxp.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
     <CustomBuild Include="cameracxp.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CameraCXP.json" />
   </ItemGroup>
 </Project>

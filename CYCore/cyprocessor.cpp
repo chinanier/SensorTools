@@ -1,106 +1,114 @@
 #include "cyprocessor.h"
 #include "cyprocessor_p.h"
 #include <QTimer>
-
+#define ALLOC_BUFFER_COUNT (10)
+#define ALLOC_BUFFER_WIDTH (2048)
+#define ALLOC_BUFFER_HEIGHT (2048)
 using namespace CYCore;
 using namespace Internal;
 CYProcessorPrivate::CYProcessorPrivate(QObject *parent)
-    : QObject(parent),
-    m_processorThread(new QThread)
+    : QObject(parent)
 {
-    m_emptybuffer.reserve(10);
-    if (m_processorThread)
-    {
-        moveToThread(m_processorThread);
-    }
-    m_processorThread->start();
 }
 
 CYProcessorPrivate::~CYProcessorPrivate()
 {
-    if (m_processorThread)
+    if (m_pMemory)
     {
-        m_processorThread->quit();
-        delete m_processorThread;
-        m_processorThread = 0;
+        delete[] m_pMemory;
+        m_pMemory = 0;
     }
+}
+bool CYProcessorPrivate::AllocFrameBuffer()
+{
+    if (m_pMemory)
+    {
+        return true;
+    }
+    m_pMemory = new uchar[ALLOC_BUFFER_WIDTH * ALLOC_BUFFER_HEIGHT * ALLOC_BUFFER_COUNT];
+    CYFRAME frame = {0};
+    frame.s_size = ALLOC_BUFFER_WIDTH * ALLOC_BUFFER_HEIGHT;
+    frame.s_length = ALLOC_BUFFER_WIDTH * ALLOC_BUFFER_HEIGHT;
+    for (int i=0;i<ALLOC_BUFFER_COUNT;i++)
+    {
+        frame.s_data = (void*)(m_pMemory+ ALLOC_BUFFER_WIDTH*ALLOC_BUFFER_HEIGHT*i);
+        m_emptybuffer << frame;
+    }
+    return true;
+}
+bool CYProcessorPrivate::pushEmptyFrame(CYFRAME frame)
+{
+    if (m_emptybuffer.size()<ALLOC_BUFFER_COUNT)
+    {
+        m_emptybuffer << frame;
+        return true;
+    }
+    return false;
+}
+bool CYProcessorPrivate::pushFullFrame(CYFRAME frame)
+{
+    if (m_fullbuffer.size() < ALLOC_BUFFER_COUNT)
+    {
+        m_fullbuffer << frame;
+        return true;
+    }
+    return false;
+}
+bool CYProcessorPrivate::popupEmptyFrame(CYFRAME & frame)
+{
+    if (m_emptybuffer.size() > 0)
+    {
+        frame = m_emptybuffer.takeFirst();
+        return true;
+    }
+    return false;
+}
+bool CYProcessorPrivate::popupFullFrame(CYFRAME & frame)
+{
+    if (m_fullbuffer.size() > 0)
+    {
+        frame = m_fullbuffer.takeFirst();
+        return true;
+    }
+    return false;
 }
 CYProcessor::CYProcessor(QObject *parent)
     : CYFrameParser(parent),
-    d(new CYProcessorPrivate(this))
+    d(new CYProcessorPrivate())
 {
-
+    
 }
 
 CYProcessor::~CYProcessor()
 {
-
+    delete d;
+    d = 0;
 }
-void CYProcessor::do_exec()
+// 在处理线程中
+void CYProcessor::do_exec(CYFRAME & frame)
 {
-    pushFullFrame(CYFRAME(),CYFRAME());
+    doProcess(frame);
 }
 
 
 // 内存管理接口
 bool CYProcessor::AllocFrameBuffer()
 {
-    return true;
+    return d->AllocFrameBuffer();
 }
-bool CYProcessor::pushEmptyFrame()
+bool CYProcessor::pushEmptyFrame(CYFRAME frame)
 {
-    return true;
+    return d->pushEmptyFrame(frame);
 }
-static void fillcyframe(CYFRAME & dst,CYFRAME & src)
+bool CYProcessor::pushFullFrame(CYFRAME frame)
 {
-    int cpsize = dst.s_length > src.s_length ? src.s_length : dst.s_length;
-    dst.s_size     = src.s_size;
-    dst.s_version  = src.s_version;
-    dst.s_seqno    = src.s_seqno;
-    dst.s_seqidx   = src.s_seqidx;
-    dst.s_id       = src.s_id;
-    dst.s_bw       = src.s_bw;
-    dst.s_color    = src.s_color;
-    dst.s_width    = src.s_width;
-    dst.s_height   = src.s_height;
-    dst.s_stride   = src.s_stride;
-    dst.s_pitch    = src.s_pitch;
-    //dst.s_length   = src.s_length;
-    //dst.s_data     = src.s_data;
-    memcpy(dst.s_data, src.s_data, cpsize);
-    dst.s_context  = src.s_context;
+    return d->pushFullFrame(frame);
 }
-bool CYProcessor::pushFullFrame(CYFRAME srcframe, CYFRAME & newframe)
+bool CYProcessor::popupEmptyFrame(CYFRAME & frame)
 {
-    bool bret = false;
-    // 不是主线程环境
-    // 放入自己的缓存buff内
-    // 首先判断buff是否已经满了
-    newframe = srcframe;
-    if (!d->m_emptybuffer.isEmpty())
-    {
-        CYFRAME frame = d->m_emptybuffer.takeFirst();
-        fillcyframe(frame, newframe);newframe = frame;
-        d->m_fullbuffer.append(frame);
-        // 在处理线程触发处理
-        QTimer::singleShot(0, d, [this]() {
-            // 私有线程环境
-            foreach(CYFRAME frame, d->m_fullbuffer)
-            {
-                frame = d->m_fullbuffer.takeFirst();
-                this->doProcess(frame);
-                d->m_emptybuffer.append(frame);
-            }
-        });
-        bret = true;
-    }
-    return bret;
+    return d->popupEmptyFrame(frame);
 }
-bool CYProcessor::popupEmptyFrame()
+bool CYProcessor::popupFullFrame(CYFRAME & frame)
 {
-    return true;
-}
-bool CYProcessor::popupFullFrame()
-{
-    return true;
+    return d->popupFullFrame(frame);
 }

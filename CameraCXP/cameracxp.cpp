@@ -21,6 +21,8 @@
 #include <CYCore/cyframeparser.h>
 #include <CYCore/cyprocessor.h>
 
+
+#include "Utils/algorithm.h"
 #include <QAction>
 #include <QComboBox>
 #include <QDockWidget>
@@ -29,6 +31,12 @@
 #include <QStackedWidget>
 #include <QToolButton>
 #include <QMessageBox>
+#include <QDebug>
+#include <QThread>
+#include <QImage>
+#include <QPixmap>
+#include <QDir>
+#include <qt_windows.h>
 
 using namespace Core;
 using namespace CYCore;
@@ -39,10 +47,48 @@ namespace Internal {
 class TestFrameParser : public CYCore::CYProcessor
 {
 public:
-    virtual void doProcess(CYFRAME frame)
+    TestFrameParser()
+    {
+        AllocFrameBuffer();
+    }
+    virtual void doProcess(CYFRAME &frame)
     {
         int i = 0;
         i = i;
+        qDebug() << "There is TestFrameParser" << this << "==> id:" << frame.s_id << "buffer:" << frame.s_data;
+        //QThread::sleep(1);
+    }
+};
+
+class Test2FrameParser : public CYCore::CYProcessor
+{
+public:
+    Test2FrameParser()
+    {
+        AllocFrameBuffer();
+    }
+    virtual void doProcess(CYFRAME &frame)
+    {
+        int i = 0;
+        i = i;
+        qDebug() << "There is Test2FrameParser"<<this<<"==> id:" << frame.s_id << "buffer:" << frame.s_data;
+        //QThread::sleep(1);
+    }
+};
+class Test2Processor : public CYCore::CYFrameParserFactory {
+public:
+    Test2Processor()
+    {
+        setId("TEST2PROCESSOR");
+        setDisplayName("Test2Processor");
+        setType(CYFrameParserFactory::CYFRAMEPARSER_PROCESSOR);
+    }
+    ~Test2Processor()
+    {
+
+    }
+    CYFrameParser *createFrameParser() {
+        return new Test2FrameParser;
     }
 };
 
@@ -63,15 +109,46 @@ public:
     }
 };
 
-
+static QStringList jpgFiles(const QStringList &jpgPaths)
+{
+    QStringList pluginFiles;
+    QStringList searchPaths = jpgPaths;
+    while (!searchPaths.isEmpty()) {
+        const QDir dir(searchPaths.takeFirst());
+        const QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoSymLinks);
+        const QStringList absoluteFilePaths = Utils::transform(files, &QFileInfo::absoluteFilePath);
+        pluginFiles += Utils::filtered(absoluteFilePaths, [](const QString &path) {
+            return true;
+        });
+        const QFileInfoList dirs = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+        searchPaths += Utils::transform(dirs, &QFileInfo::absoluteFilePath);
+    }
+    return pluginFiles;
+}
 class CoaxPressCamera : public CYCore::CYCamera
 {
+    Q_OBJECT
+
 public:
+    CoaxPressCamera()
+    {
+        connect(this, &CYCamera::sigCompleteFrame, this, &CoaxPressCamera::slotCompleteFrame);
+        QString strpluginPath = QCoreApplication::applicationDirPath() + "/testimage";
+        QStringList jpglist = jpgFiles(QStringList() << strpluginPath);
+        m_maxjpgcount = jpglist.size();
+        for (int i=0;i<jpglist.size();i++)
+        {
+            m_pImage[i] = new QImage(jpglist[i]);
+        }
+    }
+    ~CoaxPressCamera()
+    {
+        
+    }
     bool SerachCamera()
     {
         return false;
     }
-
     bool connectCamera(int chl = 0)
     {
         return isConnect(chl)?false: m_isconnect = true;
@@ -87,7 +164,7 @@ public:
 
     bool startCapture(int chl = 0)
     {
-        m_timerCaptureFrame = startTimer(1000);
+        m_timerCaptureFrame = startTimer(100);
         return isCapture(chl) ? false : m_iscapture = true;
     }
     bool stopCapture(int chl = 0)
@@ -116,15 +193,30 @@ public:
     }
     void timerEvent(QTimerEvent *event)
     {
+        //killTimer(m_timerCaptureFrame);
         if (event->timerId() == m_timerCaptureFrame)
         {
+            m_tstart = GetTickCount();
             CYFRAME frame = { 0 };
             frame.s_id = m_captureCount++;
-            frame.s_data = &m_captureData[frame.s_id % 100];
-            frame.s_length = sizeof(uint);
-            killTimer(m_timerCaptureFrame);m_timerCaptureFrame = 0;
+            frame.s_data = &m_pImage[frame.s_id % m_maxjpgcount];
+            frame.s_length = sizeof(QImage**);
+            qDebug() << "=============================================";
+            qDebug() << "There is user Provd==> id:" << frame.s_id << "buffer:" << frame.s_data;
             emit sigHaveNewFrame(frame);
         }
+        //m_timerCaptureFrame = 0;
+    }
+public slots:
+    void slotCompleteFrame(CYFRAME frame)
+    {
+        int i = 0;
+        i = 1;
+        i = 2;
+        m_tstop = GetTickCount();
+        qDebug() << "There is " << this << "::slotCompleteFrame ==> id:" << frame.s_id << "buffer:" << frame.s_data;
+        qDebug() << "totle time:" << (m_tstop - m_tstart)/1000.0<<" ms";
+        qDebug() << "=============================================";
     }
 private:
     bool m_isconnect = false;
@@ -132,6 +224,10 @@ private:
     int  m_timerCaptureFrame = 0;
     uint m_captureCount = 0;
     uint m_captureData[100] = { 0 };
+    QImage * m_pImage[100] = { 0 };
+    uint     m_maxjpgcount = 0;
+    DWORD m_tstart;
+    DWORD m_tstop;
 };
 class CoaxPressFactory : public CYCore::CYCameraFactory
 {
@@ -153,7 +249,7 @@ public:
     }
     int SerarchCamera()
     {
-        return 2;
+        return 1;
     }
 };
 
@@ -220,6 +316,9 @@ bool CameraCXPPlugin::initialize(const QStringList &arguments, QString *errorMes
 
     TestProcessor * testProcessor = new TestProcessor;
     addAutoReleasedObject(testProcessor);
+
+    Test2Processor * test2Processor = new Test2Processor;
+    addAutoReleasedObject(test2Processor);
     return true;
 }
 
@@ -249,3 +348,4 @@ void CameraCXPPlugin::sayHelloWorld()
 } // namespace Internal
 } // namespace CameraCXP
 
+#include "cameracxp.moc"

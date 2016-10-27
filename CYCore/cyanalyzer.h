@@ -2,10 +2,10 @@
 #define CYANALYZER_H
 
 #include <QObject>
-#include "cyframeparser.h"
+#include "CYCore/cyprocessor.h"
 namespace CYCore {
 namespace Internal{ class CYAnalyzerPrivate; }
-class CYAnalyzer : public CYFrameParser
+class CYAnalyzer : public CYProcessor
 {
     Q_OBJECT
 
@@ -13,15 +13,10 @@ public:
     CYAnalyzer(QObject *parent);
     virtual ~CYAnalyzer();
     virtual void doAnalysis(CYFRAME) = 0;
-    virtual void do_exec();
-
-    virtual bool AllocFrameBuffer();
-    virtual bool pushEmptyFrame();
-    virtual bool pushFullFrame(CYFRAME srcframe, CYFRAME & newframe);
-    virtual bool popupEmptyFrame();
-    virtual bool popupFullFrame();
+    virtual void doProcess(CYFRAME&);
 private:
     friend class Internal::CYAnalyzerPrivate;
+    Internal::CYAnalyzerPrivate * d;
 };
 }
 #endif // CYANALYZER_H

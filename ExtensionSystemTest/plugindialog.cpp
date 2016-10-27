@@ -24,6 +24,7 @@
 ****************************************************************************/
 
 #include "plugindialog.h"
+#include <qt_windows.h>
 #include <app/app_version.h>
 #include <extensionsystem/plugindetailsview.h>
 #include <extensionsystem/pluginerrorview.h>
@@ -214,9 +215,7 @@ int main(int argc, char *argv[])
 {
     //ExtensionSystem::PluginManager manager;
     QApplication app(argc, argv);
-
-
-
+    //AllocConsole();
     // Manually determine -settingspath command line option
     // We can't use the regular way of the plugin manager, because that needs to parse plugin meta data
     // but the settings path can influence which plugins are enabled
@@ -268,4 +267,6 @@ int main(int argc, char *argv[])
     QObject::connect(&app, &QCoreApplication::aboutToQuit, &manager, &ExtensionSystem::PluginManager::shutdown);
     //dialog.show();
     app.exec();
+    //FreeConsole();
+    return 0;
 }

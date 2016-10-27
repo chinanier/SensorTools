@@ -34,6 +34,8 @@
 #include <coreplugin/modemanager.h>
 #include <coreplugin/cycameramanager.h>
 #include <coreplugin/cyframeparsermanager.h>
+#include <coreplugin/cydefaultframeview.h>
+
 
 #include <CYCore/cycamerafactory.h>
 #include <CYCore/cyframeparserfactory.h>
@@ -131,8 +133,8 @@ OpenEditorsWidget::OpenEditorsWidget()
             }
             else if (i_mode == 1)
             {
-                QVariant ls_name = index.data();
-                EditorManager::activeSubEditorView(ls_name.toString().toStdString().c_str());
+                Id cameraid = Id::fromSetting(index.data(ROLE_NODE_ID));
+                EditorManager::activeSubEditorView(cameraid);
             }
         }
     });
@@ -236,8 +238,16 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                     itemChild->setData(0, ROLE_TEST_CONNECT_STATUS);
                     itemChild->setData(cameraId.toSetting(), ROLE_NODE_ID);
                     itemParent->appendRow(itemChild);
-                    EditorManager::createSubEditorView(Id::fromSetting(listName));
+                    EditorManager::createSubEditorView(cameraId);  // 为每个相机创建一个容器
+                    EditorView * edView = EditorManager::createProcessEditorView(cameraId, "CYDefaultFrameView");
+                    CYDefaultFrameView * defView = new CYDefaultFrameView;
+                    defView->setSurfaceView(edView);
+                    CYCameraManager::appendFrameParser(cameraId, defView);
                 }
+            }
+            if (cameraList.size()>0)
+            {
+                EditorManager::activeSubEditorView(Id::fromSetting(factoryId.toString() + "." + cameraList.at(0).toString()));
             }
         });
     }
@@ -319,7 +329,7 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                     }
                     contextParserMenu->addAction(factory->displayName(), this, [this, editorIndex, factory, cameraid]() {
                         QVariant cams = editorIndex.data();
-                        EditorManager::createProcessEditorView(Id::fromSetting(cams), factory->id());
+                        EditorManager::createProcessEditorView(cameraid, factory->id());
                         // 激活本窗体
 
                         // 向系统添加完用于展示的窗体后，这里要向指定的id的相机添加一个处理器,这样就可以由系统进行调度处理了

@@ -11,9 +11,6 @@ class CYAnalyzerPrivate : public QObject
 public:
     CYAnalyzerPrivate(QObject *parent);
     ~CYAnalyzerPrivate();
-
-private:
-
 };
 }
 }

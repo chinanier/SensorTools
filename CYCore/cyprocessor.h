@@ -13,15 +13,14 @@ class CYCORE_EXPORT CYProcessor : public CYFrameParser
 public:
     CYProcessor(QObject *parent=0);
     virtual ~CYProcessor();
-    virtual void doProcess(CYFRAME) = 0;
-    virtual void do_exec();
+    virtual void doProcess(CYFRAME&) = 0;
+    virtual void do_exec(CYFRAME&frame);
 
     virtual bool AllocFrameBuffer();
-
-    virtual bool pushEmptyFrame();
-    virtual bool pushFullFrame(CYFRAME srcframe,CYFRAME & newframe);
-    virtual bool popupEmptyFrame();
-    virtual bool popupFullFrame();
+    virtual bool pushEmptyFrame(CYFRAME frame);
+    virtual bool pushFullFrame(CYFRAME frame);
+    virtual bool popupEmptyFrame(CYFRAME & frame);
+    virtual bool popupFullFrame(CYFRAME & frame);
 
 private:
     friend class Internal::CYProcessorPrivate;

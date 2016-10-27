@@ -2,6 +2,7 @@
 #include "cycamera.h"
 #include "cyframeparser.h"
 #include <QTimer>
+#include <QDebug>
 using namespace CYCore;
 using namespace Internal;
 CYCameraPrivate::CYCameraPrivate(QObject *parent)
@@ -14,76 +15,103 @@ CYCameraPrivate::~CYCameraPrivate()
 {
 
 }
-void CYCameraPrivate::slotParseCommit(CYFRAME frame,CYFRAME newframe)
+// 拷贝完成,回
+void CYCameraPrivate::slotCompleteFrame(CYFRAME frame)
 {
-    parseCommit(qobject_cast<CYFrameParser*>(sender()),frame,newframe);
-    disconnect(qobject_cast<CYFrameParser*>(sender()), &CYFrameParser::sigParseCommit, this, &CYCameraPrivate::slotParseCommit);
+    qDebug() << "There is " << this << "::slotCompleteCopyFrame ==> id:" << frame.s_id << "buffer:" << frame.s_data;
+    // 在这里将传递到处理器的内存还给设备
+    CYFrameParser* parse = qobject_cast<CYFrameParser*>(sender());
+    int idx = m_frameParser.indexOf(parse);    // 这里的index为数组索引
+    switch (idx)
+    {
+    case 0:
+    {
+        // 说明是第一个,直接还给自己
+        emit sigCompleteFrame(frame);
+    }
+    break;
+    case -1:
+    {
+        // 没有找到? 出现逻辑错误
+    }
+    break;
+    default:
+    {
+        // 在这之中,还给上一个处理器
+        CYFrameParser * lastParse = m_frameParser.at(idx - 1);
+        if (lastParse)
+        {
+            QTimer::singleShot(0, lastParse, [lastParse,frame]() {
+                lastParse->completeFrame(frame);
+            });
+        }
+    }
+    break;
+    }
+}
+// 处理完成,传递
+void CYCameraPrivate::slotParseCommit(CYFRAME newframe)
+{
+    // 这里表示处理器已经处理完一帧,将图像后续传递下去
+    // 在这里将传递到处理器的内存还给设备
+    qDebug() << "There is " << this << "::slotParseCommit ==> id:" << newframe.s_id << "buffer:" << newframe.s_data;
+    CYFrameParser* parse = qobject_cast<CYFrameParser*>(sender());
+    if (!parse)
+    {
+        // 程序异常
+        return;
+    }
+    int idx = m_frameParser.indexOf(parse);    // 这里的index为数组索引
+    int end_idx = m_frameParser.count() - 1;
+    if (idx>=0 && idx<end_idx)
+    {
+        CYFrameParser * laterParse = m_frameParser.at(idx + 1);
+        if (laterParse)
+        {
+            //改变线程上下文
+            QTimer::singleShot(0, laterParse, [laterParse, newframe]() {
+                bool bret = false;
+                bret = laterParse->newFrame(newframe);
+                if (!bret)
+                {
+                    // 这帧图像不能传递下去,说明图像处理压力大
+                }
+            });
+        }
+    }else if (idx == end_idx)
+    {
+        // 处理到最后一个,直接将内存还给最后一个
+        QTimer::singleShot(0, parse, [parse, newframe]() {
+            parse->completeFrame(newframe);
+        });
+    }
     return;
 }
 void CYCameraPrivate::slotHaveNewFrame(CYFRAME newframe)
 {
+    qDebug() << "There is CYCameraPrivate::slotHaveNewFrame==> id:" << newframe.s_id << "buffer:" << newframe.s_data;
     CYFrameParser * parser = m_frameParser.first();
     if (parser)
     {
         //改变线程上下文
-        QTimer::singleShot(0, parser, [parser,newframe,this]() {
+        QTimer::singleShot(0, parser, [parser, newframe]() {
             bool bret = false;
-            QObject::connect(parser, &CYFrameParser::sigParseCommit, this, &CYCameraPrivate::slotParseCommit);
-            bret = parser->newframe(newframe, this->parent());
+            bret = parser->newFrame(newframe);
             if (!bret)
             {
                 // 这帧图像不能传递下去,说明图像处理压力大
             }
-            // 这个函数返回了,就可以恢复自己的内内存
         });
     }
 }
 // 这个函数是处理完成的意思
-void CYCameraPrivate::parseCommit(CYFrameParser*pframeParser,CYFRAME frame,CYFRAME newframe)
-{
-    // 到这里表示图像处理或者图像分析已经完成了
-    if (!pframeParser)
-    {
-        return;
-    }
-    int cnt = m_frameParser.count();
-    int i = 0;
-    foreach(CYFrameParser *obj, m_frameParser) {
-        i++;
-        if (obj==pframeParser)
-        {
-            // 判断是否是最后一个,不是,取下一个进行处理
-            if (cnt > i)
-            {
-                CYFrameParser * parser = m_frameParser.at(i); // 取下一个内容
-                if (parser)
-                {
-                    //改变线程上下文
-                    QTimer::singleShot(0, parser, [parser, frame, this]() {
-                        bool bret = false;
-                        QObject::connect(parser, &CYFrameParser::sigParseCommit, this, &CYCameraPrivate::slotParseCommit);
-                        bret = parser->newframe(frame, this->parent());
-                        if (!bret)
-                        {
-                            // 这帧图像不能传递下去,说明图像处理压力大
-                        }
-                        // 这个函数返回了,就可以恢复自己的内内存
-                    });
-                }
-            }
-            // 反之,表示整条处理链路已经跑完,直接通知分析器释放
-            // 调用完下一个的处理之后，调度器需要通知处理释放内存
-            obj->pushEmptyFrame();
-        }
-    }
-    return;
-}
 CYCamera::CYCamera(QObject *parent)
     : QObject(parent),
     d(new CYCameraPrivate(this))
 {
     qRegisterMetaType<CYFRAME>();
-    connect(this, &CYCamera::sigHaveNewFrame, d, &CYCameraPrivate::slotHaveNewFrame);
+    connect(this, &CYCamera::sigHaveNewFrame, d, &CYCameraPrivate::slotHaveNewFrame);    // 绑定设备的新图像信号
+    connect(d, &CYCameraPrivate::sigCompleteFrame, this, &CYCamera::sigCompleteFrame);   // 绑定处理完成一帧,用于通知设备释放内存
 }
 
 CYCamera::~CYCamera()
@@ -97,6 +125,10 @@ bool CYCamera::addFrameParser(CYFrameParser * newNode, CYFrameParser * before)
     {
         return false;
     }
+    if (d->m_frameParser.contains(newNode))
+    {
+        return true;
+    }
     if (d->m_frameParser.contains(before))
     {
         int index = d->m_frameParser.indexOf(before);
@@ -106,5 +138,7 @@ bool CYCamera::addFrameParser(CYFrameParser * newNode, CYFrameParser * before)
     {
         d->m_frameParser.append(newNode);
     }
+    QObject::connect(newNode, &CYFrameParser::sigFrameCopyCommit, d, &CYCameraPrivate::slotCompleteFrame); // 处理器拷贝完通知调度器释放内存
+    QObject::connect(newNode, &CYFrameParser::sigParseCommit, d, &CYCameraPrivate::slotParseCommit);       // 处理器处理完,需要通知调度器继续传递处理
     return true;
 }

@@ -15,18 +15,21 @@ class CYCORE_EXPORT CYFrameParser : public QObject
     Q_OBJECT
 
 public:
-    CYFrameParser(QObject *parent);
+    CYFrameParser(QObject *parent=0);
     virtual ~CYFrameParser();
-    virtual void do_exec() =0;
+    virtual void do_exec(CYFRAME&) =0;
 
     virtual bool AllocFrameBuffer() = 0;
-    virtual bool pushEmptyFrame() = 0;
-    virtual bool pushFullFrame(CYFRAME srcframe, CYFRAME & newframe) = 0;
-    virtual bool popupEmptyFrame() = 0;
-    virtual bool popupFullFrame()= 0;
-    bool         newframe(CYFRAME,QObject * pContext);
+    virtual bool pushEmptyFrame(CYFRAME frame) = 0;
+    virtual bool pushFullFrame(CYFRAME frame) = 0;
+    virtual bool popupEmptyFrame(CYFRAME & frame) = 0;
+    virtual bool popupFullFrame(CYFRAME & frame)= 0;
+    bool         newFrame(CYFRAME);
+    void         completeFrame(CYFRAME frame);
 signals:
-    void sigParseCommit(CYFRAME oldframe,CYFRAME newframe);
+    void sigFrameCopyCommit(CYFRAME frame);
+    void sigParseCommit(CYFRAME newframe);
+    
 private:
     Internal::CYFrameParserPrivate * d;
 };

@@ -38,6 +38,7 @@ private:
     
 signals :
     void sigHaveNewFrame(CYFRAME);
+    void sigCompleteFrame(CYFRAME);
 public slots:
 
 };

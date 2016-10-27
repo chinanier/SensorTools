@@ -1182,6 +1182,21 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cyframeparsermanager_p.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="cydefaultframeview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_cydefaultframeview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cydefaultframeview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_cydefaultframeview_p.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cydefaultframeview_p.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="coreplugin.h">
@@ -1644,6 +1659,12 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cyframeparsermanager_p.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="cydefaultframeview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="cydefaultframeview_p.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

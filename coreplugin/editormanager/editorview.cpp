@@ -441,7 +441,7 @@ void EditorView::setCurrentEditor(IEditor *editor)
 
     updateEditorHistory(editor);
 
-    m_infoBarDisplay->setInfoBar(editor->document()->infoBar());
+    //m_infoBarDisplay->setInfoBar(editor->document()->infoBar());
     emit currentEditorChanged(editor);
 }
 
@@ -622,7 +622,7 @@ SplitterOrView::SplitterOrView(Id mode)
     m_view = new EditorView(this,0,mode);
     m_splitter = 0;
     QMdiArea * mdiArea = new QMdiArea;
-    mdiArea->addSubWindow(m_view);
+    //mdiArea->addSubWindow(m_view);
     //mdiArea->addSubWindow(new EditorView(this, 0, "123"));
     m_layout->addWidget(mdiArea);
     m_mdiArea = mdiArea;
