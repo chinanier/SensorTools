@@ -185,11 +185,11 @@ EditorToolBar::EditorToolBar(QWidget *parent) :
     //toplayout->addWidget(d->m_lockButton);
     //toplayout->addWidget(d->m_dragHandle);
     //toplayout->addWidget(d->m_editorList);
-    toplayout->addWidget(new QLabel(tr("Camera AD0")));
+    //toplayout->addWidget(new QLabel(tr("Camera AD0")));
     toplayout->addWidget(d->m_closeEditorButton);
     toplayout->addWidget(d->m_toolBarPlaceholder, 1); // Custom toolbar stretches
-    toplayout->addWidget(d->m_splitButton);
-    toplayout->addWidget(d->m_closeSplitButton);
+    //toplayout->addWidget(d->m_splitButton);
+    //toplayout->addWidget(d->m_closeSplitButton);
 
     setLayout(toplayout);
 

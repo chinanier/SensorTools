@@ -29,6 +29,7 @@
 #include "coreicons.h"
 #include "inavigationwidgetfactory.h"
 #include "actionmanager/command.h"
+#include "ExtensionSystem/pluginmanager.h"
 #include "Utils/id.h"
 
 #include <utils/styledbar.h>

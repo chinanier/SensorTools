@@ -51,6 +51,7 @@ public:
     static bool appendFrameParser(Utils::Id cameraid,CYFrameParser * parser);
 private:
     static void init();
+    static void extensionsInitialized();
     void objectAdded(QObject *obj);
     void aboutToRemoveObject(QObject *obj);
     friend class Internal::CYCameraManagerPrivate;

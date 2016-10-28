@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QHash>
 #include "Utils/id.h"
+class CYCameraCategoryMode; // fix,º«µ√º””Ú
 namespace CYCore{
 class CYCamera;
 class CYCameraFactory;
@@ -21,6 +22,7 @@ public:
     QMap<Utils::Id, QList<CYCamera*>> m_idOfCameras; // id is factoryid
     QHash<Utils::Id, CYCameraFactory*> m_idOfFactorys;
     QMap<QString, CYCameraFactoryList> m_categoryOfFactory;
+    QList<CYCameraCategoryMode*> m_categoryOfMode;
     CYCameraFactoryList m_cameraFactoryList;
 public:
     CYCamera * getCameraForCameraID(Utils::Id cameraid);

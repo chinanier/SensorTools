@@ -164,7 +164,7 @@ public:
 
     bool startCapture(int chl = 0)
     {
-        m_timerCaptureFrame = startTimer(100);
+        m_timerCaptureFrame = startTimer(40);
         return isCapture(chl) ? false : m_iscapture = true;
     }
     bool stopCapture(int chl = 0)
@@ -234,11 +234,12 @@ class CoaxPressFactory : public CYCore::CYCameraFactory
 public:
     CoaxPressFactory()
     {
-        setDisplayName(tr("AME"));
+        setDisplayName(tr("FileLoad"));
         //setIcon(QIcon());
         setCategory("CoaxPress");
+        //setCategory("TestCamera");
         setPriority(0);
-        setId("CoaxPress.AME");
+        setId("TestCamera.FileLoad");
     }
     ~CoaxPressFactory()
     {
@@ -249,7 +250,7 @@ public:
     }
     int SerarchCamera()
     {
-        return 1;
+        return 2;
     }
 };
 

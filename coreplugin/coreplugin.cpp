@@ -226,8 +226,8 @@ void CorePlugin::extensionsInitialized()
     m_mainWindow->extensionsInitialized();
     // add by kk,mode new must mainwindow
     m_editMode = new EditMode;
-    addObject(m_editMode);
-    ModeManager::activateMode(m_editMode->id());
+    //addObject(m_editMode);
+    //ModeManager::activateMode(m_editMode->id());
     InfoBar::initializeGloballySuppressed();
     if (ExtensionSystem::PluginManager::hasError()) {
         auto errorOverview = new ExtensionSystem::PluginErrorOverview(m_mainWindow);

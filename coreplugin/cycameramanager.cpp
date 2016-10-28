@@ -198,12 +198,19 @@ void CYCameraManager::init()
         m_instance, &CYCameraManager::aboutToRemoveObject);
     return ;
 }
+void CYCameraManager::extensionsInitialized()
+{
+    foreach(CYCameraCategoryMode * modeView,d->m_categoryOfMode)
+    {
+        ExtensionSystem::PluginManager::addObject(modeView);
+    }
+}
 void CYCameraManager::objectAdded(QObject *obj)
 {
     CYCameraFactory * factory = qobject_cast<CYCameraFactory *>(obj);
     if (factory)
     {
-        CYCameraFactoryList & fl = d->m_categoryOfFactory[factory->category()];
+        CYCameraFactoryList & fl = d->m_categoryOfFactory[factory->category()]; //
         if (fl.isEmpty())
         {
             // ´´½¨model
@@ -211,7 +218,8 @@ void CYCameraManager::objectAdded(QObject *obj)
             modeView->setDisplayName(factory->category());
             modeView->setIcon(factory->icon());
             modeView->setPriority(factory->priority());
-            ExtensionSystem::PluginManager::addObject(modeView);
+            d->m_categoryOfMode << modeView;
+            //ExtensionSystem::PluginManager::addObject(modeView);
         }
         fl << factory;
         d->m_idOfFactorys[factory->id()] = factory;

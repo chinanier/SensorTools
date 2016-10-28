@@ -371,6 +371,7 @@ void MainWindow::extensionsInitialized()
     OutputPaneManager::instance()->init();
     m_vcsManager->extensionsInitialized();
     m_navigationWidget->setFactories(PluginManager::getObjects<INavigationWidgetFactory>());
+    m_cameraManager->extensionsInitialized();
 
     readSettings();
     updateContext();
