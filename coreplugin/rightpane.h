@@ -40,7 +40,7 @@ namespace Core {
 
 class IMode;
 class RightPaneWidget;
-
+class RightPaneWidgetPrivate;
 class CORE_EXPORT RightPanePlaceHolder : public QWidget
 {
     friend class Core::RightPaneWidget;
@@ -87,6 +87,8 @@ private:
     int m_width;
     QPointer<QWidget> m_widget;
     static RightPaneWidget *m_instance;
+    friend class RightPaneWidgetPrivate;
+    RightPaneWidgetPrivate * d;
 };
 
 } // namespace Core

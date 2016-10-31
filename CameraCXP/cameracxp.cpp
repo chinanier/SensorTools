@@ -201,6 +201,7 @@ public:
             frame.s_id = m_captureCount++;
             frame.s_data = &m_pImage[frame.s_id % m_maxjpgcount];
             frame.s_length = sizeof(QImage**);
+            frame.s_color = PIX_COLOR_QIMAGE;
             qDebug() << "=============================================";
             qDebug() << "There is user Provd==> id:" << frame.s_id << "buffer:" << frame.s_data;
             emit sigHaveNewFrame(frame);

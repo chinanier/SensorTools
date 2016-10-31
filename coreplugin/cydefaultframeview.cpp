@@ -61,8 +61,16 @@ void CYDefaultFrameViewPrivate::setSurfaceView(EditorView*sfv)
 }
 void CYDefaultFrameViewPrivate::toShowFrame(CYFRAME frame)
 {
-    QImage * image = *(QImage**)frame.s_data;
-    m_editor->m_labelSurfer->setPixmap(QPixmap::fromImage(image->scaled(800, 600)));
+    if (frame.s_color == PIX_COLOR_QIMAGE)
+    {
+        QImage * image = *(QImage**)frame.s_data;
+        m_editor->m_labelSurfer->setPixmap(QPixmap::fromImage(image->scaled(800, 600)));
+    }
+    else
+    {
+        QImage image((uchar*)frame.s_data,frame.s_width,frame.s_height,QImage::Format_Indexed8);
+        m_editor->m_labelSurfer->setPixmap(QPixmap::fromImage(image));
+    }
 }
 
 CYDefaultFrameView::CYDefaultFrameView():

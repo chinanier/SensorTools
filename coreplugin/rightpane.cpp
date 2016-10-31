@@ -35,9 +35,11 @@
 #include <QResizeEvent>
 #include <QLabel>
 
+#include <CamyuPropertyedit/camyupropertyedit.h>
 
 using namespace Core;
 using namespace Core::Internal;
+using namespace CAMYUPROPEDIT;
 
 RightPanePlaceHolder *RightPanePlaceHolder::m_current = 0;
 
@@ -116,8 +118,19 @@ void RightPanePlaceHolder::currentModeChanged(Id mode)
 /////
 // RightPaneWidget
 /////
-
-
+namespace Core{
+class RightPaneWidgetPrivate {
+public:
+    RightPaneWidgetPrivate() {
+        
+    }
+    ~RightPaneWidgetPrivate()
+    {
+    }
+public:
+    QHash<Id, QList<CamyuPropertyEdit*> > m_cameraOfEdit;    // mode_id - cameralist
+};
+}
 RightPaneWidget *RightPaneWidget::m_instance = 0;
 
 RightPaneWidget::RightPaneWidget()
@@ -128,6 +141,8 @@ RightPaneWidget::RightPaneWidget()
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     setLayout(layout);
+    
+    d = new RightPaneWidgetPrivate;
 }
 
 RightPaneWidget::~RightPaneWidget()
@@ -169,8 +184,8 @@ void RightPaneWidget::resizeEvent(QResizeEvent *re)
 
 void RightPaneWidget::saveSettings(QSettings *settings)
 {
-    settings->setValue(QLatin1String("RightPane/Visible"), isShown());
-    settings->setValue(QLatin1String("RightPane/Width"), m_width);
+    //settings->setValue(QLatin1String("RightPane/Visible"), isShown());
+    //settings->setValue(QLatin1String("RightPane/Width"), m_width);
 }
 
 void RightPaneWidget::readSettings(QSettings *settings)
@@ -192,10 +207,11 @@ void RightPaneWidget::readSettings(QSettings *settings)
     if (RightPanePlaceHolder::m_current)
         RightPanePlaceHolder::m_current->applyStoredSize(m_width);
 #endif
-    m_width = 100;
+    m_width = 280;
     if (RightPanePlaceHolder::m_current)
         RightPanePlaceHolder::m_current->applyStoredSize(m_width);
-    setWidget(new QLabel(tr("test right panle")));
+    //setWidget(new QLabel(tr("test right panle")));
+    setWidget(new CamyuPropertyEdit);
     setShown(true);
 }
 

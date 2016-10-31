@@ -20,6 +20,7 @@ static void fillcyframe(CYFRAME & dst, CYFRAME & src)
     dst.s_height = src.s_height;
     dst.s_stride = src.s_stride;
     dst.s_pitch = src.s_pitch;
+    dst.s_piclen = src.s_piclen;
     //dst.s_length   = src.s_length;
     //dst.s_data     = src.s_data;
     memcpy(dst.s_data, src.s_data, cpsize);
