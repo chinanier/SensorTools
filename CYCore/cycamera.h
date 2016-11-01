@@ -18,10 +18,14 @@ public:
 
     virtual bool SerachCamera() = 0;
 
+    bool connectCameraHelper(int chl);
+    bool disconnectCameraHelper(int chl);
     virtual bool connectCamera(int chl=0) = 0;
     virtual bool disconnectCamera(int chl = 0) = 0;
     virtual bool isConnect(int chl=0) = 0;
 
+    bool startCaptureHelper(int chl);
+    bool stopCaptureHelper(int chl);
     virtual bool startCapture(int chl = 0) = 0;
     virtual bool stopCapture(int chl = 0) = 0;
     virtual bool isCapture(int chl=0) = 0;
@@ -32,6 +36,7 @@ public:
     virtual bool currentFrame() = 0;
 
     bool addFrameParser(CYFrameParser * newNode, CYFrameParser * before = 0);
+    bool delFrameParser(CYFrameParser * parser);
 private:
     friend class Internal::CYCameraPrivate;
     Internal::CYCameraPrivate * d;
@@ -39,6 +44,8 @@ private:
 signals :
     void sigHaveNewFrame(CYFRAME);
     void sigCompleteFrame(CYFRAME);
+    void sigConnectChange(int chl);
+    void sigCaptureChange(int chl);
 public slots:
 
 };

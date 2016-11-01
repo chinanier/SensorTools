@@ -192,6 +192,8 @@ signals:
     void findOnFileSystemRequest(const QString &path);
     void aboutToSave(IDocument *document);
 
+    void currentSubEditorChanged(Id cameraId);
+
 public slots:
     static void saveDocument();
     static void saveDocumentAs();

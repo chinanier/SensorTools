@@ -27,6 +27,7 @@
 
 #include <coreplugin/imode.h>
 #include <coreplugin/modemanager.h>
+#include <coreplugin/editormanager/editormanager.h>
 
 #include <QSettings>
 
@@ -34,9 +35,12 @@
 #include <QSplitter>
 #include <QResizeEvent>
 #include <QLabel>
+#include <QStackedLayout>
 
+#include "cycameraconfigmanager.h"
 #include <CamyuPropertyedit/camyupropertyedit.h>
 
+using namespace CYCore;
 using namespace Core;
 using namespace Core::Internal;
 using namespace CAMYUPROPEDIT;
@@ -60,8 +64,8 @@ RightPanePlaceHolder::RightPanePlaceHolder(Id mode, QWidget *parent)
 RightPanePlaceHolder::~RightPanePlaceHolder()
 {
     if (m_current == this) {
-        RightPaneWidget::instance()->setParent(0);
-        RightPaneWidget::instance()->hide();
+        //RightPaneWidget::instance()->setParent(0);
+        //RightPaneWidget::instance()->hide();
     }
 }
 
@@ -104,7 +108,13 @@ void RightPanePlaceHolder::currentModeChanged(Id mode)
     }
     if (m_mode == mode) {
         m_current = this;
-
+        
+        RightPaneWidget * rpw = qobject_cast<RightPaneWidget*>( CYCameraConfigManager::getConfigPane(mode));
+        if (!rpw)
+        {
+            rpw = qobject_cast<RightPaneWidget*>(CYCameraConfigManager::createConfigPane(mode));
+            rpw->readSettings(0);
+        }
         int width = RightPaneWidget::instance()->storedWidth();
 
         layout()->addWidget(RightPaneWidget::instance());
@@ -122,13 +132,21 @@ namespace Core{
 class RightPaneWidgetPrivate {
 public:
     RightPaneWidgetPrivate() {
-        
+        m_stackLayout = new QStackedLayout;
+        m_content = new QWidget;
+        m_stackLayout->setMargin(0);
+        m_content->setLayout(m_stackLayout);
     }
     ~RightPaneWidgetPrivate()
     {
+        if (m_content)
+        {
+            delete m_content;
+        }
     }
 public:
-    QHash<Id, QList<CamyuPropertyEdit*> > m_cameraOfEdit;    // mode_id - cameralist
+    QStackedLayout * m_stackLayout;
+    QWidget * m_content;
 };
 }
 RightPaneWidget *RightPaneWidget::m_instance = 0;
@@ -136,8 +154,11 @@ RightPaneWidget *RightPaneWidget::m_instance = 0;
 RightPaneWidget::RightPaneWidget()
     : m_shown(true), m_width(0)
 {
-    m_instance = this;
-
+    //m_instance = this;
+    if (!m_instance)
+    {
+        m_instance = this;
+    }
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     setLayout(layout);
@@ -153,7 +174,7 @@ RightPaneWidget::~RightPaneWidget()
 
 RightPaneWidget *RightPaneWidget::instance()
 {
-    return m_instance;
+    return qobject_cast<RightPaneWidget*>(CYCameraConfigManager::getConfigPane(ModeManager::currentMode()));
 }
 
 void RightPaneWidget::setWidget(QWidget *widget)
@@ -169,7 +190,11 @@ void RightPaneWidget::setWidget(QWidget *widget)
         m_widget->show();
     }
 }
-
+void RightPaneWidget::activeWidget(QWidget * widget)
+{
+    d->m_stackLayout->insertWidget(0,widget);
+    d->m_stackLayout->setCurrentWidget(widget);
+}
 int RightPaneWidget::storedWidth()
 {
     return m_width;
@@ -211,7 +236,7 @@ void RightPaneWidget::readSettings(QSettings *settings)
     if (RightPanePlaceHolder::m_current)
         RightPanePlaceHolder::m_current->applyStoredSize(m_width);
     //setWidget(new QLabel(tr("test right panle")));
-    setWidget(new CamyuPropertyEdit);
+    setWidget(d->m_content);
     setShown(true);
 }
 

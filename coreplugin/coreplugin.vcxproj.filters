@@ -1197,6 +1197,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cydefaultframeview_p.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="cycameraconfigmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_cycameraconfigmanager.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cycameraconfigmanager.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="coreplugin.h">
@@ -1665,6 +1674,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cydefaultframeview_p.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="cycameraconfigmanager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

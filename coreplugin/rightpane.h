@@ -78,6 +78,8 @@ public:
 
     int storedWidth();
 
+    void activeWidget(QWidget * widget);
+
 protected:
     void resizeEvent(QResizeEvent *);
 

@@ -2498,6 +2498,7 @@ QWidget * EditorManager::activeSubEditorView(Id cameraId)
     EditorArea * editArea = EditorManagerPrivate::createEditorArea(mode);
     if (editArea)
     {
+        emit EditorManager::instance()->currentSubEditorChanged(cameraId);
         return editArea->ActiveChild(cameraId);
     }
     return 0;

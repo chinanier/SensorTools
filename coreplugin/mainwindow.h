@@ -46,6 +46,7 @@ QT_END_NAMESPACE
 namespace CYCore {
     class CYCameraManager;
     class CYFrameParserManager;
+    class CYCameraConfigManager;
 }
 using namespace CYCore;
 namespace Core {
@@ -178,6 +179,7 @@ private:
     /// add by kk : add camera protocol list
     CYCameraManager * m_cameraManager;
     CYFrameParserManager * m_processorManager;
+    CYCameraConfigManager * m_configManager;
 
     RightPaneWidget *m_rightPaneWidget;
     StatusBarWidget *m_outputView;

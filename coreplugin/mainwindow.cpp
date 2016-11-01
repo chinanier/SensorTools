@@ -69,6 +69,7 @@
 #include <coreplugin/settingsdatabase.h>
 #include <coreplugin/cycameramanager.h>
 #include <coreplugin/cyframeparsermanager.h>
+#include <coreplugin/cycameraconfigmanager.h>
 
 #include <extensionsystem/pluginmanager.h>
 #include <utils/algorithm.h>
@@ -111,8 +112,8 @@ MainWindow::MainWindow() :
     m_coreImpl(new ICore(this)),
     m_lowPrioAdditionalContexts(Constants::C_GLOBAL),
     m_settingsDatabase(new SettingsDatabase(QFileInfo(PluginManager::settings()->fileName()).path(),
-                                            QLatin1String("QtCreator"),
-                                            this)),
+        QLatin1String("QtCreator"),
+        this)),
     m_printer(0),
     m_windowSupport(0),
     m_editorManager(0),
@@ -143,7 +144,8 @@ MainWindow::MainWindow() :
     m_toggleSideBarAction(0),
     m_toggleSideBarButton(new QToolButton),
     m_cameraManager(new CYCameraManager),
-    m_processorManager(new CYFrameParserManager)
+    m_processorManager(new CYFrameParserManager),
+    m_configManager(new CYCameraConfigManager)
 {
     (void) new DocumentManager(this);
     OutputPaneManager::create();
@@ -372,6 +374,7 @@ void MainWindow::extensionsInitialized()
     m_vcsManager->extensionsInitialized();
     m_navigationWidget->setFactories(PluginManager::getObjects<INavigationWidgetFactory>());
     m_cameraManager->extensionsInitialized();
+    m_configManager->extensionsInitialized();
 
     readSettings();
     updateContext();

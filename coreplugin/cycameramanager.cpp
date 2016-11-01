@@ -122,7 +122,7 @@ bool CYCameraManager::connectCamera(Id cameraid, int chl)
     // 4、将相机实例保存到链表中方便获取
 
     CYCamera * pCamera = d->getCameraForCameraID(cameraid);
-    return pCamera ? pCamera->connectCamera(chl) : false;
+    return pCamera ? pCamera->connectCameraHelper(chl) : false;
 }
 bool CYCameraManager::disconnectCamera(Id cameraid, int chl)
 {
@@ -138,7 +138,7 @@ bool CYCameraManager::disconnectCamera(Id cameraid, int chl)
 
     // 5、将断开链接的相机移除列表(也可以用定时清理机制)
     CYCamera * pCamera = d->getCameraForCameraID(cameraid);
-    return pCamera ? pCamera->disconnectCamera(chl) : false;
+    return pCamera ? pCamera->disconnectCameraHelper(chl) : false;
 }
 bool CYCameraManager::isConnect(Utils::Id cameraid, int chl)
 {
@@ -148,12 +148,12 @@ bool CYCameraManager::isConnect(Utils::Id cameraid, int chl)
 bool CYCameraManager::startCapture(Utils::Id cameraid, int chl)
 {
     CYCamera * pCamera = d->getCameraForCameraID(cameraid);
-    return pCamera ? pCamera->startCapture(chl) : false;
+    return pCamera ? pCamera->startCaptureHelper(chl) : false;
 }
 bool CYCameraManager::stopCapture(Utils::Id cameraid, int chl)
 {
     CYCamera * pCamera = d->getCameraForCameraID(cameraid);
-    return pCamera ? pCamera->stopCapture(chl) : false;
+    return pCamera ? pCamera->stopCaptureHelper(chl) : false;
 }
 bool CYCameraManager::isCapture(Utils::Id cameraid, int chl)
 {
@@ -181,13 +181,29 @@ void CYCameraManager::activateCamera(CYCamera *pCamera)
 {
     return ;
 }
-
+CYCameraFactory * CYCameraManager::getCameraFactoryFromCameraId(Utils::Id cameraId)
+{
+    Utils::Id factoryId = d->getFactoryIdForCameraID(cameraId);
+    if (d->m_idOfFactorys.contains(factoryId))
+    {
+        return d->m_idOfFactorys[factoryId];
+    }
+    return 0;
+}
+CYCamera * CYCameraManager::getCameraForId(Utils::Id cameraId)
+{
+    return d->getCameraForCameraID(cameraId);
+}
 bool CYCameraManager::appendFrameParser(Utils::Id cameraid, CYFrameParser * parser)
 {
     CYCamera * pCamera = d->getCameraForCameraID(cameraid);
     return pCamera? pCamera->addFrameParser(parser) : false;
 }
-
+bool CYCameraManager::delFrameParser(Utils::Id cameraid, CYFrameParser * parser)
+{
+    CYCamera * pCamera = d->getCameraForCameraID(cameraid);
+    return pCamera ? pCamera->delFrameParser(parser) : false;
+}
 // 初始化操作，可能通过该函数初始化注册的相机，(图相处理，图像统计,后期准备放到图像处理管理类进行管理)
 void CYCameraManager::init()
 {

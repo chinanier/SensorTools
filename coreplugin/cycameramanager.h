@@ -46,9 +46,12 @@ public:
 
     static CYCamera * createCamera(Utils::Id cameraid);
     static CYCamera * currentCamera();
+    static CYCameraFactory * getCameraFactoryFromCameraId(Utils::Id cameraId);
+    static CYCamera * getCameraForId(Utils::Id cameraId);
     static void activateCamera(CYCamera *pCamera);
 
     static bool appendFrameParser(Utils::Id cameraid,CYFrameParser * parser);
+    static bool delFrameParser(Utils::Id cameraid, CYFrameParser * parser);
 private:
     static void init();
     static void extensionsInitialized();

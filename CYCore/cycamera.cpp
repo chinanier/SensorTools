@@ -119,6 +119,43 @@ CYCamera::~CYCamera()
     delete d;
     d = 0;
 }
+
+bool CYCamera::connectCameraHelper(int chl)
+{
+    bool ret = false;
+    if (ret = connectCamera(chl))
+    {
+        emit sigConnectChange(chl);
+    }
+    return ret;
+}
+bool CYCamera::disconnectCameraHelper(int chl)
+{
+    bool ret = false;
+    if (ret = disconnectCamera(chl))
+    {
+        emit sigConnectChange(chl);
+    }
+    return ret;
+}
+bool CYCamera::startCaptureHelper(int chl)
+{
+    bool ret = false;
+    if (ret = startCapture(chl))
+    {
+        emit sigCaptureChange(chl);
+    }
+    return ret;
+}
+bool CYCamera::stopCaptureHelper(int chl)
+{
+    bool ret = false;
+    if (ret = stopCapture(chl))
+    {
+        emit sigCaptureChange(chl);
+    }
+    return ret;
+}
 bool CYCamera::addFrameParser(CYFrameParser * newNode, CYFrameParser * before)
 {
     if (!newNode)
@@ -141,4 +178,15 @@ bool CYCamera::addFrameParser(CYFrameParser * newNode, CYFrameParser * before)
     QObject::connect(newNode, &CYFrameParser::sigFrameCopyCommit, d, &CYCameraPrivate::slotCompleteFrame); // 处理器拷贝完通知调度器释放内存
     QObject::connect(newNode, &CYFrameParser::sigParseCommit, d, &CYCameraPrivate::slotParseCommit);       // 处理器处理完,需要通知调度器继续传递处理
     return true;
+}
+bool CYCamera::delFrameParser(CYFrameParser * parser)
+{
+    if (d->m_frameParser.contains(parser))
+    {
+        d->m_frameParser.removeOne(parser);
+        QObject::disconnect(parser, &CYFrameParser::sigFrameCopyCommit, d, &CYCameraPrivate::slotCompleteFrame); // 处理器拷贝完通知调度器释放内存
+        QObject::disconnect(parser, &CYFrameParser::sigParseCommit, d, &CYCameraPrivate::slotParseCommit);       // 处理器处理完,需要通知调度器继续传递处理
+        return true;
+    }
+    return false;
 }

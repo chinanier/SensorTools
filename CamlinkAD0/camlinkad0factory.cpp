@@ -4,6 +4,7 @@
 CamlinkAD0Factory::CamlinkAD0Factory()
 {
     setDisplayName(tr("AD0"));
+    setName("AD0");
     //setIcon(QIcon());
     //setCategory("CoaxPress");
     setCategory("CameraLink");
