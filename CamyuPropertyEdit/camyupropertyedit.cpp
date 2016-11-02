@@ -114,56 +114,146 @@ public:
     }
     bool genIcamParaseCNode(CNodePtr pNode, QtVariantProperty * groupProperty)
     {
-        EInterfaceType nodeType = pNode->GetPrincipalInterfaceType();
-        EVisibility    eVty = pNode->GetVisibility();
-        EAccessMode eAm = pNode->GetAccessMode();
-        const QString displayName = pNode->GetDisplayName().c_str();
-        const QString propertyName = pNode->GetName().c_str();
-
-        QVariant pValue;
-        QtVariantProperty *property = 0;
-        switch (eVty)
+        try
         {
+            EInterfaceType nodeType = pNode->GetPrincipalInterfaceType();
+            EVisibility    eVty = pNode->GetVisibility();
+            EAccessMode eAm = pNode->GetAccessMode();
+            const QString displayName = pNode->GetDisplayName().c_str();
+            const QString propertyName = pNode->GetName().c_str();
+
+            QVariant pValue;
+            QtVariantProperty *property = 0;
+            switch (nodeType)
+            {
             case GENAPI_NAMESPACE::intfIInteger:
             {
                 // 处理int
-                CIntegerPtr integer = pNode;
-                pValue = integer->GetValue();
+                CIntegerPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                {
+                    int intVal = pProperty->GetValue();
+                    pValue = intVal;
+                }
+                else
+                {
+                    pValue = 0;
+                }
+                int intMaxVal = pProperty->GetMax();intMaxVal = intMaxVal < 0 ? 0x7FFFFFFF : intMaxVal;
+                int intMinVal = pProperty->GetMin();intMinVal = intMinVal > intMaxVal ? intMaxVal : intMinVal;
+                int64_t pollt = pNode->GetPollingTime();
+                property = m_propertyManager->addProperty(pValue.type(), displayName);
+                property->setAttribute("maximum", /*pProperty->GetMax()*/intMaxVal);
+                property->setAttribute("minimum", /*pProperty->GetMin()*/intMinVal);
+                property->setAttribute("singleStep", pProperty->GetInc());
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
             }
             break;
             case GENAPI_NAMESPACE::intfIBoolean:
             {
-                // 处理int
+                CBooleanPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetValue();
+                else
+                {
+                    pValue = false;
+                }
+                property = m_propertyManager->addProperty(pValue.type(), displayName);
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
             }
             break;
-            case GENAPI_NAMESPACE::intfICommand:
-            {
-                // 处理int
-            }
-            break;
+//             case GENAPI_NAMESPACE::intfICommand:
+//             {
+//                 // 处理int
+//             }
+//             break;
             case GENAPI_NAMESPACE::intfIFloat:
             {
-                // 处理int
+                CFloatPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetValue();
+                else
+                {
+                    pValue = 0.01;
+                }
+                property = m_propertyManager->addProperty(pValue.type(), displayName);
+                property->setAttribute("maximum", pProperty->GetMax());
+                property->setAttribute("minimum", pProperty->GetMin());
+                if (pProperty->HasInc())
+                {
+                    property->setAttribute("singleStep", pProperty->GetInc());
+                }
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
             }
             break;
             case GENAPI_NAMESPACE::intfIString:
             {
-                // 处理int
+                CStringPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetValue().c_str();
+                else
+                {
+                    pValue = "";
+                }
+                property = m_propertyManager->addProperty(pValue.type(), displayName);
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
             }
             break;
-            case GENAPI_NAMESPACE::intfIRegister:
-            {
-                // 处理int
-            }
-            break;
+//             case GENAPI_NAMESPACE::intfIRegister:
+//             {
+//                 // 处理int
+//             }
+//             break;
             case GENAPI_NAMESPACE::intfIEnumeration:
             {
-                // 处理int
+                CEnumerationPtr pProperty = pNode;
+                property = m_propertyManager->addProperty(QtVariantPropertyManager::enumTypeId(), displayName);
+                QStringList names;
+                NodeList_t pEntries;
+                pProperty->GetEntries(pEntries);
+                for (auto pVar : pEntries)
+                {
+                    CEnumEntryPtr pEntry = pVar;
+                    CNodePtr pnd = pVar;
+                    /*pEntry->GetSymbolic().c_str();*/
+                    names.append(pnd->GetDisplayName().c_str());
+                }
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetIntValue();
+                else
+                {
+                    pValue = 0;
+                }
+                property->setValueToolTip("13");
+                property->setAttribute("enumNames", names);
+                property->setValue(pValue);
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
             }
             break;
-        default:
-            break;
+            default:
+            {
+                pValue = GetInterfaceName(pNode).c_str();
+                property = m_propertyManager->addProperty(pValue.type(), displayName);
+                property->setEnabled(/*IsAvailable(pNode)*/false);
+            }
+                break;
+            }
+            property->setValue(pValue);
+            if (!groupProperty)
+            {
+                m_treeBrowser->addProperty(property);
+            }
+            else
+            {
+                groupProperty->addSubProperty(property);
+            }
+            return true;
         }
+        catch (GenICam::GenericException &e)
+        {
+            QMessageBox::warning(0, QStringLiteral("解析节点"), e.what(), QMessageBox::Yes, QMessageBox::NoButton);
+        }
+        return false;
     }
     bool genIcamParaseINode(INode * pNode, QtVariantProperty * groupProperty)
     {
@@ -197,6 +287,7 @@ public:
                 genIcamParaseINode(pNode,0);
             }
         }
+        return 0;
     }
 
     // cycamera slot
@@ -237,6 +328,7 @@ public slots:
             groupProperty->addSubProperty(property);
             property->setEnabled(false);
             
+            parseGenICamXML(strGenIcamXmlPath);
         }
         else
         {

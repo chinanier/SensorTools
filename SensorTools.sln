@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamlinkAD0", "CamlinkAD0\Ca
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamyuPropertyEdit", "CamyuPropertyEdit\CamyuPropertyEdit.vcxproj", "{5CB757A9-7851-4739-9BFC-2A9BD067B327}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CYContrastStretching", "CYContrastStretching\CYContrastStretching.vcxproj", "{F00D7E01-6E5B-481C-B284-A0AC283FF0E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -109,6 +111,10 @@ Global
 		{5CB757A9-7851-4739-9BFC-2A9BD067B327}.Debug|x86.Build.0 = Debug|Win32
 		{5CB757A9-7851-4739-9BFC-2A9BD067B327}.Release|x86.ActiveCfg = Release|Win32
 		{5CB757A9-7851-4739-9BFC-2A9BD067B327}.Release|x86.Build.0 = Release|Win32
+		{F00D7E01-6E5B-481C-B284-A0AC283FF0E2}.Debug|x86.ActiveCfg = Debug|Win32
+		{F00D7E01-6E5B-481C-B284-A0AC283FF0E2}.Debug|x86.Build.0 = Debug|Win32
+		{F00D7E01-6E5B-481C-B284-A0AC283FF0E2}.Release|x86.ActiveCfg = Release|Win32
+		{F00D7E01-6E5B-481C-B284-A0AC283FF0E2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

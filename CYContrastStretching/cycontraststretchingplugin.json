@@ -1,0 +1,16 @@
+{
+    "Name" : "ContrastStretching",
+    "Version" : "1.0.0",
+    "CompatVersion" : "1.0.0",
+    "Vendor" : "The Camyu Company Ltd",
+    "Copyright" : "(C) 2016 The Camyu Company Ltd",
+    "License": [
+    "GPL"
+    ],
+    "Category" : "Camyu Plugin",
+    "Description" : "test2Camera sample plugin.",
+    "Url" : "http://www.camyu.net",
+    "Dependencies" : [
+        { "Name" : "Core", "Version" : "4.1.0" }
+    ]
+}
