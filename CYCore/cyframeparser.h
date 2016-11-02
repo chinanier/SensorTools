@@ -26,6 +26,16 @@ public:
     virtual bool popupFullFrame(CYFRAME & frame)= 0;
     bool         newFrame(CYFRAME);
     void         completeFrame(CYFRAME frame);
+
+    // 使能控制
+
+    void setEnabled(bool);
+    bool isEnabled() const;
+
+    // 参数配置界面
+    void applySettings();
+    // 缩略图 - 两个状态,缩略图状态和显示状态
+    
 signals:
     void sigFrameCopyCommit(CYFRAME frame);
     void sigParseCommit(CYFRAME newframe);

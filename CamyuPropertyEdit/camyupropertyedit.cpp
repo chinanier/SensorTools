@@ -122,6 +122,48 @@ public:
 
         QVariant pValue;
         QtVariantProperty *property = 0;
+        switch (eVty)
+        {
+            case GENAPI_NAMESPACE::intfIInteger:
+            {
+                // 处理int
+                CIntegerPtr integer = pNode;
+                pValue = integer->GetValue();
+            }
+            break;
+            case GENAPI_NAMESPACE::intfIBoolean:
+            {
+                // 处理int
+            }
+            break;
+            case GENAPI_NAMESPACE::intfICommand:
+            {
+                // 处理int
+            }
+            break;
+            case GENAPI_NAMESPACE::intfIFloat:
+            {
+                // 处理int
+            }
+            break;
+            case GENAPI_NAMESPACE::intfIString:
+            {
+                // 处理int
+            }
+            break;
+            case GENAPI_NAMESPACE::intfIRegister:
+            {
+                // 处理int
+            }
+            break;
+            case GENAPI_NAMESPACE::intfIEnumeration:
+            {
+                // 处理int
+            }
+            break;
+        default:
+            break;
+        }
     }
     bool genIcamParaseINode(INode * pNode, QtVariantProperty * groupProperty)
     {
