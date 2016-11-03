@@ -24,6 +24,8 @@ public:
     QMap<QString, CYCameraFactoryList> m_categoryOfFactory;
     QList<CYCameraCategoryMode*> m_categoryOfMode;
     CYCameraFactoryList m_cameraFactoryList;
+
+    CYCamera * m_currentCamera = nullptr;
 public:
     CYCamera * getCameraForCameraID(Utils::Id cameraid);
     Utils::Id  getFactoryIdForCameraID(Utils::Id cameraid);

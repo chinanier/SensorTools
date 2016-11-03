@@ -1,5 +1,6 @@
 #include "cyprocessor.h"
 #include "cyprocessor_p.h"
+#include "cyframeparserfactory.h"
 #include <QTimer>
 #define ALLOC_BUFFER_COUNT (10)
 #define ALLOC_BUFFER_WIDTH (2048)
@@ -72,8 +73,8 @@ bool CYProcessorPrivate::popupFullFrame(CYFRAME & frame)
     }
     return false;
 }
-CYProcessor::CYProcessor(QObject *parent)
-    : CYFrameParser(parent),
+CYProcessor::CYProcessor(CYFrameParserFactory * factory,QObject *parent)
+    : CYFrameParser(factory,parent),
     d(new CYProcessorPrivate())
 {
     
@@ -111,4 +112,9 @@ bool CYProcessor::popupEmptyFrame(CYFRAME & frame)
 bool CYProcessor::popupFullFrame(CYFRAME & frame)
 {
     return d->popupFullFrame(frame);
+}
+QWidget * CYProcessor::widget()
+{
+    // 窗口用于显示用?
+    return nullptr;
 }

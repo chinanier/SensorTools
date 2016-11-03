@@ -13,8 +13,8 @@ CYAnalyzerPrivate::~CYAnalyzerPrivate()
 {
 
 }
-CYAnalyzer::CYAnalyzer(QObject *parent)
-    : CYProcessor(parent),
+CYAnalyzer::CYAnalyzer(CYFrameParserFactory * factory,QObject *parent)
+    : CYProcessor(factory,parent),
     d(new CYAnalyzerPrivate(this))
 {
 

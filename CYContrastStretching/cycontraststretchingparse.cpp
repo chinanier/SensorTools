@@ -5,10 +5,10 @@ public:
     
 };
 
-CYContrastStretchingParse::CYContrastStretchingParse()
+CYContrastStretchingParse::CYContrastStretchingParse() :
+    CYCore::CYProcessor(0)
 {
     AllocFrameBuffer();
-    
 }
 
 CYContrastStretchingParse::~CYContrastStretchingParse()
@@ -18,4 +18,8 @@ CYContrastStretchingParse::~CYContrastStretchingParse()
 void CYContrastStretchingParse::doProcess(CYFRAME &frame)
 {
     
+}
+QWidget * CYContrastStretchingParse::widget()
+{
+    return new QWidget;
 }

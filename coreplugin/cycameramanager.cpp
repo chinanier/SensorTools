@@ -175,11 +175,15 @@ CYCamera * CYCameraManager::createCamera(Id cameraid)
 }
 CYCamera * CYCameraManager::currentCamera()
 {
-    return 0;
+    return d->m_currentCamera;
+}
+void CYCameraManager::activateCamera(Utils::Id cameraId)
+{
+    activateCamera(getCameraForId(cameraId));
 }
 void CYCameraManager::activateCamera(CYCamera *pCamera)
 {
-    return ;
+    d->m_currentCamera = pCamera;
 }
 CYCameraFactory * CYCameraManager::getCameraFactoryFromCameraId(Utils::Id cameraId)
 {

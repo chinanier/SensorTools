@@ -31,6 +31,7 @@ public:
     void setDisplayName(const QString &displayName) { m_displayName = displayName; }
     void setIcon(const QIcon &icon) { m_icon = icon; }
 
+    CYFrameParser * createFrameParser_helper();
     virtual CYFrameParser *createFrameParser() = 0;
 private:
     Utils::Id m_id;

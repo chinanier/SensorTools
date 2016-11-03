@@ -1,6 +1,9 @@
 #include "cycamera_p.h"
 #include "cycamera.h"
 #include "cyframeparser.h"
+
+#include "cyframeparserfactory.h"
+
 #include <QTimer>
 #include <QDebug>
 using namespace CYCore;
@@ -189,4 +192,27 @@ bool CYCamera::delFrameParser(CYFrameParser * parser)
         return true;
     }
     return false;
+}
+
+QList<CYFrameParser*> CYCamera::frameParser(Id factoryid)
+{
+    if (factoryid.isValid())
+    {
+        QList<CYFrameParser*> l;
+        foreach(CYFrameParser *p,d->m_frameParser)
+        {
+            if (p->factory())
+            {
+                if (p->factory()->id() == factoryid)
+                {
+                    l.append(p);
+                }
+            }
+        }
+        return l;
+    }
+    else
+    {
+        return d->m_frameParser;
+    }
 }

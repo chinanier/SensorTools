@@ -5,13 +5,14 @@
 #include <CYCore/cycore_global.h>
 #include "cyframeparser.h"
 namespace CYCore{
+class CYFrameParserFactory;
 namespace Internal { class CYProcessorPrivate; }
 class CYCORE_EXPORT CYProcessor : public CYFrameParser
 {
     Q_OBJECT
 
 public:
-    CYProcessor(QObject *parent=0);
+    CYProcessor(CYFrameParserFactory*factory=0,QObject *parent=0);
     virtual ~CYProcessor();
     virtual void doProcess(CYFRAME&) = 0;
     virtual void do_exec(CYFRAME&frame);
@@ -22,6 +23,7 @@ public:
     virtual bool popupEmptyFrame(CYFRAME & frame);
     virtual bool popupFullFrame(CYFRAME & frame);
 
+    virtual QWidget * widget();
 private:
     friend class Internal::CYProcessorPrivate;
     Internal::CYProcessorPrivate * d;

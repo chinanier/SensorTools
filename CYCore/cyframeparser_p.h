@@ -8,13 +8,14 @@
 using namespace CYCore::Constants;
 namespace CYCore{
 class CYFrameParser;
+class CYFrameParserFactory;
 namespace Internal{
 class CYFrameParserPrivate : public QObject
 {
     Q_OBJECT
 
 public:
-    CYFrameParserPrivate(QObject *parent=0);
+    CYFrameParserPrivate(CYFrameParserFactory *factory,QObject *parent=0);
     ~CYFrameParserPrivate();
 public:
     void do_exec();
@@ -23,6 +24,8 @@ signals:
 public:
     QThread * m_thr;
     CYFrameParser * m_parent;
+    CYFrameParserFactory * m_factory;
+    bool      m_enable = false;
 private:
     QThread * m_thrParser;
     

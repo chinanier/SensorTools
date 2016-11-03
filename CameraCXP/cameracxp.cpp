@@ -47,7 +47,8 @@ namespace Internal {
 class TestFrameParser : public CYCore::CYProcessor
 {
 public:
-    TestFrameParser()
+    TestFrameParser() :
+        CYCore::CYProcessor(0)
     {
         AllocFrameBuffer();
     }
@@ -63,7 +64,8 @@ public:
 class Test2FrameParser : public CYCore::CYProcessor
 {
 public:
-    Test2FrameParser()
+    Test2FrameParser():
+        CYCore::CYProcessor(0)
     {
         AllocFrameBuffer();
     }

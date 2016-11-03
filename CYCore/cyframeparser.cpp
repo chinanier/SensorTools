@@ -1,6 +1,7 @@
 #include "cyframeparser.h"
 #include "cyframeparser_p.h"
 #include <cycamera.h>
+#include <cyframeparserfactory.h>
 
 #include <QTimer>
 #include <QDebug>
@@ -26,10 +27,11 @@ static void fillcyframe(CYFRAME & dst, CYFRAME & src)
     memcpy(dst.s_data, src.s_data, cpsize);
     dst.s_context = src.s_context;
 }
-CYFrameParserPrivate::CYFrameParserPrivate(QObject *parent)
+CYFrameParserPrivate::CYFrameParserPrivate(CYFrameParserFactory *factory,QObject *parent)
     : QObject(parent),
     m_thr(new QThread),
-    m_thrParser(new QThread)
+    m_thrParser(new QThread),
+    m_factory(factory)
 {
     m_thr->start();
     m_thrParser->start();
@@ -57,9 +59,9 @@ void CYFrameParserPrivate::do_exec()
     }
 }
 // 
-CYFrameParser::CYFrameParser(QObject *parent)
+CYFrameParser::CYFrameParser(CYFrameParserFactory *factory,QObject *parent)
     : QObject(parent),
-    d(new CYFrameParserPrivate())
+    d(new CYFrameParserPrivate(factory))
 {
     d->m_parent = this;
     moveToThread(d->m_thr);
@@ -75,23 +77,43 @@ bool CYFrameParser::newFrame(CYFRAME frame)
 {
     qDebug() << "There is "<< this <<":newFrame ==> id:" << frame.s_id << "buffer:" << frame.s_data;
     int bret = false;
-    if (QThread::currentThread()==d->m_thr)
+    if (isEnabled())
     {
-        CYFRAME sframe;
-        if (popupEmptyFrame(sframe))
+        if (QThread::currentThread() == d->m_thr)
         {
-            fillcyframe(sframe,frame);
-            bret = pushFullFrame(sframe);
-            QTimer::singleShot(0, d, [this]() {
-                d->do_exec();
-            });
+            CYFRAME sframe;
+            if (popupEmptyFrame(sframe))
+            {
+                fillcyframe(sframe, frame);
+                bret = pushFullFrame(sframe);
+                QTimer::singleShot(0, d, [this]() {
+                    d->do_exec();
+                });
+            }
         }
-        emit sigFrameCopyCommit(frame);          // 通知调度器-处理器已经将一帧拷贝完
     }
+    emit sigFrameCopyCommit(frame);          // 通知调度器-处理器已经将一帧拷贝完
     return bret;
 }
 void CYFrameParser::completeFrame(CYFRAME frame)
 {
     pushEmptyFrame(frame);
     return;
+}
+void CYFrameParser::setFactory(CYFrameParserFactory * factory)
+{
+    d->m_factory = factory;
+}
+CYFrameParserFactory * CYFrameParser::factory()
+{
+    return d->m_factory;
+}
+
+void CYFrameParser::setEnabled(bool enable)
+{
+    d->m_enable = enable;
+}
+bool CYFrameParser::isEnabled() const
+{
+    return d->m_enable;
 }

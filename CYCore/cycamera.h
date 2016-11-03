@@ -4,6 +4,9 @@
 #include <QObject>
 #include <CYCore/cycore_global.h>
 #include <CYCore/cycoreconstants.h>
+#include <Utils/id.h>
+
+using namespace Utils;
 using namespace CYCore::Constants;
 namespace CYCore {
 class CYFrameParser;
@@ -37,6 +40,8 @@ public:
 
     bool addFrameParser(CYFrameParser * newNode, CYFrameParser * before = 0);
     bool delFrameParser(CYFrameParser * parser);
+    QList<CYFrameParser*> frameParser(Id factoryid = Id());
+
 private:
     friend class Internal::CYCameraPrivate;
     Internal::CYCameraPrivate * d;

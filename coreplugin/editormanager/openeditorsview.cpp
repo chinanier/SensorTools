@@ -135,6 +135,7 @@ OpenEditorsWidget::OpenEditorsWidget()
             {
                 Id cameraid = Id::fromSetting(index.data(ROLE_NODE_ID));
                 EditorManager::activeSubEditorView(cameraid);
+                CYCameraManager::activateCamera(cameraid);
             }
         }
     });
@@ -248,6 +249,7 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
             if (cameraList.size()>0)
             {
                 EditorManager::activeSubEditorView(Id::fromSetting(factoryId.toString() + "." + cameraList.at(0).toString()));
+                CYCameraManager::activateCamera(Id::fromSetting(factoryId.toString() + "." + cameraList.at(0).toString()));
             }
         });
     }
@@ -333,7 +335,7 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                         // 激活本窗体
 
                         // 向系统添加完用于展示的窗体后，这里要向指定的id的相机添加一个处理器,这样就可以由系统进行调度处理了
-                        CYCameraManager::appendFrameParser(cameraid, factory->createFrameParser());
+                        CYCameraManager::appendFrameParser(cameraid, factory->createFrameParser_helper());
                         // CYCameraManager::app
                     });
                 }

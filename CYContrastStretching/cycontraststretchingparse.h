@@ -11,6 +11,7 @@ public:
     CYContrastStretchingParse();
     ~CYContrastStretchingParse();
     virtual void doProcess(CYFRAME &frame);
+    virtual QWidget * widget();
 private:
     
 };

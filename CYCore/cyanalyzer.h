@@ -4,13 +4,14 @@
 #include <QObject>
 #include "CYCore/cyprocessor.h"
 namespace CYCore {
+class CYFrameParserFactory;
 namespace Internal{ class CYAnalyzerPrivate; }
 class CYAnalyzer : public CYProcessor
 {
     Q_OBJECT
 
 public:
-    CYAnalyzer(QObject *parent);
+    CYAnalyzer(CYFrameParserFactory * factory=0,QObject *parent=0);
     virtual ~CYAnalyzer();
     virtual void doAnalysis(CYFRAME) = 0;
     virtual void doProcess(CYFRAME&);

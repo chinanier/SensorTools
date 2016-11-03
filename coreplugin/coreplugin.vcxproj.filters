@@ -1679,6 +1679,12 @@
     <CustomBuild Include="cycameraconfigmanager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\cydefaultframeview.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\cydefaultframeview.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_locatorsettingspage.h">
