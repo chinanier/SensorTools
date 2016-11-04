@@ -69,16 +69,18 @@ public slots:
                 parseTypeName = tr("Parse:");
                 if (!contextParserMenu)
                 {
-                    subContextMenu = contextParserMenu = contextMenu.addMenu(tr("Camera Parser"));
+                    contextParserMenu = contextMenu.addMenu(tr("Camera Parser"));
                 }
+                subContextMenu = contextParserMenu;
             }
             else
             {
                 parseTypeName = tr("Alyzer:");
                 if (!contextAlyzerMenu)
                 {
-                    subContextMenu = contextAlyzerMenu = contextMenu.addMenu(tr("Camera Alyzer"));
+                    contextAlyzerMenu = contextMenu.addMenu(tr("Camera Alyzer"));
                 }
+                subContextMenu = contextAlyzerMenu;
             }
             // 添加一级菜单,添加处理器接口
             QString strAction = tr("Add ") + parseTypeName + p->displayName() + "...";
@@ -167,6 +169,7 @@ CYDefaultFrameView::CYDefaultFrameView():
     d(new CYDefaultFrameViewPrivate)
 {
     AllocFrameBuffer();
+    setEnabled(true);
 }
 
 CYDefaultFrameView::~CYDefaultFrameView()

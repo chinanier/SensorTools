@@ -3,6 +3,7 @@
 #include <CYCore/cyframeparser.h>
 
 #include "ExtensionSystem/pluginmanager.h"
+#include "coreplugin/modemanager.h"
 
 #include "cycameramanager.h"
 #include "cycameramanager_p.h"
@@ -224,6 +225,7 @@ void CYCameraManager::extensionsInitialized()
     {
         ExtensionSystem::PluginManager::addObject(modeView);
     }
+    Core::ModeManager::activateMode(d->m_categoryOfMode[0]->id());
 }
 void CYCameraManager::objectAdded(QObject *obj)
 {

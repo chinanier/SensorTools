@@ -157,7 +157,7 @@ public:
     }
     bool disconnectCamera(int chl = 0)
     {
-        return isConnect(chl) ? m_isconnect = false : false;
+        return isConnect(chl) ? (m_isconnect = false),true : false;
     }
     bool isConnect(int chl = 0)
     {
@@ -166,7 +166,7 @@ public:
 
     bool startCapture(int chl = 0)
     {
-        m_timerCaptureFrame = startTimer(40);
+        m_timerCaptureFrame = startTimer(100);
         return isCapture(chl) ? false : m_iscapture = true;
     }
     bool stopCapture(int chl = 0)
@@ -237,12 +237,13 @@ class CoaxPressFactory : public CYCore::CYCameraFactory
 public:
     CoaxPressFactory()
     {
-        setDisplayName(tr("FileLoad"));
+        setDisplayName(tr("FileVer"));
         //setIcon(QIcon());
-        setCategory("CoaxPress");
+        setCategory("FileGroup1");
         //setCategory("TestCamera");
-        setPriority(0);
-        setId("TestCamera.FileLoad");
+        setName(tr("tdi"));
+        setPriority(3);
+        setId("FileGroup1.FileVer");
     }
     ~CoaxPressFactory()
     {
@@ -257,7 +258,32 @@ public:
     }
 };
 
-
+class testCameraFactory : public CYCore::CYCameraFactory
+{
+public:
+    testCameraFactory()
+    {
+        setDisplayName(tr("FileLoad"));
+        //setIcon(QIcon());
+        //setCategory("CoaxPress");
+        setCategory("FileGroup2");
+        //setCategory("TestCamera");
+        setName(tr("tdi"));
+        setPriority(2);
+        setId("FileGroup2.FileLoad");
+    }
+    ~testCameraFactory()
+    {
+    }
+    CYCore::CYCamera *createCamera()
+    {
+        return new CoaxPressCamera;
+    }
+    int SerarchCamera()
+    {
+        return 2;
+    }
+};
 /*! Constructs the Hello World plugin. Normally plugins don't do anything in
 their constructor except for initializing their member variables. The
 actual work is done later, in the initialize() and extensionsInitialized()
@@ -317,6 +343,8 @@ bool CameraCXPPlugin::initialize(const QStringList &arguments, QString *errorMes
     // it will unregister itself from the plugin manager when it is deleted.
     CoaxPressFactory *coaxPressFactory = new CoaxPressFactory;
     addAutoReleasedObject(coaxPressFactory);
+
+    addAutoReleasedObject(new testCameraFactory);
 
     TestProcessor * testProcessor = new TestProcessor;
     addAutoReleasedObject(testProcessor);

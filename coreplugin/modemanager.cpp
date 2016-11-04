@@ -193,12 +193,12 @@ void ModeManager::objectAdded(QObject *obj)
         m_instance->activateMode(id);
         ICore::raiseWindow(d->m_modeStack);
     });
-    if (d->m_modes.size() == 1)
-    {
-        ModeManager::activateMode(d->m_modes[0]->id());
-    }
     connect(mode, &IMode::enabledStateChanged,
             m_instance, &ModeManager::enabledStateChanged);
+//     if (d->m_modes.size() == 1)
+//     {
+//         ModeManager::activateMode(d->m_modes[0]->id());
+//     }
 }
 
 void ModeManager::updateModeToolTip()

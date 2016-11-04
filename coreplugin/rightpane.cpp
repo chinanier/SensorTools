@@ -103,6 +103,12 @@ void RightPanePlaceHolder::currentModeChanged(Id mode)
 {
     if (m_current == this) {
         m_current = 0;
+        RightPaneWidget * rpw = qobject_cast<RightPaneWidget*>(CYCameraConfigManager::getConfigPane(mode));
+        if (!rpw)
+        {
+            rpw = qobject_cast<RightPaneWidget*>(CYCameraConfigManager::createConfigPane(mode));
+            rpw->readSettings(0);
+        }
         RightPaneWidget::instance()->setParent(0);
         RightPaneWidget::instance()->hide();
     }
