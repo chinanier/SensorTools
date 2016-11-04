@@ -1,5 +1,7 @@
 #include "cydefaultframeview.h"
 #include "cydefaultframeview_p.h"
+
+#include "coreplugin/editormanager/editormanager.h"
 #include "coreplugin/editormanager/editorview.h"
 #include "coreplugin/editormanager/ieditor.h"
 #include "coreplugin/cycameramanager.h"
@@ -9,13 +11,19 @@
 #include "cycore/cyframeparserfactory.h"
 #include "cycore/cycamera.h"
 
+#include "Utils/id.h"
+
 #include <QLabel>
 #include <QScrollArea>
 #include <QImage>
 #include <QPixmap>
 #include <QTimer>
 #include <QMenu>
+#include <QMessageBox>
+#include <QMdiSubWindow>
+
 using namespace Core;
+using namespace Utils;
 using namespace CYCore;
 using namespace CYCore::Internal;
 class TestEditor : public IEditor {
@@ -56,14 +64,54 @@ public slots:
         QMenu * contextParserMenu = 0;
         QMenu * contextAlyzerMenu = 0;
         // 获取当前的链接的相机id
-        CYCamera * pcamera = CYCore::CYCameraManager::currentCamera();
+        Id cameraid = CYCore::CYCameraManager::currentCameraId();
         // 根据id获取当前的处理列表
         QList<CYFrameParserFactory*> parserlist = ExtensionSystem::PluginManager::getObjects<CYFrameParserFactory>();
+        // 添加基础功能
+        
+        if (!CYCameraManager::isConnect(cameraid))
+        {
+            contextMenu.addAction("Connect", this, [this, cameraid]() {
+                CYCameraManager::connectCamera(cameraid);
+                QMessageBox::information(
+                    0, tr("Connect!"), tr("Connect Camera Success!"));
+                // 通知editManager创建窗口
+            });
+        }
+        else
+        {
+            contextMenu.addAction("disConnect", this, [this, cameraid]() {
+                CYCameraManager::disconnectCamera(cameraid);
+                QMessageBox::information(
+                    0, tr("Connect!"), tr("disConnect Camera Success!"));
+                // 通知editManager销毁窗口
+            });
+            // 增加开始采集的右键菜单
+            if (!CYCameraManager::isCapture(cameraid))
+            {
+                contextMenu.addAction("StartCapture", this, [this, cameraid]() {
+                    CYCameraManager::startCapture(cameraid);
+                    QMessageBox::information(
+                        0, tr("StartCapture!"), tr("StartCapture Camera Success!"));
+                    // 通知editManager创建窗口
+                });
+            }
+            else
+            {
+                contextMenu.addAction("StopCapture", this, [this, cameraid]() {
+                    CYCameraManager::stopCapture(cameraid);
+                    QMessageBox::information(
+                        0, tr("StopCapture!"), tr("StopCapture Camera Success!"));
+                    // 通知editManager创建窗口
+                });
+            }
+        }
         foreach(CYFrameParserFactory * p ,parserlist)
         {
-            QList<CYFrameParser*> l = pcamera->frameParser(p->id());
+            QList<CYFrameParser*> l = CYCameraManager::getFrameParsers(cameraid, p->id());
             QString parseTypeName;
-            QMenu * subContextMenu = 0;
+            QMenu * subContextMenu = contextMenu.addMenu(p->displayName());
+#if 0
             if (p->type() == CYFrameParserFactory::CYFRAMEPARSER_PROCESSOR)
             {
                 parseTypeName = tr("Parse:");
@@ -82,9 +130,25 @@ public slots:
                 }
                 subContextMenu = contextAlyzerMenu;
             }
+#endif
             // 添加一级菜单,添加处理器接口
             QString strAction = tr("Add ") + parseTypeName + p->displayName() + "...";
-            subContextMenu->addAction(strAction, this, []() {});
+            subContextMenu->addAction(strAction, this, [this,cameraid,p]() {
+                EditorView * pedit = EditorManager::createProcessEditorView(cameraid, p->id());
+                // 激活本窗体
+                CYFrameParser * fpser = p->createFrameParser_helper();
+                // 向系统添加完用于展示的窗体后，这里要向指定的id的相机添加一个处理器,这样就可以由系统进行调度处理了
+                CYCameraManager::appendFrameParser(cameraid, fpser);
+                fpser->setContentWidget(pedit);
+                connect(fpser, &CYFrameParser::sigAboutToDestroyed,this,[pedit]() {
+                    //pedit->close();
+                    QMdiSubWindow * pmdisub = qobject_cast<QMdiSubWindow*>(pedit->parent());
+                    if (pmdisub)
+                    {
+                        pmdisub->close();
+                    }
+                });
+            });
             if (l.size()>0)
             {
                 QMenu * pmenu = 0;
@@ -98,27 +162,46 @@ public slots:
                     // 是否启动
                     if (fp->isEnabled())
                     {
-                        strAction = tr("Stop ") + parseTypeName + p->displayName() + "...";
-                        pmenu->addAction(strAction, this, []() {
+                        strAction = tr("Stop ") + parseTypeName + submenuName + "...";
+                        pmenu->addAction(strAction, this, [fp]() {
+                            fp->setEnabled(false);
                         });
                     }
                     else
                     {
-                        strAction = tr("Start ") + parseTypeName + p->displayName() + "...";
-                        strAction += submenuName + "...";
-                        pmenu->addAction(strAction, this, []() {
+                        strAction = tr("Start ") + parseTypeName + submenuName + "...";
+                        pmenu->addAction(strAction, this, [fp]() {
+                            fp->setEnabled(true);
                         });
                     }
-                    // 是否显示,通过EditManager获取,或这保存到处理器中?
-                    strAction = tr("Show ")+ submenuName + "...";
-                    pmenu->addAction(strAction, this, []() {
-                    });
-                    strAction = tr("Hide ")+submenuName + "...";
-                    pmenu->addAction(strAction, this, []() {
-                    });
+                    const QWidget * contentwidget = fp->contentWidget();
+                    if (contentwidget)
+                    {
+                        QMdiSubWindow * pmdisub = qobject_cast<QMdiSubWindow*>(contentwidget->parent());
+                        if (pmdisub)
+                        {
+                            if (pmdisub->isHidden())
+                            {
+                                // 是否显示,通过EditManager获取,或这保存到处理器中?
+                                strAction = tr("Show ") + submenuName + "...";
+                                pmenu->addAction(strAction, this, [pmdisub]() {
+                                    pmdisub->show();
+                                });
+                            }
+                            else
+                            {
+                                strAction = tr("Hide ") + submenuName + "...";
+                                pmenu->addAction(strAction, this, [pmdisub]() {
+                                    pmdisub->hide();
+                                });
+                            }
+                        }
+                    }
                     // 从处理链路中移除此解析器
                     strAction = tr("Remove ")+ submenuName + "...";
-                    pmenu->addAction(strAction, this, []() {
+                    pmenu->addAction(strAction, this, [cameraid,fp]() {
+                        // 首先
+                        CYCameraManager::delFrameParser(cameraid, fp);
                     });
                 }
             }

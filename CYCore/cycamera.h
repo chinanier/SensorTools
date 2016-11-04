@@ -10,6 +10,7 @@ using namespace Utils;
 using namespace CYCore::Constants;
 namespace CYCore {
 class CYFrameParser;
+class CYCameraFactory;
 namespace Internal{ class CYCameraPrivate; }
 class CYCORE_EXPORT CYCamera : public QObject
 {
@@ -18,6 +19,8 @@ class CYCORE_EXPORT CYCamera : public QObject
 public:
     CYCamera(QObject *parent=0);
     ~CYCamera();
+    CYCameraFactory * factory();
+    void setFactory(CYCameraFactory*);
 
     virtual bool SerachCamera() = 0;
 
@@ -41,6 +44,8 @@ public:
     bool addFrameParser(CYFrameParser * newNode, CYFrameParser * before = 0);
     bool delFrameParser(CYFrameParser * parser);
     QList<CYFrameParser*> frameParser(Id factoryid = Id());
+
+    
 
 private:
     friend class Internal::CYCameraPrivate;

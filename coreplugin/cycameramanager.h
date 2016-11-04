@@ -46,13 +46,17 @@ public:
 
     static CYCamera * createCamera(Utils::Id cameraid);
     static CYCamera * currentCamera();
+    static Utils::Id currentCameraId();
     static CYCameraFactory * getCameraFactoryFromCameraId(Utils::Id cameraId);
     static CYCamera * getCameraForId(Utils::Id cameraId);
+    static Utils::Id getIdForCamera(CYCamera * pCamera);
+    
     static void activateCamera(CYCamera *pCamera);
     static void activateCamera(Utils::Id cameraId);
 
     static bool appendFrameParser(Utils::Id cameraid,CYFrameParser * parser);
     static bool delFrameParser(Utils::Id cameraid, CYFrameParser * parser);
+    static QList<CYFrameParser*> getFrameParsers(Utils::Id cameraid,Utils::Id factoryid = Utils::Id());
 private:
     static void init();
     static void extensionsInitialized();

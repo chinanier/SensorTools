@@ -8,6 +8,7 @@
 using namespace CYCore::Constants;
 namespace CYCore {
 class CYFrameParser;
+class CYCameraFactory;
 namespace Internal {
 class CYCameraPrivate : public QObject
 {
@@ -16,6 +17,7 @@ class CYCameraPrivate : public QObject
 public:
     CYCameraPrivate(QObject *parent);
     ~CYCameraPrivate();
+    CYCameraFactory * m_pfactory = nullptr;
     QList<CYFrameParser*> m_frameParser;
 signals:
     void sigCompleteFrame(CYFRAME);

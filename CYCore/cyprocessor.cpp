@@ -73,6 +73,22 @@ bool CYProcessorPrivate::popupFullFrame(CYFRAME & frame)
     }
     return false;
 }
+bool CYProcessorPrivate::isFull(EBufferType bt)
+{
+    int ret = false;
+    switch (bt)
+    {
+    case BUFFER_EMPTY:
+        ret = (m_emptybuffer.size()>= ALLOC_BUFFER_COUNT);
+        break;
+    case BUFFER_FULL:
+        ret = (m_fullbuffer.size() >= ALLOC_BUFFER_COUNT);
+        break;
+    default:
+        break;
+    }
+    return ret;
+}
 CYProcessor::CYProcessor(CYFrameParserFactory * factory,QObject *parent)
     : CYFrameParser(factory,parent),
     d(new CYProcessorPrivate())
@@ -112,6 +128,10 @@ bool CYProcessor::popupEmptyFrame(CYFRAME & frame)
 bool CYProcessor::popupFullFrame(CYFRAME & frame)
 {
     return d->popupFullFrame(frame);
+}
+bool CYProcessor::isFull(EBufferType bufftype)
+{
+    return d->isFull(bufftype);
 }
 QWidget * CYProcessor::widget()
 {

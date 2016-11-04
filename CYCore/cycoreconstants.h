@@ -14,6 +14,11 @@ typedef enum tagEColorSpace
     PIX_COLOR_QIMAGE= 0x00080000
 }EColorSpace;
 
+typedef enum tagEBufferType {
+    BUFFER_EMPTY = 0,
+    BUFFER_FULL
+}EBufferType;
+
 typedef struct tagCYFRAME {
     uint        s_size;             // 结构体大小
     uint        s_version;          // 结构体版本号

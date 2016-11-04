@@ -56,6 +56,7 @@
 #include <QSplitter>
 #include <QStackedLayout>
 #include <QMdiArea>
+#include <QMdiSubWindow>
 
 using namespace Core;
 using namespace Core::Internal;
@@ -664,9 +665,16 @@ SplitterOrView::~SplitterOrView()
 // 这里的id可以重复,因为对同一个图像处理在一个链路上可能存在多个
 EditorView * SplitterOrView::createSubEditorView(Id idOfProcess)
 {
+    QMdiSubWindow *subWindow1 = new QMdiSubWindow;
+
     EditorView * pWid = new EditorView(this, 0, idOfProcess);
-    m_mdiArea->addSubWindow(pWid);
-    pWid->show();
+    subWindow1->setWidget(pWid);
+    subWindow1->setAttribute(Qt::WA_DeleteOnClose);
+    m_mdiArea->addSubWindow(subWindow1);
+    
+    //m_mdiArea->addSubWindow(pWid);
+    //pWid->show();
+    subWindow1->show();
     return pWid;
 }
 EditorView *SplitterOrView::findFirstView()

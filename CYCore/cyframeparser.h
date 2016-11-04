@@ -26,6 +26,7 @@ public:
     virtual bool pushFullFrame(CYFRAME frame) = 0;
     virtual bool popupEmptyFrame(CYFRAME & frame) = 0;
     virtual bool popupFullFrame(CYFRAME & frame)= 0;
+    virtual bool isFull(EBufferType) = 0;
     bool         newFrame(CYFRAME);
     void         completeFrame(CYFRAME frame);
     void setFactory(CYFrameParserFactory * factory);
@@ -38,11 +39,15 @@ public:
     // 参数配置界面
     void applySettings();
     // 缩略图 - 两个状态,缩略图状态和显示状态(这个放到)
+    const QWidget * contentWidget();
+    void setContentWidget(const QWidget *);
     virtual QWidget * widget() = 0;    // 自定义界面
     
 signals:
     void sigFrameCopyCommit(CYFRAME frame);
     void sigParseCommit(CYFRAME newframe);
+    void sigBufferRecoveryFinish();
+    void sigAboutToDestroyed();
     
 private:
     Internal::CYFrameParserPrivate * d;

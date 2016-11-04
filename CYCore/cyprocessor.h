@@ -22,6 +22,7 @@ public:
     virtual bool pushFullFrame(CYFRAME frame);
     virtual bool popupEmptyFrame(CYFRAME & frame);
     virtual bool popupFullFrame(CYFRAME & frame);
+    virtual bool isFull(EBufferType);
 
     virtual QWidget * widget();
 private:

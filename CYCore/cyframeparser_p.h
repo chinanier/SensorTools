@@ -26,6 +26,7 @@ public:
     CYFrameParser * m_parent;
     CYFrameParserFactory * m_factory;
     bool      m_enable = false;
+    const QWidget * m_contentWidget = nullptr;
 private:
     QThread * m_thrParser;
     

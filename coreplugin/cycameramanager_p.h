@@ -25,7 +25,8 @@ public:
     QList<CYCameraCategoryMode*> m_categoryOfMode;
     CYCameraFactoryList m_cameraFactoryList;
 
-    CYCamera * m_currentCamera = nullptr;
+    //CYCamera * m_currentCamera = nullptr;
+    QHash<Utils::Id, Utils::Id> m_modeCurrentCamera;
 public:
     CYCamera * getCameraForCameraID(Utils::Id cameraid);
     Utils::Id  getFactoryIdForCameraID(Utils::Id cameraid);

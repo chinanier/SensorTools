@@ -28,6 +28,7 @@ public:
     void setPriority(int priority) { m_priority = priority; }
     void setDisplayName(const QString &displayName) { m_displayName = displayName; }
     virtual CYCamera *createCamera() = 0;
+    CYCamera *createCamera_helper();
     virtual int SerarchCamera() = 0;
 private:
     QString m_displayName;

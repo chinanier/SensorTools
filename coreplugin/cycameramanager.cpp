@@ -104,7 +104,7 @@ int CYCameraManager::SerachCamera(Id factoryid, uint timeout)
         cameracount = factory->SerarchCamera();
         for (int i=0;i<cameracount;i++)
         {
-            d->m_idOfCameras[factoryid].append(factory->createCamera());
+            d->m_idOfCameras[factoryid].append(factory->createCamera_helper());
         }
     }
     return cameracount;
@@ -174,17 +174,33 @@ CYCamera * CYCameraManager::createCamera(Id cameraid)
 {
     return 0;
 }
+Utils::Id CYCameraManager::currentCameraId()
+{
+    Utils::Id modeid = Core::ModeManager::currentMode();
+    if (d->m_modeCurrentCamera.contains(modeid))
+    {
+        return d->m_modeCurrentCamera[modeid];
+    }
+    return Utils::Id();
+}
 CYCamera * CYCameraManager::currentCamera()
 {
-    return d->m_currentCamera;
+    Utils::Id modeid = Core::ModeManager::currentMode();
+    if (d->m_modeCurrentCamera.contains(modeid))
+    {
+        return getCameraForId(d->m_modeCurrentCamera[modeid]);
+    }
+    return 0;
 }
 void CYCameraManager::activateCamera(Utils::Id cameraId)
 {
-    activateCamera(getCameraForId(cameraId));
+    Utils::Id modeid = Core::ModeManager::currentMode();
+    d->m_modeCurrentCamera[modeid] = cameraId;
+    
 }
 void CYCameraManager::activateCamera(CYCamera *pCamera)
 {
-    d->m_currentCamera = pCamera;
+    activateCamera(getIdForCamera(pCamera));
 }
 CYCameraFactory * CYCameraManager::getCameraFactoryFromCameraId(Utils::Id cameraId)
 {
@@ -199,6 +215,21 @@ CYCamera * CYCameraManager::getCameraForId(Utils::Id cameraId)
 {
     return d->getCameraForCameraID(cameraId);
 }
+Utils::Id CYCameraManager::getIdForCamera(CYCamera * pCamera)
+{
+    if (pCamera && pCamera->factory())
+    {
+        Utils::Id factoryid = pCamera->factory()->id();
+        if (d->m_idOfCameras.contains(factoryid))
+        {
+            int i = d->m_idOfCameras[factoryid].indexOf(pCamera);
+            // 创建cameraid
+            Utils::Id camearid = Id::fromSetting(factoryid.toString() + "." + Id::fromSetting(i).toString());
+            return camearid;
+        }
+    }
+    return Utils::Id();
+}
 bool CYCameraManager::appendFrameParser(Utils::Id cameraid, CYFrameParser * parser)
 {
     CYCamera * pCamera = d->getCameraForCameraID(cameraid);
@@ -208,6 +239,11 @@ bool CYCameraManager::delFrameParser(Utils::Id cameraid, CYFrameParser * parser)
 {
     CYCamera * pCamera = d->getCameraForCameraID(cameraid);
     return pCamera ? pCamera->delFrameParser(parser) : false;
+}
+QList<CYFrameParser*> CYCameraManager::getFrameParsers(Utils::Id cameraid,Utils::Id factoryid)
+{
+    CYCamera * pCamera = d->getCameraForCameraID(cameraid);
+    return pCamera ? pCamera->frameParser(factoryid) : QList<CYFrameParser*>();
 }
 // 初始化操作，可能通过该函数初始化注册的相机，(图相处理，图像统计,后期准备放到图像处理管理类进行管理)
 void CYCameraManager::init()

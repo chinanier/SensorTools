@@ -21,6 +21,7 @@ public:
     bool pushFullFrame(CYFRAME frame);
     bool popupEmptyFrame(CYFRAME & frame);
     bool popupFullFrame(CYFRAME & frame);
+    bool isFull(EBufferType);
 signals:
     
 public slots:

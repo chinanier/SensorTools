@@ -70,12 +70,13 @@ CYFrameParser::CYFrameParser(CYFrameParserFactory *factory,QObject *parent)
 
 CYFrameParser::~CYFrameParser()
 {
+    emit sigAboutToDestroyed();
     delete d;
     d = 0;
 }
 bool CYFrameParser::newFrame(CYFRAME frame)
 {
-    qDebug() << "There is "<< this <<":newFrame ==> id:" << frame.s_id << "buffer:" << frame.s_data;
+    //qDebug() << "There is "<< this <<":newFrame ==> id:" << frame.s_id << "buffer:" << frame.s_data;
     int bret = false;
     if (isEnabled())
     {
@@ -98,6 +99,11 @@ bool CYFrameParser::newFrame(CYFRAME frame)
 void CYFrameParser::completeFrame(CYFRAME frame)
 {
     pushEmptyFrame(frame);
+    if (isFull(BUFFER_EMPTY))
+    {
+        if(!isEnabled())
+            emit sigBufferRecoveryFinish(); // 完成回收
+    }
     return;
 }
 void CYFrameParser::setFactory(CYFrameParserFactory * factory)
@@ -116,4 +122,13 @@ void CYFrameParser::setEnabled(bool enable)
 bool CYFrameParser::isEnabled() const
 {
     return d->m_enable;
+}
+
+const QWidget * CYFrameParser::contentWidget()
+{
+    return d->m_contentWidget;
+}
+void CYFrameParser::setContentWidget(const QWidget * widg)
+{
+    d->m_contentWidget = widg;
 }

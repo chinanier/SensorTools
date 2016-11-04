@@ -52,6 +52,11 @@ public:
     {
         AllocFrameBuffer();
     }
+    ~TestFrameParser()
+    {
+        int i = 0;
+        i = i;
+    }
     virtual void doProcess(CYFRAME &frame)
     {
         int i = 0;
@@ -69,6 +74,11 @@ public:
     {
         AllocFrameBuffer();
     }
+    virtual ~Test2FrameParser()
+    {
+        int i = 0;
+        i = i;
+    }
     virtual void doProcess(CYFRAME &frame)
     {
         int i = 0;
@@ -85,9 +95,10 @@ public:
         setDisplayName("Test2Processor");
         setType(CYFrameParserFactory::CYFRAMEPARSER_PROCESSOR);
     }
-    ~Test2Processor()
+    virtual  ~Test2Processor()
     {
-
+        int i = 0;
+        i = i;
     }
     CYFrameParser *createFrameParser() {
         return new Test2FrameParser;
@@ -102,9 +113,10 @@ public:
         setDisplayName("TestProcessor");
         setType(CYFrameParserFactory::CYFRAMEPARSER_PROCESSOR);
     }
-    ~TestProcessor()
+    virtual ~TestProcessor()
     {
-
+        int i = 0;
+        i = i;
     }
     CYFrameParser *createFrameParser() {
         return new TestFrameParser;
@@ -217,9 +229,9 @@ public slots:
         i = 1;
         i = 2;
         m_tstop = GetTickCount();
-        qDebug() << "There is " << this << "::slotCompleteFrame ==> id:" << frame.s_id << "buffer:" << frame.s_data;
-        qDebug() << "totle time:" << (m_tstop - m_tstart)/1000.0<<" ms";
-        qDebug() << "=============================================";
+        //qDebug() << "There is " << this << "::slotCompleteFrame ==> id:" << frame.s_id << "buffer:" << frame.s_data;
+        //qDebug() << "totle time:" << (m_tstop - m_tstart)/1000.0<<" ms";
+        //qDebug() << "=============================================";
     }
 private:
     bool m_isconnect = false;

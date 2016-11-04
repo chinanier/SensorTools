@@ -11,3 +11,12 @@ CYCameraFactory::~CYCameraFactory()
 {
 
 }
+CYCamera *CYCameraFactory::createCamera_helper()
+{
+    CYCamera * pcamera = createCamera();
+    if (pcamera)
+    {
+        pcamera->setFactory(this);
+    }
+    return pcamera;
+}
