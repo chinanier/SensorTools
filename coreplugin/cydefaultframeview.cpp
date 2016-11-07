@@ -140,6 +140,17 @@ public slots:
                 // 向系统添加完用于展示的窗体后，这里要向指定的id的相机添加一个处理器,这样就可以由系统进行调度处理了
                 CYCameraManager::appendFrameParser(cameraid, fpser);
                 fpser->setContentWidget(pedit);
+                // 添加配置窗口
+                if (fpser->widget())
+                {
+                    pedit->setWidget(fpser->widget());
+                }
+                // 将编辑器窗口的销毁事件与处理器进行绑定
+                connect(pedit->parent() ? pedit->parent() : pedit, &QObject::destroyed, this, [cameraid, fpser]() {
+                    int i = 19;
+                    i = 0;
+                    CYCameraManager::delFrameParser(cameraid, fpser);
+                });
                 connect(fpser, &CYFrameParser::sigAboutToDestroyed,this,[pedit]() {
                     //pedit->close();
                     QMdiSubWindow * pmdisub = qobject_cast<QMdiSubWindow*>(pedit->parent());

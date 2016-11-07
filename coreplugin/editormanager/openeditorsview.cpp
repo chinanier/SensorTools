@@ -297,6 +297,7 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                 });
             }
             // 增加图像处理的右键菜单
+#if 0
             QList<CYFrameParserFactory*> factorys = CYFrameParserManager::getProcessorFactorys();
             QMenu * contextParserMenu = 0;
             QMenu * contextAlyzerMenu = 0;
@@ -344,6 +345,7 @@ void OpenEditorsWidget::contextMenuRequested(QPoint pos)
                     break;
                 }
             }
+#endif
         }
     }
     contextMenu.exec(/*mapToGlobal(pos)*/QCursor::pos());

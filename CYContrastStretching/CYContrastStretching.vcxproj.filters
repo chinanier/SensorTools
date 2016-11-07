@@ -34,6 +34,11 @@
       <Extensions>*</Extensions>
       <ParseFiles>true</ParseFiles>
     </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cycontraststretching.cpp">
@@ -86,10 +91,24 @@
     <CustomBuild Include="cycontraststretchingparse.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="contraststretching.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="cycontraststretchingplugin.json">
       <Filter>Other Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_contraststretching.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CYContrastStretching.rc" />
   </ItemGroup>
 </Project>

@@ -103,6 +103,9 @@ public:
 
     static void updateEditorHistory(IEditor *editor, QList<EditLocation> &history);
 
+    // add by kk
+    void setWidget(QWidget * widget);
+
 signals:
     void currentEditorChanged(Core::IEditor *editor);
 

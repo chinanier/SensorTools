@@ -316,7 +316,15 @@ void EditorView::focusInEvent(QFocusEvent *)
 {
     EditorManagerPrivate::setCurrentView(this);
 }
-
+void EditorView::setWidget(QWidget * widget)
+{
+    if (widget)
+    {
+        m_container->addWidget(widget);
+        //setCurrentEditor(editor);
+        m_container->setCurrentWidget(widget);
+    }
+}
 void EditorView::addEditor(IEditor *editor)
 {
     if (m_editors.contains(editor))
