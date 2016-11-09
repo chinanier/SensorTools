@@ -198,7 +198,8 @@ bool CYCamera::addFrameParser(CYFrameParser * newNode, CYFrameParser * before)
     }
     else
     {
-        d->m_frameParser.append(newNode);
+        //d->m_frameParser.append(newNode);
+        d->m_frameParser.insert(0, newNode);
     }
     QObject::connect(newNode, &CYFrameParser::sigFrameCopyCommit, d, &CYCameraPrivate::slotCompleteFrame); // 处理器拷贝完通知调度器释放内存
     QObject::connect(newNode, &CYFrameParser::sigParseCommit, d, &CYCameraPrivate::slotParseCommit);       // 处理器处理完,需要通知调度器继续传递处理

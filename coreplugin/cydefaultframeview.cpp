@@ -145,20 +145,23 @@ public slots:
                 {
                     pedit->setWidget(fpser->widget());
                 }
-                // 将编辑器窗口的销毁事件与处理器进行绑定
-                connect(pedit->parent() ? pedit->parent() : pedit, &QObject::destroyed, this, [cameraid, fpser]() {
-                    int i = 19;
-                    i = 0;
-                    CYCameraManager::delFrameParser(cameraid, fpser);
-                });
-                connect(fpser, &CYFrameParser::sigAboutToDestroyed,this,[pedit]() {
+                auto func = [pedit,this]() {
                     //pedit->close();
                     QMdiSubWindow * pmdisub = qobject_cast<QMdiSubWindow*>(pedit->parent());
                     if (pmdisub)
                     {
+                        disconnect(pmdisub, &QObject::destroyed, this, 0);
                         pmdisub->close();
                     }
+                };
+                // 将编辑器窗口的销毁事件与处理器进行绑定
+                connect(pedit->parent() ? pedit->parent() : pedit, &QObject::destroyed, this, [this,cameraid, fpser, func]() {
+                    int i = 19;
+                    i = 0;
+                    disconnect(fpser, &CYFrameParser::sigAboutToDestroyed, this,0);
+                    CYCameraManager::delFrameParser(cameraid, fpser);
                 });
+                connect(fpser, &CYFrameParser::sigAboutToDestroyed,this, func);
             });
             if (l.size()>0)
             {
