@@ -152,7 +152,9 @@ public:
         m_maxjpgcount = jpglist.size();
         for (int i=0;i<jpglist.size();i++)
         {
-            m_pImage[i] = new QImage(jpglist[i]);
+            m_pImage[i] = new QImage(    /*QImage(*/jpglist[i]/*).convertToFormat(QImage::Format_RGB888)*/   );
+            QImage::Format fmt = m_pImage[i]->format();
+            fmt = fmt;
         }
     }
     ~CoaxPressCamera()

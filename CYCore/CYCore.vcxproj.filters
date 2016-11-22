@@ -132,6 +132,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cyframeparser_p.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="cyglimagearea.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_cyglimagearea.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_cyglimagearea.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cycoreplugin.h">
@@ -168,6 +177,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="cyframeparser_p.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="cyglimagearea.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

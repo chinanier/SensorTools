@@ -6,6 +6,9 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QMessageBox>
+#include <QThread>
+#include <QLibrary>
+#include <QMessageBox>
 
 #include <cycore/cycamera.h>
 #include <cycore/cycamerafactory.h>
@@ -15,10 +18,21 @@
 #include "GenICamFwd.h"
 #include "GenICam.h"
 
+#include "MytestIPort.h"
 
 #include "QtTreePropertyBrowser.h"
 #include "designerpropertymanager.h"
 
+typedef void(*AD9928_FUNC)(uint, uint, uint);
+typedef void(*SetAd9928Callback)(AD9928_FUNC);
+typedef void(*ShowAd9928)(void *);
+typedef void(*DeleteAD9928)();
+//回调函数
+//                  0X166  
+void ProcessAD9928(uint cmd, uint Addr, uint Param)
+{
+
+}
 using namespace GenICam;
 using namespace GenApi;
 
@@ -27,6 +41,20 @@ class CamyuPropertyEditPrivate : public QObject
 {
     Q_OBJECT
 public:
+    CamyuPropertyEditPrivate()
+    {
+        QLibrary libcheck("AD9928");
+        if (libcheck.load())
+        {
+            ShowAd9928_sys = (ShowAd9928)libcheck.resolve("ShowAd9928");
+            DeleteAD9928_sys = (DeleteAD9928)libcheck.resolve("DeleteAD9928");
+            SetAd9928Callback_sys = (SetAd9928Callback)libcheck.resolve("SetAd9928Callback");
+            if (SetAd9928Callback_sys)
+            {
+                SetAd9928Callback_sys(ProcessAD9928);
+            }
+        }
+    }
     QLineEdit *m_filterWidget = nullptr;
     QtTreePropertyBrowser * m_treeBrowser = nullptr;
     qdesigner_internal::DesignerPropertyManager *m_propertyManager = nullptr;
@@ -39,7 +67,138 @@ public:
     QHash<QString, QtVariantProperty*> m_nameToProperty;
     CYCore::CYCamera * m_pCamera = nullptr;
     CYCore::CYCameraFactory * m_pCameraFactory = nullptr;
+
+    MytestIPort m_port;
+
+    ShowAd9928 ShowAd9928_sys = 0;
+    DeleteAD9928 DeleteAD9928_sys = 0;
+    SetAd9928Callback SetAd9928Callback_sys = 0;
 public:
+    // 设置界面的值
+    void nodeCallBack(INode *pNode)
+    {
+        printf("Node : %s is changed\n", pNode->GetDisplayName().c_str());
+        try
+        {
+            const QString displayName = pNode->GetDisplayName().c_str();
+            const QString propertyName = pNode->GetName().c_str();
+            QtVariantProperty * property = m_nameToProperty.value(propertyName, 0);
+            QVariant pValue;
+            if (!property)
+            {
+                qDebug("Node : %s Not Found!!!\n", propertyName.toStdString().c_str());
+                return;
+            }
+            switch (pNode->GetPrincipalInterfaceType())
+            {
+            case intfIInteger: // inttype
+            {
+                CIntegerPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                {
+                    int intVal = pProperty->GetValue();
+                    pValue = intVal;
+                }
+                else
+                {
+                    pValue = property->value();
+                }
+                int intMaxVal = pProperty->GetMax();intMaxVal = intMaxVal < 0 ? 0x7FFFFFFF : intMaxVal;
+                int intMinVal = pProperty->GetMin();intMinVal = intMinVal > intMaxVal ? intMaxVal : intMinVal;
+                property->setAttribute("maximum", intMaxVal);
+                property->setAttribute("minimum", intMinVal);
+                property->setAttribute("singleStep", pProperty->GetInc());
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
+            }
+            break;
+            case intfIBoolean: // bool
+            {
+                CBooleanPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetValue();
+                else
+                {
+                    pValue = property->value();
+                }
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
+            }
+            break;
+            case intfIFloat:
+            {
+                CFloatPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetValue();
+                else
+                {
+                    pValue = property->value();
+                }
+                property->setAttribute("maximum", pProperty->GetMax());
+                property->setAttribute("minimum", pProperty->GetMin());
+                if (pProperty->HasInc())
+                {
+                    property->setAttribute("singleStep", pProperty->GetInc());
+                }
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
+            }
+            break;
+            case intfIString:
+            {
+                CStringPtr pProperty = pNode;
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetValue().c_str();
+                else
+                {
+                    pValue = property->value();
+                }
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
+            }
+            break;
+            case intfIEnumeration:
+            {
+                CEnumerationPtr pProperty = pNode;
+                QStringList names;
+                NodeList_t pEntries;
+                pProperty->GetEntries(pEntries);
+                for (auto pVar : pEntries)
+                {
+                    CEnumEntryPtr pEntry = pVar;
+                    CNodePtr pnd = pVar;
+                    /*pEntry->GetSymbolic().c_str();*/
+                    names.append(pnd->GetDisplayName().c_str());
+                }
+                if (IsReadable(pNode))
+                    pValue = pProperty->GetIntValue();
+                else
+                {
+                    pValue = property->value();
+                }
+                property->setAttribute("enumNames", names);
+                property->setValue(pValue);
+                property->setEnabled(IsAvailable(pNode) && IsWritable(pNode) && IsImplemented(pNode));
+            }
+            break;
+            default:
+            {
+                pValue = GetInterfaceName(pNode).c_str();
+                property->setEnabled(false);
+            }
+            break;
+            }
+            property->setValue(pValue);
+        }
+        catch (GenICam::GenericException &e)
+        {
+            QMessageBox::warning(0, QStringLiteral("参数设置错误!!!"), e.what(), QMessageBox::Yes, QMessageBox::NoButton);
+        }
+        return;
+    }
+    void showMFCdlg()
+    {
+        if (ShowAd9928_sys)
+        {
+            ShowAd9928_sys(0);
+        }
+    }
     void setFilter(const QString &pattern)
     {
         m_filterPattern = pattern;
@@ -55,12 +214,104 @@ public:
         //m_nameToProperty.value(property, 0);
         QtVariantProperty *varProp = m_propertyManager->variantProperty(property);
         QString nameKey = m_nameToProperty.key(varProp);
+        if (nameKey.isEmpty())
+        {
+            return;
+        }
+        CNodePtr pNode = m_nodeMap._GetNode(nameKey.toStdString().c_str());
+        QVariant pValue;
+        if (!pNode)
+        {
+            return;
+        }
+        switch (pNode->GetPrincipalInterfaceType())
+        {
+        case intfIInteger: // inttype
+        {
+            CIntegerPtr pProperty = pNode;
+            if (IsWritable(pNode))
+            {
+                int intVal = varProp->value().toInt();
+                pProperty->SetValue(intVal);
+            }
+        }
+        break;
+        case intfIBoolean: // bool
+        {
+            CBooleanPtr pProperty = pNode;
+            if (IsWritable(pNode))
+            {
+                bool boolVal = varProp->value().toBool();
+                pProperty->SetValue(boolVal);
+            }
+        }
+        break;
+        case intfIFloat:
+        {
+            CFloatPtr pProperty = pNode;
+            if (IsWritable(pNode))
+            {
+                float floatVal = varProp->value().toFloat();
+                pProperty->SetValue(floatVal);
+            }
+        }
+        break;
+        case intfIString:
+        {
+            CStringPtr pProperty = pNode;
+            if (IsWritable(pNode))
+            {
+                QString stringVal = varProp->value().toString();
+                pProperty->SetValue(stringVal.toStdString().c_str());
+            }
+        }
+        break;
+        case intfIEnumeration:
+        {
+            CEnumerationPtr pProperty = pNode;
+            if (IsWritable(pNode))
+            {
+                int val = varProp->value().toInt();
+                const QString valName = varProp->attributeValue("enumNames").toStringList().at(val);
+
+                NodeList_t pEntries;
+                CEnumEntryPtr pEntry;
+                pProperty->GetEntries(pEntries);
+                for (auto pVar : pEntries)
+                {
+                    CNodePtr pnd = pVar;
+                    QString entryName = pnd->GetDisplayName().c_str();
+                    if (entryName == valName)
+                    {
+                        pEntry = pVar;
+                        break;
+                    }
+                }
+
+                CEnumEntryPtr enumEntry = pEntry;//pProperty->GetEntryByName(valName.toStdString().c_str());
+                if (enumEntry)
+                {
+                    pProperty->SetIntValue(enumEntry->GetValue());
+                }
+                //pProperty->SetValue(floatVal);
+            }
+        }
+        break;
+        default:
+        {
+            //pValue = GetInterfaceName(pNode).c_str();
+            //property = m_propertyManager->addProperty(pValue.type(), displayName);
+            //property->setEnabled(/*IsAvailable(pNode)*/false);
+        }
+        break;
+        }
     }
     bool loadXMLFromFile(QString xmlPath)
     {
         try
         {
             m_nodeMap._LoadXMLFromFile(xmlPath.toStdString().c_str());
+            m_nodeMap._Connect(&m_port);
             return true;
         }
         catch (GenICam::GenericException &e)
@@ -87,7 +338,9 @@ public:
         {
             QtVariantProperty *sub_groupProperty = 0;
             CNodePtr pNode = pCategory;
+            const QString propertyName = pNode->GetName().c_str();
             sub_groupProperty = m_propertyManager->addProperty(QtVariantPropertyManager::groupTypeId(), pNode->GetDisplayName().c_str());
+            m_nameToProperty.insert(propertyName, sub_groupProperty);
             // 首先向列表控件添加一个目录
             if (groupProperty)
             {
@@ -124,6 +377,7 @@ public:
 
             QVariant pValue;
             QtVariantProperty *property = 0;
+            Register(pNode, *this, &CamyuPropertyEditPrivate::nodeCallBack);
             switch (nodeType)
             {
             case GENAPI_NAMESPACE::intfIInteger:
@@ -247,6 +501,7 @@ public:
             {
                 groupProperty->addSubProperty(property);
             }
+            m_nameToProperty.insert(propertyName, property);
             return true;
         }
         catch (GenICam::GenericException &e)
@@ -411,6 +666,14 @@ CamyuPropertyEdit::CamyuPropertyEdit():
     QVBoxLayout * vlayout = new QVBoxLayout;
     vlayout->setMargin(1);
     vlayout->setSpacing(1);
+
+    // 添加AD9928的启动按钮
+    QPushButton * pushAd9928 = new QPushButton(tr("AD9928"));
+    //pushAd9928->setCheckable(true);
+    QObject::connect(pushAd9928, &QAbstractButton::clicked, this,[this]() {
+        d->showMFCdlg();
+    });
+    vlayout->addWidget(pushAd9928);
     vlayout->addWidget(d->m_filterWidget);
     vlayout->addWidget(d->m_treeBrowser);
     setLayout(vlayout);

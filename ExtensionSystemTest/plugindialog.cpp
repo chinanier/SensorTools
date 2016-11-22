@@ -213,8 +213,14 @@ static inline QSettings *userSettings()
 }
 int main(int argc, char *argv[])
 {
+    AllocConsole();
+    FILE * fp = 0;
+    freopen_s(&fp, "conout$", "w", stdout);
+    setlocale(LC_ALL, "chs");
+    printf("===========Start Debuging=============\n");
     //ExtensionSystem::PluginManager manager;
     QApplication app(argc, argv);
+    app.setAttribute(Qt::AA_UseOpenGLES, true);
     //AllocConsole();
     // Manually determine -settingspath command line option
     // We can't use the regular way of the plugin manager, because that needs to parse plugin meta data
@@ -268,5 +274,6 @@ int main(int argc, char *argv[])
     //dialog.show();
     app.exec();
     //FreeConsole();
+    FreeConsole();
     return 0;
 }

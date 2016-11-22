@@ -39,8 +39,8 @@ public:
     char  m_dllName[512] = "DualAreaGray16";
     int m_camPort = PORT_A;
     int m_boardNr = /*1*/0;
-    int64_t m_width = 1280;
-    int64_t m_height = 720;
+    int64_t m_width = 1024;
+    int64_t m_height = 1024;
     dma_mem * m_memHandle = NULL;
     Fg_Struct * m_fg = NULL;
     int samplePerPixel = 1;

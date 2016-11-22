@@ -10,6 +10,8 @@
 #include "ExtensionSystem/pluginmanager.h"
 #include "cycore/cyframeparserfactory.h"
 #include "cycore/cycamera.h"
+#include "cycore/cyglimagearea.h"
+#include <QOpenGLTexture>
 
 #include "Utils/id.h"
 
@@ -31,19 +33,19 @@ class TestEditor : public IEditor {
 public:
     TestEditor()
     {
-        QScrollArea * scorll = new QScrollArea;
+        //QScrollArea * scorll = new QScrollArea;
         m_label = new QLabel;
         //m_label->setContextMenuPolicy(Qt::CustomContextMenu);
         //setContext();
         //setContextHelpId();
-        m_labelSurfer = new QLabel;
+        m_labelSurfer = new CYGLImageArea;
         // ÅäÖÃÏÔÊ¾´°¿Ú
         m_labelSurfer->setContextMenuPolicy(Qt::CustomContextMenu);
         QObject::connect(m_labelSurfer, &QWidget::customContextMenuRequested, this, &TestEditor::contextMenuRequested);
 
-        scorll->setWidget(m_labelSurfer);
-        scorll->setWidgetResizable(true);
-        setWidget(scorll);
+        //scorll->setWidget(m_labelSurfer);
+        //scorll->setWidgetResizable(true);
+        setWidget(/*scorll*/m_labelSurfer);
     }
     ~TestEditor()
     {
@@ -227,7 +229,8 @@ public slots:
     }
 public:
     QLabel * m_label;
-    QLabel * m_labelSurfer;
+    //QLabel * m_labelSurfer;
+    CYGLImageArea * m_labelSurfer;
 };
 
 CYDefaultFrameViewPrivate::CYDefaultFrameViewPrivate(QObject *parent)
@@ -253,12 +256,14 @@ void CYDefaultFrameViewPrivate::toShowFrame(CYFRAME frame)
     if (frame.s_color == PIX_COLOR_QIMAGE)
     {
         QImage * image = *(QImage**)frame.s_data;
-        m_editor->m_labelSurfer->setPixmap(QPixmap::fromImage(image->scaled(800, 600)));
+        //m_editor->m_labelSurfer->setPixmap(QPixmap::fromImage(image->scaled(800, 600)));
+        m_editor->m_labelSurfer->setData(image->width(), image->height(), QOpenGLTexture::RGBA, QOpenGLTexture::UInt8, image->constBits());
     }
     else
     {
-        QImage image((uchar*)frame.s_data,frame.s_width,frame.s_height,QImage::Format_Indexed8);
-        m_editor->m_labelSurfer->setPixmap(QPixmap::fromImage(image));
+        //QImage image((uchar*)frame.s_data,frame.s_width,frame.s_height,QImage::Format_Indexed8);
+        //m_editor->m_labelSurfer->setPixmap(QPixmap::fromImage(image));
+        m_editor->m_labelSurfer->setData(frame.s_width, frame.s_height, QOpenGLTexture::Luminance, QOpenGLTexture::UInt8, frame.s_data);
     }
 }
 

@@ -134,9 +134,15 @@
     <ClCompile Include="camyupropertyedit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MytestIPort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camyupropertyedit_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MytestIPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
